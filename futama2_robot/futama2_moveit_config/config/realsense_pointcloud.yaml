@@ -1,0 +1,11 @@
+sensors:
+  - realsense
+realsense:
+  sensor_plugin: occupancy_map_monitor/PointCloudOctomapUpdater     # The name of the plugin that we are using.
+  point_cloud_topic: /camera/camera/depth/color/points                                    # This specifies the topic to listen on for a point cloud.
+  max_range: 2.0                                                    # Points further than this will not be used (<2 reduces computational reqs.)
+  point_subsample: 1                                                # Choose one of every point_subsample points.
+  padding_offset: 0.1                                               # The size of the padding (in cm).
+  padding_scale: 1.0                                               # The scale of the padding.
+  max_update_rate: 3.0                              # Update rate in Hz (between 3 and 5 is quite suitable)
+  filtered_cloud_topic: filtered_cloud             #The topic on which the filtered cloud will be published (mainly for debugging).

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>futama2_description</name>
+  <version>0.0.1</version>
+  <description>Description package for the FUTAMA2 robot</description>
+  <maintainer email="adrian.ricardezortigosa@dlr.de">Adrian Ricardez Ortigosa</maintainer>
+  <license>TODO</license>
+
+  <depend>urdf</depend>
+  <build_depend>launch_ros</build_depend>
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>joint_state_publisher_gui</exec_depend>
+  <exec_depend>ur_description</exec_depend>
+  <exec_depend>ur_robot_driver</exec_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

@@ -1,0 +1,163 @@
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="futama2">
+
+  <link name="futama2_base_link">
+    <inertial>
+      <origin xyz="0.057054 -0.00032611 0.17729" rpy="0 0 0" />
+      <mass value="0.6592" />
+      <inertia ixx="0.0080226" ixy="5.3093E-06" ixz="-0.0055958" iyy="0.014429" iyz="-8.4912E-07" izz="0.006652" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://futama2_description/meshes/visual/base_link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://futama2_description/meshes/collision/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  
+  <link name="realsense_tpu_link">
+    <inertial>
+      <origin xyz="0.032157 0.00051011 -0.0001135" rpy="0 0 0" />
+      <mass value="0.2645" />
+      <inertia ixx="8.7232E-05" ixy="-1.7837E-06" ixz="3.0021E-09" iyy="0.00010899" iyz="-1.976E-08" izz="0.00014445" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://futama2_description/meshes/visual/realsense_tpu_link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0 0 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://futama2_description/meshes/collision/realsense_tpu_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="realsense_center_link">
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyx="0.0" iyy="0.01" iyz="0.0" izx="0.0" izy="0.0" izz="0.01"/>
+    </inertial>
+  </link>
+  <joint name="realsense_center_joint" type="fixed">
+    <origin xyz="0.582258 0.0 0.621" rpy="0 0 0" />
+    <parent link="futama2_base_link"/>
+    <child link="realsense_center_link" />
+  </joint>
+
+  <link name="realsense_front_link">
+      <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyx="0.0" iyy="0.01" iyz="0.0" izx="0.0" izy="0.0" izz="0.01"/>
+    </inertial>
+  </link>
+  <joint name="realsense_front_joint" type="fixed">
+    <origin xyz="0.043 0 0" rpy="0 0 0" />
+    <parent link="realsense_center_link"/>
+    <child link="realsense_front_link" />
+  </joint>
+
+  <link name="camera_link">
+      <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyx="0.0" iyy="0.01" iyz="0.0" izx="0.0" izy="0.0" izz="0.01"/>
+    </inertial>
+  </link>
+  <joint name="camera_joint" type="fixed">
+    <origin xyz="0.04 0 0" rpy="0 0 0" />
+    <parent link="realsense_center_link"/>
+    <child link="camera_link" />
+  </joint>
+
+  <link name="camera1_link">
+      <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyx="0.0" iyy="0.01" iyz="0.0" izx="0.0" izy="0.0" izz="0.01"/>
+    </inertial>
+  </link>
+  <joint name="camera1_joint" type="fixed">
+    <origin xyz="0 0 0.02" rpy="0 -1.5708 1.5708" />
+    <parent link="realsense_center_link"/>
+    <child link="camera1_link" />
+  </joint>
+
+  <link name="camera2_link">
+      <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyx="0.0" iyy="0.01" iyz="0.0" izx="0.0" izy="0.0" izz="0.01"/>
+    </inertial>
+  </link>
+  <joint name="camera2_joint" type="fixed">
+    <origin xyz="0 0 -0.02" rpy="0 1.5708 1.5708" />
+    <parent link="realsense_center_link"/>
+    <child link="camera2_link" />
+  </joint>
+
+  <link name="rotation_center_link">
+      <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyx="0.0" iyy="0.01" iyz="0.0" izx="0.0" izy="0.0" izz="0.01"/>
+    </inertial>
+  </link>
+  <joint name="rotation_center_joint" type="fixed">
+    <origin xyz="0.291129 0.0 0.3105" rpy="0 0 0" />
+    <parent link="futama2_base_link"/>
+    <child link="rotation_center_link" />
+  </joint>
+
+  <link name="led_back_up_left_link"/>
+  <joint name="led_back_up_left_joint" type="fixed">
+    <origin xyz="0 0.01555 0.01524" rpy="0 0.785398 1.5708" />
+    <parent link="realsense_center_link"/>
+    <child link="led_back_up_left_link" />
+  </joint>
+
+  <link name="led_back_up_right_link"/>
+  <joint name="led_back_up_right_joint" type="fixed">
+    <origin xyz="0 -0.01555 0.01524" rpy="0 0.785398 -1.5708" />
+    <parent link="realsense_center_link"/>
+    <child link="led_back_up_right_link" />
+  </joint>
+
+  <link name="led_back_down_left_link"/>
+  <joint name="led_back_down_left_joint" type="fixed">
+    <origin xyz="0 0.01555 -0.01524" rpy="0 2.35619 1.5708" />
+    <parent link="realsense_center_link"/>
+    <child link="led_back_down_left_link" />
+  </joint>
+
+  <link name="led_back_down_right_link"/>
+  <joint name="led_back_down_right_joint" type="fixed">
+    <origin xyz="0 -0.01555 -0.01524" rpy="0 2.35619 -1.5708" />
+    <parent link="realsense_center_link"/>
+    <child link="led_back_down_right_link" />
+  </joint>
+
+  <link name="led_back_up_front_link"/>
+  <joint name="led_back_up_front_joint" type="fixed">
+    <origin xyz="0.03462 0 0.01524" rpy="0 0.785398 0" />
+    <parent link="realsense_center_link"/>
+    <child link="led_back_up_front_link" />
+  </joint>
+
+  <link name="led_back_down_front_link"/>
+  <joint name="led_back_down_front_joint" type="fixed">
+    <origin xyz="0.03462 0 -0.01524" rpy="0 2.35619 0" />
+    <parent link="realsense_center_link"/>
+    <child link="led_back_down_front_link" />
+  </joint>
+
+</robot>

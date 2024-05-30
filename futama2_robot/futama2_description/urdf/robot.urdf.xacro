@@ -1,0 +1,29 @@
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="robot">
+
+  <xacro:arg name="ros_control_active" default="deactive"/> <!-- 'active', 'deactive' -->
+  <xacro:property name="ros_control_active_prop" value="$(arg ros_control_active)"/>
+
+  <!-- UR-10 -->
+  <xacro:include filename="$(find futama2_description)/urdf/ur.urdf.xacro"/>
+  <xacro:if value="${ros_control_active_prop == 'active'}">
+    <xacro:include filename="$(find futama2_description)/urdf/ur_control.xacro"/>
+  </xacro:if>
+
+  <!-- FUTAMA2 -->
+  <xacro:include filename="$(find futama2_description)/urdf/futama2.xacro"/>
+
+  <!-- connect both -->
+  <joint name="tool_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 3.927" />
+    <parent link="tool0"/>
+    <child link="futama2_base_link" />
+  </joint>
+
+  <!-- connect both -->
+  <joint name="realsense_tpu_joint" type="fixed">
+    <origin xyz="0.5465 0 0.621" rpy="0 0 0" />
+    <parent link="futama2_base_link"/>
+    <child link="realsense_tpu_link" />
+  </joint>
+
+</robot>
