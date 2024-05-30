@@ -21,7 +21,7 @@ Developed packages of this repo:
 
 A high-level general understanding can be graphically shown as the following (the ROS modules exchange their topics in a very different way as shown):
 
-<img src="images/high-level-module-understanding.PNG" width=60% height=60%>
+<img src="images/high-level-module-understanding.PNG" width=80% height=80%>
 
 ## Table of Contents
 
