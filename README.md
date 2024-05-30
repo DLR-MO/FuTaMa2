@@ -36,9 +36,7 @@ A high-level general understanding can be graphically shown as the following (th
   7. [FuTaMa2](#7-futama2-from-source)
   - [Docker](#docker)
 - [Robot Usage](#robot-usage)
-- [Maintainers](#maintainers)
-- [Contributing](#contributing)
-- [License](#license)
+- [Maintainers](#maintainers), [Contributing](#contributing) & [License](#license)
 
 ## Preparation and Recommendations
 
