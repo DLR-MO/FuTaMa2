@@ -252,21 +252,26 @@ Steps:
 
 <img src="images/real-auto-insp.png" width=60% height=60%>
 
+4. If you also want to perform manual inspection after the automatic one, you can run the spacenav node via command line in another terminal (after the automatic inspection has finished!) and remap it: `ros2 run spacenav spacenav_node --ros-args -r /spacenav/joy:=/joy` (TO DO enable foto capturing during automatic inspection).
+5. You will also need to run the keyboard node: `ros2 run futama2_teleop keyboard_node` to change to cartesian / joint mode.
+
 ## 3D reconstruction
 
 In order to make a 3D reconstruction of the inspected object following the manual or automated inspection [experiments](#robot-usage), one requires the use a [rosbag](https://docs.ros.org/en/rolling/Tutorials/Beginner-CLI-Tools/Recording-And-Playing-Back-Data/Recording-And-Playing-Back-Data.html) with:
 
-`ros2 bag record /camera/color/image_rect_raw /camera/depth/color/points /camera/depth/image_rect_raw /camera/color/camera_info \
+`ros2 bag record /camera/camera/color/image_rect_raw /camera/camera/depth/color/points /camera/camera/depth/image_rect_raw /camera/camera/color/camera_info \
   /camera1/color/image_rect_raw /camera1/depth/color/points /camera1/depth/image_rect_raw /camera1/color/camera_info \
   /camera2/color/image_rect_raw /camera2/depth/color/points /camera2/depth/image_rect_raw /camera2/color/camera_info \
-  /spacenav/twist /tf /tf_static \
-  /planning_scene /monitored_planning_scene`
+  /spacenav/twist /tf /tf_static /joy /spacenav/joy /rtabmap/odom\
+  /monitored_planning_scene /robot_description /display_planned_path`
 
 If only one camera is required, simply do:
 
-`ros2 bag record /camera/color/image_rect_raw /camera/depth/color/points /camera/depth/image_rect_raw /camera/color/camera_info \
-  /spacenav/twist /tf /tf_static \
-  /planning_scene /monitored_planning_scene`
+`ros2 bag record /camera/camera/color/image_rect_raw /camera/camera/depth/color/points /camera/camera/depth/image_rect_raw /camera/camera/color/camera_info \
+  /spacenav/twist /tf /tf_static /joy /spacenav/joy /rtabmap/odom\
+  /monitored_planning_scene /robot_description /display_planned_path`
+
+(TODO add the recording of the /planning_scene, currently it doesn't manage the Queue somehow)
 
 Once the rosbag is stored, it can be used as the input for the already published [Vinspect](https://github.com/DLR-MO/vinspect) package:
 

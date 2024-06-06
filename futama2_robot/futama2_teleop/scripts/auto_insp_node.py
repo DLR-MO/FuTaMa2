@@ -41,8 +41,6 @@ side_limits = [-0.9, 0.35, 1.0, 0.05]     # left, right, top, and bottom
 n_steps_sides = 6
 step_distance_sides = abs(side_limits[0]-side_limits[1])/n_steps_sides
 
-demo_steps = [False, False, False, False, False, False, False, False, False,
-              False, False, False, False, False, False, False, False, False, False]
 distance_goal_y = 0
 distance_travelled_y = 0
 distance_goal_z = 0
@@ -52,7 +50,7 @@ count = 0
 class AutoInsp(Node):
     def __init__(self):
 
-        global start_time, demo_steps
+        global start_time
 
         super().__init__('auto_insp')
 
@@ -92,7 +90,6 @@ class AutoInsp(Node):
         self.switch_to_trajectory_mode()
         self.move_group_planner_and_executer(pose_origin)
         self.switch_to_forward_mode()
-        demo_steps[0] = True
 
         time.sleep(1.0)
 
@@ -142,8 +139,13 @@ class AutoInsp(Node):
 
         return status
 
+    def receiving_spacemouse_commands(self):
+        status = 'executing'
+
+        return status
+
     def move_distance_y(self, goal_y, start_y):
-        global demo_steps, distance_goal_y, distance_travelled_y, previous_pose, count
+        global distance_goal_y, distance_travelled_y, previous_pose, count
         if goal_y > start_y:
             self.joy_cmd.axes[1] = max_vel
             self.joy_cmd.axes[5] = -max_vel
@@ -282,7 +284,11 @@ class AutoInsp(Node):
         time.sleep(2.0)
         self.move_group_planner_and_executer(pose_confined_space_front)
         time.sleep(2.0)
-        self.move_group_planner_and_executer(pose_origin)
+        self.switch_to_forward_mode()
+        while self.receiving_spacemouse_commands() == 'executing':
+            print("forward_controller_active")
+        # currently, you need to run the spacenav node manually, TO DO run it from here when the automatic
+        # inspection has been performed
         self.destroy_node()
         rclpy.shutdown()
 
@@ -296,14 +302,12 @@ class AutoInsp(Node):
         center_idx = np.array(depth_array.shape) / 2
         depth_dist = depth_array[int(center_idx[0]), int(center_idx[1])]
 
-
 def main(args=None):
     rclpy.init(args=args)
     node = AutoInsp()
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()
-
 
 if __name__ == '__main__':
     main()
