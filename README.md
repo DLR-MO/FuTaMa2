@@ -183,9 +183,10 @@ The setup shown in [this](#futama2-project) diagram is needed for the robot to w
 
 ## Main Commands for Experiments
 
-Two main commands that are executed together in separate terminals:
+Three main commands that are executed together in separate terminals:
 1. Teleop Launch: `ros2 launch futama2_teleop teleop.launch.py mode:=<mode> camera_mdl:=<camera_mdl> multicam:=<multicam> insp_mode:=<insp_mode> spacemouse:=<spacemouse> octomap:=<octomap>`
 2. Keyboard Node (required only in manual teleoperation, always with or without the spacemouse): `ros2 run futama2_teleop keyboard_node`
+3. For enabling auto exposure `ros2 param set /camera/camera depth_module.enable_auto_exposure true`
 
 Arguments for the main command:
 - mode (robot): **mock** (default) / **real** / **sim** (o3de) / **urdf** (TODO)

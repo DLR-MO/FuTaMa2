@@ -43,25 +43,6 @@ def generate_launch_description():
         choices=["d405", "d435i"],
         default_value="d405",
     )
-    multicam = LaunchConfiguration("multicam")
-    multicam_cmd = DeclareLaunchArgument(
-        "multicam",
-        description="Are you using the three cameras?",
-        default_value="false",
-    )
-    spacemouse = LaunchConfiguration("spacemouse")
-    spacemouse_cmd = DeclareLaunchArgument(
-        "spacemouse",
-        description="Is the spacemouse available?",
-        default_value='false',
-    )
-    insp_mode = LaunchConfiguration("insp_mode")
-    insp_mode_cmd = DeclareLaunchArgument(
-        "insp_mode",
-        description="How do you want to perform the inspection?",
-        choices=["manual", "automatic"],
-        default_value="manual",
-    )
     octomap = LaunchConfiguration("octomap")
     octomap_cmd = DeclareLaunchArgument(
         "octomap",
@@ -140,7 +121,6 @@ def generate_launch_description():
         executable="auto_insp_node.py",
         output="both",
         parameters=move_group_params,
-        condition=IfCondition(EqualsSubstitution(insp_mode, "automatic")),
     )
 
     # rviz
@@ -172,7 +152,6 @@ def generate_launch_description():
         package="futama2_teleop",
         executable="foto_capture_node.py",
         output="screen",
-        parameters=[{"insp_mode": insp_mode}]
     )
 
     servo_params = {"moveit_servo": load_yaml(
@@ -201,7 +180,7 @@ def generate_launch_description():
             # For publishing the wing and the base box
             launch_ros.descriptions.ComposableNode(
                 package="futama2_moveit_config",
-                plugin="futama2_moveit_config::PlanningScenePublisher",
+                plugin="futama2_moveit_config::PlanningScenePublisherCube",
                 name="planning_scene_publisher",
                 parameters=[{"mode": mode}
                             #"use_sim_time": EqualsSubstitution(mode, "sim"),
@@ -224,26 +203,7 @@ def generate_launch_description():
                 parameters=[{"use_sim_time": EqualsSubstitution(mode, "sim")}],
                 remappings=[("/spacenav/joy", "/joy")],
                 # extra_arguments=[{"use_intra_process_comms": True}],
-                # if you are actually using the spacemouse, otherwise, only keyboard run
-                condition=IfCondition(
-                            PythonExpression(
-                                ["'", spacemouse, "' == 'true' and '", insp_mode, "' == 'manual'"]
-                            )
-                        ),
             ),
-            #launch_ros.descriptions.ComposableNode(
-            #    package="spacenav",
-            #    plugin="spacenav::Spacenav",
-            #    name="spacenav_node",
-            #    parameters=[{"use_sim_time": EqualsSubstitution(mode, "sim")}],
-                # extra_arguments=[{"use_intra_process_comms": True}],
-                # if you are actually using the spacemouse, otherwise, only keyboard run
-            #    condition=IfCondition(
-            #                PythonExpression(
-            #                    ["'", spacemouse, "' == 'true' and '", insp_mode, "' == 'automatic'"]
-            #                )
-            #            ),
-            #),
         ],
     )
 
@@ -278,46 +238,16 @@ def generate_launch_description():
         condition=IfCondition(EqualsSubstitution(camera_mdl, "d435i")),
     )
 
-    # Three cameras launch
-    rs_multi_camera_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            [PathJoinSubstitution(
-                [FindPackageShare("futama2_teleop"), "launch", "rs_multi_camera_launch.py"])]
-        ),
-        launch_arguments={
-            "pointcloud.enable1": "true",
-            "pointcloud.enable2": "true",
-            # "align_depth": "true",
-            "serial_no1": "_128422272518",
-            "serial_no2": "_128422272647",
-        }.items(),
-        condition=IfCondition(EqualsSubstitution(multicam, "true")),
-    )
-
-    # Execution of SLAM usingo only one camera
-    bonxai_mapping_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([
-            PathJoinSubstitution([
-                FindPackageShare('futama2_slam'),
-                'launch',
-                'bonxai_mapping.launch.py'
-            ])
-        ]),
-    )
-
     return LaunchDescription(
         [
             # This specific order of the execution worked in real and mock robots,
             # event handlers were tried but not concluded, so for now, this sequence is functional:
             mode_cmd,
             camera_mdl_cmd,
-            multicam_cmd,
-            insp_mode_cmd,
-            spacemouse_cmd,
             octomap_cmd,
             robot_driver_cmd,
-            auto_insp_node,
-            rs_launch,rs_launch_d435i,rs_multi_camera_launch,
+            #auto_insp_node,
+            rs_launch,rs_launch_d435i,
             foto_capture_node,
             odometry_node,
             rviz_node,

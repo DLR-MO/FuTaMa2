@@ -64,9 +64,14 @@ add_library(planning_scene_publisher SHARED src/planning_scene_publisher.cpp)
 ament_target_dependencies(planning_scene_publisher PUBLIC ${THIS_PACKAGE_INCLUDE_DEPENDS})
 rclcpp_components_register_nodes(planning_scene_publisher "futama2_moveit_config::PlanningScenePublisher")
 
+add_library(planning_scene_publisher_cube SHARED src/planning_scene_publisher_cube.cpp)
+ament_target_dependencies(planning_scene_publisher_cube PUBLIC ${THIS_PACKAGE_INCLUDE_DEPENDS})
+rclcpp_components_register_nodes(planning_scene_publisher_cube "futama2_moveit_config::PlanningScenePublisherCube")
+
 # Install Libraries
 install(TARGETS
-  planning_scene_publisher
+  #planning_scene_publisher
+  planning_scene_publisher_cube
   EXPORT futama_moveitTargets
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
