@@ -246,7 +246,7 @@ def generate_launch_description():
             camera_mdl_cmd,
             octomap_cmd,
             robot_driver_cmd,
-            #auto_insp_node,
+            auto_insp_node,
             rs_launch,rs_launch_d435i,
             foto_capture_node,
             odometry_node,

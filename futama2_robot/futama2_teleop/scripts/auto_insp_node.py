@@ -37,8 +37,10 @@ start_time = 0                              # [s]
 
 pose_origin = [-1.2055292081832886, -0.17412646114826202, 0.7930378317832947,
                -0.18334272503852844, -1.076518492482137e-05, 0.9830490946769714, 2.7753067115554586e-05]
-pose_example1 = [-1.602797494407978, -0.08713420711220163, 0.1624797976718972,
-                             -0.2173614367016838, 0.02425603873074822, 0.9749612559673085, -0.04020198729814948]
+pose_example1 = [0.13544854296682332-1.0, 0.1886757104549661, 0.6999989880790709, 
+                 0.012519619736820198, 0.9998432345501458, 0.01251961958055467, -0.00015675300911098444]
+pose_example2 = [0.1886757179055466-1.0, 0.5999989865889549, 0.2804438551266343, 
+                 -0.4404692968317776, -0.4404692968317776, 0.7366152965226876, 0.26338470347731235]
 previous_pose = [0, 0, 0,
                  0, 0, 0, 0]
 
@@ -53,6 +55,9 @@ class AutoInsp(Node):
         self.odom_sub = self.create_subscription(
             Odometry, '/rtabmap/odom', self.robot_states_callback, 10)
         self.odom_sub  # prevent unused variable warning
+
+        # Publisher
+        #self.marker_pub = self.create_publisher()
 
         self.futama2 = MoveItPy(node_name="auto_insp")
         
@@ -109,10 +114,10 @@ class AutoInsp(Node):
         self.logger.info("PLANNING AND EXECUTING TO GIVEN POSE")
 
     def auto_insp_mode(self):
-        self.move_group_planner_and_executer(pose_origin)
-        time.sleep(2.0)
         self.move_group_planner_and_executer(pose_example1)
         time.sleep(2.0)
+        #self.move_group_planner_and_executer(pose_example2)
+        #time.sleep(2.0)
         self.destroy_node()
         rclpy.shutdown()
 

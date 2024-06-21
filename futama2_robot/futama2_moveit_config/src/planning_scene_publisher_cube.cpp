@@ -49,9 +49,9 @@ namespace futama2_moveit_config
                                           {
       // Create collision object, in the way of servoing
       moveit_msgs::msg::CollisionObject collision_object;
-      Eigen::Vector3d scale(0.01, 0.01, 0.01);
+      Eigen::Vector3d scale(1.0,1.0,1.0);
       shapes::Mesh * m = shapes::createMeshFromResource(
-        "package://futama2_description/meshes/collision/cube.STL",scale);
+        "package://futama2_description/meshes/collision/cube.stl",scale);
 
       collision_object.header.frame_id = "world";
       collision_object.id = "box";
@@ -89,14 +89,14 @@ namespace futama2_moveit_config
       base_object.dimensions = {0.5, 0.5, 1.0};
 
       geometry_msgs::msg::Pose base_object_pose;
-      base_object_pose.position.x = -1.2;
+      base_object_pose.position.x = -1.0;
       base_object_pose.position.y = 0.0;
-      base_object_pose.position.z = -0.4;
+      base_object_pose.position.z = -0.5;
 
       collision_object.primitives.push_back(base_object);
       collision_object.primitive_poses.push_back(base_object_pose);
 
-      // Cube meshe (.stl, columnts, rows)
+      // Cube mesh (.stl, columnts, rows)
       shape_msgs::msg::Mesh cube_mesh;
       shapes::ShapeMsg cube_mesh_msg;
       shapes::constructMsgFromShape(m, cube_mesh_msg);
@@ -105,9 +105,9 @@ namespace futama2_moveit_config
       collision_object.meshes[0] = cube_mesh;
       collision_object.mesh_poses.resize(1);
 
-      collision_object.mesh_poses[0].position.x = -0.7;
-      collision_object.mesh_poses[0].position.y = -0.5;
-      collision_object.mesh_poses[0].position.z = 0.1;
+      collision_object.mesh_poses[0].position.x = -1.0;
+      collision_object.mesh_poses[0].position.y = 0.0;
+      collision_object.mesh_poses[0].position.z = 0.0;
 
       collision_object.mesh_poses[0].orientation.w = 1.0;
       collision_object.mesh_poses[0].orientation.x = 0.0;
