@@ -16,12 +16,13 @@ import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Joy
 from cv_bridge import CvBridge
+from std_msgs.msg import Header
 from sensor_msgs.msg import Image
 import numpy as np
 import time
 from controller_manager_msgs.srv import SwitchController
-from geometry_msgs.msg import PoseStamped
-from nav_msgs.msg import Odometry
+from geometry_msgs.msg import Pose
+from nav_msgs.msg import Odometry, Path
 #from pathlib import Path
 #from object_inspection_pathfinding import Camera, solve_wmp, PathPlotter
 
@@ -29,18 +30,19 @@ from futama2_utils import moveit_funcs
 from rclpy.logging import get_logger
 from moveit.planning import MoveItPy
 
+from tf2_ros.buffer import Buffer
+from tf2_ros.transform_listener import TransformListener
+
+from geometry_msgs.msg import PoseStamped
+
 max_vel = 0.35                              # [m/s]
 min_depth_dist = 350                        # [mm]
 const_eq = max_vel/(min_depth_dist)         # [-], tested with 0.001
 depth_dist = 0                              # [mm]
 start_time = 0                              # [s]
 
-pose_origin = [-1.2055292081832886, -0.17412646114826202, 0.7930378317832947,
-               -0.18334272503852844, -1.076518492482137e-05, 0.9830490946769714, 2.7753067115554586e-05]
-pose_example1 = [0.13544854296682332-1.0, 0.1886757104549661, 0.6999989880790709, 
-                 0.012519619736820198, 0.9998432345501458, 0.01251961958055467, -0.00015675300911098444]
-pose_example2 = [0.1886757179055466-1.0, 0.5999989865889549, 0.2804438551266343, 
-                 -0.4404692968317776, -0.4404692968317776, 0.7366152965226876, 0.26338470347731235]
+pose_origin = (-1.2055292081832886, -0.17412646114826202, 0.7930378317832947,
+               -0.18334272503852844, -1.076518492482137e-05, 0.9830490946769714, 2.7753067115554586e-05)
 previous_pose = [0, 0, 0,
                  0, 0, 0, 0]
 
@@ -56,9 +58,21 @@ class AutoInsp(Node):
             Odometry, '/rtabmap/odom', self.robot_states_callback, 10)
         self.odom_sub  # prevent unused variable warning
 
-        # Publisher
-        #self.marker_pub = self.create_publisher()
+        # Subscriber: TF
+        #self.tf_buffer = Buffer()
+        #self.tf_listener = TransformListener(self.tf_buffer, self)
 
+        #from_frame_rel = 'base_link'
+        #to_frame_rel = 'object_link'
+        #t = self.tf_buffer.lookup_transform(
+        #    to_frame_rel,
+        #    from_frame_rel,
+        #    rclpy.time.Time())
+
+        # Publisher
+        self.path_pub = self.create_publisher(Path, 'path', 10)
+        self.path_pub # prevent unused variable warning
+  
         self.futama2 = MoveItPy(node_name="auto_insp")
         
         self.move_group = self.futama2.get_planning_component("front")
@@ -66,18 +80,36 @@ class AutoInsp(Node):
         self.logger = get_logger("moveit_py.pose_goal")
         self.logger.info("MoveItPy instance created")
 
-        
-        # TO DO -> define the origin position based on the first starting point of the planning scene 
-        #stl_file = Path("3d_cube.stl")  # using a cube as an example
-        #camera = Camera(30, 5, 10, 50, 1.5)
-        #path, orientations = solve_wmp(stl_file.absolute().resolve(), camera, 5, 3, False, True)
-        #path_plotter = PathPlotter(stl_file)
-        #path_plotter.plot_path(path, orientations)
+        self.path_msg = Path()
+        current_time = self.get_clock().now().to_msg()
+        self.path_msg.header = Header(frame_id="base_link", stamp=current_time)
+
+        self.path_poses_tuple = [pose_origin,(-0.016145400763403678, -1.0999990014901162, 0.17900748940026634, 0.39386246700844013, -0.39386246700844013, 0.8080135663928221, -0.19198643360717788), (0.07432726641042073, -0.027669960679839067, 1.1999989880790711, 0.8631250784721117, 0.3437153795061271, -0.13687464625030007, 0.3437152426316371), (1.0999989940395356, 0.07323824343380389, 0.15568264055700348, 7.027504675202831e-07, 0.9999999999996487, 4.570233080867851e-13, 4.570473147496338e-07), (-0.0022594261760940718, 1.099998986588955, 0.14449381438343087, -0.3237229985301906, -0.3237229985301906, 0.8810556655170242, 0.11894433448297581), (-1.0999989940395354, 0.07249259249029608, 0.14786869354756083, 0.9999999999996299, 7.402177812910198e-07, 4.38515014054426e-07, 4.385380947267745e-13)]
+        # the origin should be added manually to the list of positions every time you get new ones! (for now)
+        for i in range(1,len(self.path_poses_tuple)):
+            pose = self.path_poses_tuple[i]
+            new_tuple = list(pose)
+            new_tuple[0] += -1.0    # TO DO change position of the object based on the transformation
+            new_tuple[1] += 0.0
+            new_tuple[2] += 0.0
+            self.path_poses_tuple[i] = tuple(new_tuple)
+
+        for self.pose in self.path_poses_tuple:
+            self.pose_stamped = PoseStamped()
+            self.pose_stamped.header = Header(frame_id="base_link", stamp=current_time)
+            self.pose_stamped.pose.position.x = self.pose[0]        # it is shifted -1m in x because the 
+            self.pose_stamped.pose.position.y = self.pose[1]
+            self.pose_stamped.pose.position.z = self.pose[2]
+            self.pose_stamped.pose.orientation.x = self.pose[3]
+            self.pose_stamped.pose.orientation.y = self.pose[4]
+            self.pose_stamped.pose.orientation.z = self.pose[5]
+            self.pose_stamped.pose.orientation.w = self.pose[6]
+            self.path_msg.poses.append(self.pose_stamped)
 
         self.current_pose_msg = PoseStamped()
 
         time.sleep(5.0) # here is the key for letting the other modules load (octomap and urdf)
-
+        self.path_pub.publish(self.path_msg)    # show the path some seconds after the initialization
         self.auto_insp_mode()
 
     def robot_states_callback(self, msg):
@@ -114,10 +146,9 @@ class AutoInsp(Node):
         self.logger.info("PLANNING AND EXECUTING TO GIVEN POSE")
 
     def auto_insp_mode(self):
-        self.move_group_planner_and_executer(pose_example1)
-        time.sleep(2.0)
-        #self.move_group_planner_and_executer(pose_example2)
-        #time.sleep(2.0)
+        for i in self.path_poses_tuple:
+            self.move_group_planner_and_executer(i)
+            time.sleep(2.0)
         self.destroy_node()
         rclpy.shutdown()
 

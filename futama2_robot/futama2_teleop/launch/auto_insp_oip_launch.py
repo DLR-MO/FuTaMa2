@@ -147,6 +147,12 @@ def generate_launch_description():
         output="screen"
     )
 
+    tf_static_object = Node( 
+        package='tf2_ros', 
+        executable='static_transform_publisher', 
+        arguments=['-1.0', '0', '0', '0', '0', '0', 'base_link', 'object_link'], 
+        output='screen')
+
     # Python node to save images from the front camera's topic (TO DO save all cameras pics)
     foto_capture_node = Node(
         package="futama2_teleop",
@@ -242,6 +248,7 @@ def generate_launch_description():
         [
             # This specific order of the execution worked in real and mock robots,
             # event handlers were tried but not concluded, so for now, this sequence is functional:
+            tf_static_object,
             mode_cmd,
             camera_mdl_cmd,
             octomap_cmd,
