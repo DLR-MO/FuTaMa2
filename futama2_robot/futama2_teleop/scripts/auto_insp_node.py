@@ -13,6 +13,7 @@ Process Output -> State of the automatic inspection: movement of the robot, reac
 """
 
 import rclpy
+import rclpy.logging
 from rclpy.node import Node
 from sensor_msgs.msg import Joy
 from cv_bridge import CvBridge
@@ -35,82 +36,69 @@ from tf2_ros.transform_listener import TransformListener
 
 from geometry_msgs.msg import PoseStamped
 
-max_vel = 0.35                              # [m/s]
-min_depth_dist = 350                        # [mm]
-const_eq = max_vel/(min_depth_dist)         # [-], tested with 0.001
-depth_dist = 0                              # [mm]
-start_time = 0                              # [s]
 
-pose_origin = (-1.2055292081832886, -0.17412646114826202, 0.7930378317832947,
-               -0.18334272503852844, -1.076518492482137e-05, 0.9830490946769714, 2.7753067115554586e-05)
-previous_pose = [0, 0, 0,
-                 0, 0, 0, 0]
 
 class AutoInsp(Node):
     def __init__(self):
 
-        global start_time
-
         super().__init__('auto_insp')
 
         # Subscriber: Odometry for robot states, useful to compare msg poses with commanded goals
-        self.odom_sub = self.create_subscription(
-            Odometry, '/rtabmap/odom', self.robot_states_callback, 10)
-        self.odom_sub  # prevent unused variable warning
-
-        # Subscriber: TF
-        #self.tf_buffer = Buffer()
-        #self.tf_listener = TransformListener(self.tf_buffer, self)
-
-        #from_frame_rel = 'base_link'
-        #to_frame_rel = 'object_link'
-        #t = self.tf_buffer.lookup_transform(
-        #    to_frame_rel,
-        #    from_frame_rel,
-        #    rclpy.time.Time())
+        self.odom_sub = self.create_subscription(Odometry,
+                                                 '/rtabmap/odom',
+                                                 self.robot_states_callback,
+                                                 10)
 
         # Publisher
-        self.path_pub = self.create_publisher(Path, 'path', 10)
-        self.path_pub # prevent unused variable warning
-  
+        self.path_pub = self.create_publisher(Path,
+                                              'path',
+                                              10)
+
         self.futama2 = MoveItPy(node_name="auto_insp")
-        
-        self.move_group = self.futama2.get_planning_component("front")
+        self.move_group = self.futama2.get_planning_component('front')
         self.planning_scene_monitor = self.futama2.get_planning_scene_monitor()
-        self.logger = get_logger("moveit_py.pose_goal")
-        self.logger.info("MoveItPy instance created")
+        self.logger = get_logger('moveit_py.pose_goal')
+        self.logger.info('MoveItPy instance created')
 
-        self.path_msg = Path()
+        poses = [(0.34828265137358727, 0.04334721225735272, 0.09770813834758717, -3.5355338990360336e-07, -0.7071067798072067, 0.7071067825657115, 3.535533912828557e-07), (0.3307135540413395, 0.06215361945625533, 0.10120694284110104, -3.5355338990360336e-07, -0.7071067798072067, 0.7071067825657115, 3.535533912828557e-07), (0.30289350997919445, 0.08133009826091775, 0.10988117813610833, -3.5355338990360336e-07, -0.7071067798072067, 0.7071067825657115, 3.535533912828557e-07), (0.2647076220284396, 0.10304996094489774, 0.12319445782378577, -3.5355338990360336e-07, -0.7071067798072067, 0.7071067825657115, 3.535533912828557e-07), (0.19999899403953553, 0.12673302281609622, 0.09663136941287138, -3.5355338990360336e-07, -0.7071067798072067, 0.7071067825657115, 3.535533912828557e-07), (0.02499999850988395, 0.26083562983889563, 0.09285966407675905, -2.1648901405887332e-17, 2.1648901405887332e-17, 0.7071067811865475, -0.7071067811865475), (-0.010234209321916614, 0.29250096693927674, 0.11114165497564422, -2.1648901405887332e-17, 2.1648901405887332e-17, 0.7071067811865475, -0.7071067811865475), (0.023168887753034703, 0.26476245952917826, 0.1732333701402631, -2.1648901405887332e-17, 2.1648901405887332e-17, 0.7071067811865475, -0.7071067811865475), (0.0008931754187249718, 0.20913838088840572, 0.2337460887650202, -2.1648901405887332e-17, 2.1648901405887332e-17, 0.7071067811865475, -0.7071067811865475), (0.0, 0.08076680322098062, 0.37320305851213176, 0.707106781185973, 3.5355339063663785e-07, -0.7071067811866801, -7.071067811433822e-07), (-0.002651946768384376, -0.01709130239394043, 0.3777963650539413, 0.707106781185973, 3.5355339063663785e-07, -0.7071067811866801, -7.071067811433822e-07), (-0.19999899403953553, 0.04226438231972314, 0.196631422504984, 0.7071067825657116, 3.535533912828557e-07, 3.5355338990360336e-07, 0.7071067798072067), (-0.24222292240392146, 0.03861564325575525, 0.1631814324532903, 0.7071067825657116, 3.535533912828557e-07, 3.5355338990360336e-07, 0.7071067798072067), (-0.27643514923884205, 0.0317192356180758, 0.1291348646940886, 0.7071067825657116, 3.535533912828557e-07, 3.5355338990360336e-07, 0.7071067798072067), (-0.29833953760295995, 0.020026722429623563, 0.0924883958871602, 0.7071067825657116, 3.535533912828557e-07, 3.5355338990360336e-07, 0.7071067798072067), (-0.2910790591639439, 0.004107708209459295, 0.08910269406893434, 0.7071067825657116, 3.535533912828557e-07, 3.5355338990360336e-07, 0.7071067798072067), (-0.2487325880968339, -0.014128043573325172, 0.14268673358119063, 0.7071067825657116, 3.535533912828557e-07, 3.5355338990360336e-07, 0.7071067798072067), (-0.05201731422844941, -0.2115491256377624, 0.1355959165240221, 0.7071067811865475, 0.7071067811865475, 2.1648901405887332e-17, 2.1648901405887332e-17), (0.020457711779740553, -0.27057661006778805, 0.11653412176362321, 0.7071067811865475, 0.7071067811865475, 2.1648901405887332e-17, 2.1648901405887332e-17), (0.011722850374638027, -0.2893085808007223, 0.1020341592340844, 0.7071067811865475, 0.7071067811865475, 2.1648901405887332e-17, 2.1648901405887332e-17), (-0.006642708807921227, -0.3002029795477147, 0.09560412702187897, 0.7071067811865475, 0.7071067811865475, 2.1648901405887332e-17, 2.1648901405887332e-17)]
+        first_pose = (-1.2055292081832886, -0.17412646114826202, 0.7930378317832947, -0.18334272503852844, -1.076518492482137e-05, 0.9830490946769714, 2.7753067115554586e-05)
+        path_msg = self.to_path_msg(poses, first_pose)
+
+        time.sleep(5)
+
+        self.publish_path(path_msg)
+
+    def to_path_msg(self,
+                    path_points: list[tuple],
+                    first_pose: tuple) -> Path:
+        path_msg = Path()
         current_time = self.get_clock().now().to_msg()
-        self.path_msg.header = Header(frame_id="base_link", stamp=current_time)
+        path_msg.header = Header(frame_id='base_link', stamp=current_time)
 
-        self.path_poses_tuple = [pose_origin,(-0.016145400763403678, -1.0999990014901162, 0.17900748940026634, 0.39386246700844013, -0.39386246700844013, 0.8080135663928221, -0.19198643360717788), (0.07432726641042073, -0.027669960679839067, 1.1999989880790711, 0.8631250784721117, 0.3437153795061271, -0.13687464625030007, 0.3437152426316371), (1.0999989940395356, 0.07323824343380389, 0.15568264055700348, 7.027504675202831e-07, 0.9999999999996487, 4.570233080867851e-13, 4.570473147496338e-07), (-0.0022594261760940718, 1.099998986588955, 0.14449381438343087, -0.3237229985301906, -0.3237229985301906, 0.8810556655170242, 0.11894433448297581), (-1.0999989940395354, 0.07249259249029608, 0.14786869354756083, 0.9999999999996299, 7.402177812910198e-07, 4.38515014054426e-07, 4.385380947267745e-13)]
-        # the origin should be added manually to the list of positions every time you get new ones! (for now)
-        for i in range(1,len(self.path_poses_tuple)):
-            pose = self.path_poses_tuple[i]
+        path_poses_tuple = [first_pose, *path_points]
+
+        # change position of the object based on the transformation
+        for i, pose in enumerate(path_poses_tuple[1:]):
             new_tuple = list(pose)
-            new_tuple[0] += -1.0    # TO DO change position of the object based on the transformation
+            new_tuple[0] += -1.0
             new_tuple[1] += 0.0
             new_tuple[2] += 0.0
-            self.path_poses_tuple[i] = tuple(new_tuple)
+            path_poses_tuple[i] = tuple(new_tuple)
 
-        for self.pose in self.path_poses_tuple:
-            self.pose_stamped = PoseStamped()
-            self.pose_stamped.header = Header(frame_id="base_link", stamp=current_time)
-            self.pose_stamped.pose.position.x = self.pose[0]        # it is shifted -1m in x because the 
-            self.pose_stamped.pose.position.y = self.pose[1]
-            self.pose_stamped.pose.position.z = self.pose[2]
-            self.pose_stamped.pose.orientation.x = self.pose[3]
-            self.pose_stamped.pose.orientation.y = self.pose[4]
-            self.pose_stamped.pose.orientation.z = self.pose[5]
-            self.pose_stamped.pose.orientation.w = self.pose[6]
-            self.path_msg.poses.append(self.pose_stamped)
+        for pose in path_poses_tuple:
+            pose_stamped = PoseStamped()
+            pose_stamped.header = Header(frame_id='base_link',
+                                         stamp=current_time)
+            pose_stamped.pose.position.x = pose[0]
+            pose_stamped.pose.position.y = pose[1]
+            pose_stamped.pose.position.z = pose[2]
+            pose_stamped.pose.orientation.x = pose[3]
+            pose_stamped.pose.orientation.y = pose[4]
+            pose_stamped.pose.orientation.z = pose[5]
+            pose_stamped.pose.orientation.w = pose[6]
+            path_msg.poses.append(pose_stamped)
 
-        self.current_pose_msg = PoseStamped()
-
-        time.sleep(5.0) # here is the key for letting the other modules load (octomap and urdf)
-        self.path_pub.publish(self.path_msg)    # show the path some seconds after the initialization
-        self.auto_insp_mode()
+        return path_msg
 
     def robot_states_callback(self, msg):
         self.current_pose_msg.header.frame_id = msg.header.frame_id
@@ -125,32 +113,27 @@ class AutoInsp(Node):
         self.current_pose_msg.pose.orientation.z = msg.pose.pose.orientation.z
         self.current_pose_msg.pose.orientation.w = msg.pose.pose.orientation.w
 
-    def move_group_planner_and_executer(self, pose_cmd):
+    def move_group_planner_and_executer(self, pose: PoseStamped):
         #  set plan start state to current state
-        self.logger.info("PLANNING AND EXECUTING TO GIVEN POSE")
+        self.logger.info('PLANNING AND EXECUTING TO GIVEN POSE')
         self.move_group.set_start_state_to_current_state()
-        pose_goal = PoseStamped()
-        pose_goal.header.frame_id = "base_link"
-        pose_goal.pose.position.x = pose_cmd[0]
-        pose_goal.pose.position.y = pose_cmd[1]
-        pose_goal.pose.position.z = pose_cmd[2]
-        pose_goal.pose.orientation.x = pose_cmd[3]
-        pose_goal.pose.orientation.y = pose_cmd[4]
-        pose_goal.pose.orientation.z = pose_cmd[5]
-        pose_goal.pose.orientation.w = pose_cmd[6]
         self.move_group.set_goal_state(
-            pose_stamped_msg=pose_goal, pose_link="realsense_front_link")
+            pose_stamped_msg=pose, pose_link="realsense_front_link")
         # plan to goal
         moveit_funcs.plan_and_execute(
-            self.futama2, self.move_group, self.logger, sleep_time=0.5)
-        self.logger.info("PLANNING AND EXECUTING TO GIVEN POSE")
+            self.futama2,
+            self.move_group,
+            self.logger,
+            sleep_time=0.5)
 
-    def auto_insp_mode(self):
-        for i in self.path_poses_tuple:
+        self.logger.info('PLANNING AND EXECUTING TO GIVEN POSE')
+
+    def publish_path(self, path_msg: Path):
+        self.path_pub.publish(path_msg)
+
+        for i in path_msg.poses:
             self.move_group_planner_and_executer(i)
             time.sleep(2.0)
-        self.destroy_node()
-        rclpy.shutdown()
 
 def main(args=None):
     rclpy.init(args=args)
