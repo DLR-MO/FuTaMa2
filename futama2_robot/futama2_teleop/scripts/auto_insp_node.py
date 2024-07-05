@@ -21,6 +21,7 @@ from std_msgs.msg import Header
 from sensor_msgs.msg import Image
 import numpy as np
 import time
+from scipy.spatial.transform import Rotation as R
 from controller_manager_msgs.srv import SwitchController
 from geometry_msgs.msg import Pose
 from nav_msgs.msg import Odometry, Path
@@ -34,11 +35,30 @@ from moveit.planning import MoveItPy
 from tf2_ros.buffer import Buffer
 from tf2_ros.transform_listener import TransformListener
 
-from geometry_msgs.msg import PoseStamped
-
+from geometry_msgs.msg import PoseStamped, Quaternion
 
 
 class AutoInsp(Node):
+
+    T = 0.7071
+    possible_camera_poses = [
+        R.from_euler('XYZ', [0,   0, 0], degrees=True),  # Front
+        R.from_euler('XYZ', [90,  0, 0], degrees=True),  # 90°
+        R.from_euler('XYZ', [180, 0, 0], degrees=True),  # 180°
+        R.from_euler('XYZ', [270, 0, 0], degrees=True),  # 270°
+
+        R.from_euler('ZYX', [0,        90,  0], degrees=True),  # Top
+        R.from_euler('ZYX', [0,       270,  180], degrees=True),  # 180° (wrong)
+        R.from_euler('ZYX', [0,         0,  90], degrees=True),  # 90°
+        R.from_euler('ZYX', [-90,       0, -90], degrees=True),  # 270°
+
+        R.from_euler('ZYX', [0,       -90, 0], degrees=True),  # Bottom
+        R.from_euler('ZYX', [0,      90,   180], degrees=True),  # 180°
+        R.from_euler('ZYX', [-90,     0,   90], degrees=True),  # 90°
+        R.from_euler('ZYX', [90,      0,  -90], degrees=True),  # 270°
+    ]
+    reached_points = []
+
     def __init__(self):
 
         super().__init__('auto_insp')
@@ -53,6 +73,15 @@ class AutoInsp(Node):
         self.path_pub = self.create_publisher(Path,
                                               'path',
                                               10)
+        self.current_point_pub = self.create_publisher(PoseStamped,
+                                                        'point',
+                                                        100)
+        self.reached_point_pub = self.create_publisher(PoseStamped,
+                                                       'reached_point',
+                                                       100)
+        self.top_point_pub = self.create_publisher(PoseStamped,
+                                                    'top_point',
+                                                    100)
 
         self.futama2 = MoveItPy(node_name="auto_insp")
         self.move_group = self.futama2.get_planning_component('front')
@@ -80,9 +109,8 @@ class AutoInsp(Node):
         # change position of the object based on the transformation
         for i, pose in enumerate(path_poses_tuple[1:]):
             new_tuple = list(pose)
-            new_tuple[0] += -0.5
-            new_tuple[1] += -0.5
-            new_tuple[2] += 0.0
+            new_tuple[0] += -0.4
+            new_tuple[1] += -0.4
             path_poses_tuple[i] = tuple(new_tuple)
 
         for pose in path_poses_tuple:
@@ -101,39 +129,63 @@ class AutoInsp(Node):
         return path_msg
 
     def robot_states_callback(self, msg):
-        self.current_pose_msg.header.frame_id = msg.header.frame_id
-        self.current_pose_msg.header.stamp = msg.header.stamp
-
-        self.current_pose_msg.pose.position.x = msg.pose.pose.position.x
-        self.current_pose_msg.pose.position.y = msg.pose.pose.position.y
-        self.current_pose_msg.pose.position.z = msg.pose.pose.position.z
-
-        self.current_pose_msg.pose.orientation.x = msg.pose.pose.orientation.x
-        self.current_pose_msg.pose.orientation.y = msg.pose.pose.orientation.y
-        self.current_pose_msg.pose.orientation.z = msg.pose.pose.orientation.z
-        self.current_pose_msg.pose.orientation.w = msg.pose.pose.orientation.w
+        pass
 
     def move_group_planner_and_executer(self, pose: PoseStamped):
         #  set plan start state to current state
         self.logger.info('PLANNING AND EXECUTING TO GIVEN POSE')
         self.move_group.set_start_state_to_current_state()
-        self.move_group.set_goal_state(
-            pose_stamped_msg=pose, pose_link="realsense_front_link")
+        
         # plan to goal
-        moveit_funcs.plan_and_execute(
-            self.futama2,
-            self.move_group,
-            self.logger,
-            sleep_time=0.5)
+        base_quaternion = pose.pose.orientation
+        base_quaternion = R.from_quat(
+            np.array([base_quaternion.x, base_quaternion.y,
+                      base_quaternion.z, base_quaternion.w]))
 
+        reached = False
+        cameras = self.possible_camera_poses.copy()
+
+        while not reached and cameras:
+            camera = cameras.pop()
+
+            camera_rot = base_quaternion * camera
+
+            camera_quat = camera_rot.as_quat()
+
+            pose.pose.orientation = Quaternion(
+                x=camera_quat[0], y=camera_quat[1],
+                z=camera_quat[2], w=camera_quat[3])
+            self.move_group.set_goal_state(
+                pose_stamped_msg=pose, pose_link="realsense_front_link")
+
+            self.current_point_pub.publish(pose)
+
+            reached = moveit_funcs.plan_and_execute(
+                self.futama2,
+                self.move_group,
+                self.logger,
+                sleep_time=0.5)
+
+            if reached:
+                self.reached_point_pub.publish(pose)
+
+        self.reached_points.append(reached)
         self.logger.info('PLANNING AND EXECUTING TO GIVEN POSE')
 
     def publish_path(self, path_msg: Path):
         self.path_pub.publish(path_msg)
 
+        start_time = self.get_clock().now()
         for i in path_msg.poses:
             self.move_group_planner_and_executer(i)
-            time.sleep(2.0)
+
+        total_time = self.get_clock().now() - start_time
+        count_reached = self.reached_points.count(True)
+
+        self.logger.info(f'FINISHED PATH, reached {count_reached} \
+                         of {len(path_msg.poses)} points in \
+                         {total_time} seconds')
+        self.logger.info(f'{self.reached_points}')
 
 def main(args=None):
     rclpy.init(args=args)

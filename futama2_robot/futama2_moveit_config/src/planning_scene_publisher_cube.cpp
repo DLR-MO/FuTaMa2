@@ -86,11 +86,11 @@ namespace futama2_moveit_config
       // Base BOX for object
       shape_msgs::msg::SolidPrimitive base_object;
       base_object.type = base_object.BOX;
-      base_object.dimensions = {0.5, 0.5, 1.0};
+      base_object.dimensions = {0.5, 0.5, 1};
 
       geometry_msgs::msg::Pose base_object_pose;
-      base_object_pose.position.x = -0.5;
-      base_object_pose.position.y = -0.5;
+      base_object_pose.position.x = -0.4;
+      base_object_pose.position.y = -0.4;
       base_object_pose.position.z = -0.5;
 
       collision_object.primitives.push_back(base_object);
@@ -105,9 +105,9 @@ namespace futama2_moveit_config
       collision_object.meshes[0] = cube_mesh;
       collision_object.mesh_poses.resize(1);
 
-      collision_object.mesh_poses[0].position.x = -0.5;
-      collision_object.mesh_poses[0].position.y = -0.5;
-      collision_object.mesh_poses[0].position.z = 0.0;
+      collision_object.mesh_poses[0].position.x = -0.4;
+      collision_object.mesh_poses[0].position.y = -0.4;
+      collision_object.mesh_poses[0].position.z = 0;
 
       collision_object.mesh_poses[0].orientation.w = 1.0;
       collision_object.mesh_poses[0].orientation.x = 0.0;
