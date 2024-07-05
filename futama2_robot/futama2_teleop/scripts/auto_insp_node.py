@@ -164,9 +164,13 @@ class AutoInsp(Node):
                 self.futama2,
                 self.move_group,
                 self.logger,
-                sleep_time=0.5)
+                sleep_time=0)
 
             if reached:
+                # resort the cameras, last used as first
+                self.possible_camera_poses.remove(camera)
+                self.possible_camera_poses.append(camera)
+                # publish reached point
                 self.reached_point_pub.publish(pose)
 
         self.reached_points.append(reached)
@@ -184,7 +188,7 @@ class AutoInsp(Node):
 
         self.logger.info(f'FINISHED PATH, reached {count_reached} \
                          of {len(path_msg.poses)} points in \
-                         {total_time} seconds')
+                         {total_time}')
         self.logger.info(f'{self.reached_points}')
 
 def main(args=None):
