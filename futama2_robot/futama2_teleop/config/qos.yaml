@@ -1,0 +1,5 @@
+<topic name>:
+  history: keep_last
+  depth: 5
+  reliability: best_effort
+  durability: volatile
