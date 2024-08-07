@@ -107,7 +107,7 @@ install(PROGRAMS
   scripts/odometry_node.py
   scripts/foto_capture_node.py
   scripts/auto_insp_demo_node.py
-  scripts/auto_insp_node.py
+  scripts/auto_insp_oip_node.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
