@@ -38,6 +38,7 @@ class AutoInsp(Node):
     possible_camera_poses = CAMERA_POSES
 
     def __init__(self):
+        self.arrival_times = []
 
         super().__init__('auto_insp')
 
@@ -128,6 +129,7 @@ class AutoInsp(Node):
                 sleep_time=0)
 
             if reached:
+                self.arrival_times.append(self.get_clock().now())
                 # resort the cameras, last used as first
                 self.possible_camera_poses.remove(camera)
                 self.possible_camera_poses.insert(0, camera)
@@ -152,6 +154,7 @@ class AutoInsp(Node):
                          of {len(path_msg.poses)} points in \
                          {total_time}')
         self.logger.info(f'{self.reached_points}')
+        self.logger.info(f'{self.arrival_times}')
 
 def main(args=None):
     rclpy.init(args=args)
