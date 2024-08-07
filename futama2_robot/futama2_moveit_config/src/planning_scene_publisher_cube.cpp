@@ -51,7 +51,7 @@ namespace futama2_moveit_config
       moveit_msgs::msg::CollisionObject collision_object;
       Eigen::Vector3d scale(0.001, 0.001, 0.001);
       shapes::Mesh * m = shapes::createMeshFromResource(
-        "package://futama2_description/meshes/collision/antenne.stl",scale);
+        "package://futama2_description/meshes/collision/dlr_robo_test.stl",scale);
 
       collision_object.header.frame_id = "world";
       collision_object.id = "box";
