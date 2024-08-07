@@ -346,7 +346,7 @@ def generate_launch_description():
                                 load_composable_nodes,
                                 move_group_node,
                                 move_group_with_octomap_node,]),
-            TimerAction(period=8.0,
+            TimerAction(period=5.0,
                         actions=[
                                 tf_static_publisher1,
                                 tf_static_publisher2,
