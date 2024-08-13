@@ -22,8 +22,8 @@ def get_poses() -> list[tuple]:
 CAMERA_POSES = [
     (R.from_euler('XYZ', [0,   0, 0], degrees=True),            [0, 0, 0]),  # Front
     (R.from_euler('XYZ', [180, 0, 0], degrees=True),            [0, 0, 0]),   # 180°
-    (R.from_euler('ZYX', [0,        90,  0], degrees=True),     [-0.02, -0.04]),   # Top
-    (R.from_euler('ZYX', [0,       270,  180], degrees=True),   [-0.02, +0.04]),   # 180°
+    #(R.from_euler('ZYX', [0,        90,  0], degrees=True),     [-0.02, -0.04]),   # Top
+    #(R.from_euler('ZYX', [0,       270,  180], degrees=True),   [-0.02, +0.04]),   # 180°
     (R.from_euler('ZYX', [0,       -90, 0], degrees=True),      [-0.02, +0.04]),  # Bottom
     (R.from_euler('ZYX', [0,      90,   180], degrees=True),    [-0.02, -0.04]),  # 180°
 ]

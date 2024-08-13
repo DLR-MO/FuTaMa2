@@ -83,8 +83,6 @@ class AutoInsp(Node):
 
         self.publish_path(path_msg)
 
-    
-
     def to_path_msg(self,
                     path_poses_tuple: list[tuple]) -> Path:
         path_msg = Path()
@@ -94,9 +92,21 @@ class AutoInsp(Node):
         # change position of the object based on the transformation
         for i, pose in enumerate(path_poses_tuple[1:]):
             new_tuple = list(pose)
-            new_tuple[0] += -0.4
-            new_tuple[1] += -0.4
-            path_poses_tuple[i] = tuple(new_tuple)
+            rotation_mat = R.from_euler('z', [180], True)
+
+            position = rotation_mat.apply(new_tuple[:3])
+            position = position + np.array([- 0.698 + 0.15, 1.01 - 0.14, 0.098])
+            position = position.flatten().tolist()
+
+            orientation = R.from_quat(new_tuple[3:])
+            new_orientation = rotation_mat * orientation
+            new_orientation = new_orientation.as_quat().flatten().tolist()
+
+            assert len(position) == 3, f'Position needs length of 3 but looks like {position}'
+            assert len(new_orientation) == 4, f'Orientation needs a length of 3, but looks like {new_orientation}'
+            pose = position + new_orientation
+            assert len(pose) == 7, f"Pose had a length of {len(pose)}, it cannot be a pose"
+            path_poses_tuple[i] = tuple(pose)
 
         path_msg.poses = [tuple_to_pose(pose_tuple, current_time)
                           for pose_tuple in path_poses_tuple]
@@ -110,14 +120,14 @@ class AutoInsp(Node):
         #  set plan start state to current state
         self.logger.info('PLANNING AND EXECUTING TO GIVEN POSE')
         self.move_group.set_start_state_to_current_state()
-        
+
         # plan to goal
         self.cam_pose_pub.publish(pose)
         cameras = self.possible_camera_poses.copy()
 
         for camera, cam_pose in zip(cameras, alternative_poses(pose, cameras)):
             self.logger.info(f'CAMERA POSE: {camera}')
-            
+
             self.move_group.set_goal_state(
                 pose_stamped_msg=cam_pose, pose_link='realsense_front_link')
             self.current_point_pub.publish(cam_pose)
