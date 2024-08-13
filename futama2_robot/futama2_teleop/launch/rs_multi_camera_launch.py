@@ -21,8 +21,7 @@
 # command line example:
 # ros2 launch realsense2_camera rs_multi_camera_launch.py camera_name1:=D400 device_type2:=l5. device_type1:=d4..
 
-"""Launch realsense2_camera node for two devices."""
-import rs_launch
+"""Launch realsense2_camera node."""
 import copy
 from launch import LaunchDescription, LaunchContext
 import launch_ros.actions
@@ -32,20 +31,16 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 import sys
 import pathlib
 sys.path.append(str(pathlib.Path(__file__).parent.absolute()))
+import rs_launch
 
 local_parameters = [{'name': 'camera_name1', 'default': 'camera1', 'description': 'camera1 unique name'},
-                    {'name': 'camera_name2', 'default': 'camera2',
-                        'description': 'camera2 unique name'},
-                    {'name': 'camera_namespace1', 'default': 'camera1',
-                        'description': 'camera1 namespace'},
-                    {'name': 'camera_namespace2', 'default': 'camera2',
-                        'description': 'camera2 namespace'},
+                    {'name': 'camera_name2', 'default': 'camera2', 'description': 'camera2 unique name'},
+                    {'name': 'camera_namespace1', 'default': 'camera1', 'description': 'camera1 namespace'},
+                    {'name': 'camera_namespace2', 'default': 'camera2', 'description': 'camera2 namespace'},
                     ]
-
 
 def set_configurable_parameters(local_params):
     return dict([(param['original_name'], LaunchConfiguration(param['name'])) for param in local_params])
-
 
 def duplicate_params(general_params, posix):
     local_params = copy.deepcopy(general_params)
@@ -54,18 +49,16 @@ def duplicate_params(general_params, posix):
         param['name'] += posix
     return local_params
 
-
-def launch_static_transform_publisher_node(context: LaunchContext):
+def launch_static_transform_publisher_node(context : LaunchContext):
     # dummy static transformation from camera1 to camera2
     node = launch_ros.actions.Node(
-        package="tf2_ros",
-        executable="static_transform_publisher",
-        arguments=["0", "0", "0", "0", "0", "0",
-                   context.launch_configurations['camera_name1'] + "_link",
-                   context.launch_configurations['camera_name2'] + "_link"]
+            package = "tf2_ros",
+            executable = "static_transform_publisher",
+            arguments = ["0", "0", "0", "0", "0", "0",
+                          context.launch_configurations['camera_name1'] + "_link",
+                          context.launch_configurations['camera_name2'] + "_link"]
     )
     return [node]
-
 
 def generate_launch_description():
     params1 = duplicate_params(rs_launch.configurable_parameters, '1')
@@ -75,11 +68,11 @@ def generate_launch_description():
         rs_launch.declare_configurable_parameters(params1) +
         rs_launch.declare_configurable_parameters(params2) +
         [
-            OpaqueFunction(function=rs_launch.launch_setup,
-                           kwargs={'params': set_configurable_parameters(params1),
-                                   'param_name_suffix': '1'}),
-            OpaqueFunction(function=rs_launch.launch_setup,
-                           kwargs={'params': set_configurable_parameters(params2),
-                                   'param_name_suffix': '2'}),
-            OpaqueFunction(function=launch_static_transform_publisher_node)
-        ])
+        OpaqueFunction(function=rs_launch.launch_setup,
+                       kwargs = {'params'           : set_configurable_parameters(params1),
+                                 'param_name_suffix': '1'}),
+        OpaqueFunction(function=rs_launch.launch_setup,
+                       kwargs = {'params'           : set_configurable_parameters(params2),
+                                 'param_name_suffix': '2'}),
+        OpaqueFunction(function=launch_static_transform_publisher_node)
+    ])

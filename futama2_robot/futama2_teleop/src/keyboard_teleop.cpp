@@ -84,7 +84,7 @@ namespace futama2_teleop
       base_frame_ = declare_parameter<std::string>("base_frame", "base_link");
       ee_frame_ = declare_parameter<std::string>("ee_frame", "realsense_center_link");
       frame_to_publish_ = base_frame_;
-      control_mode = "T";           // starts in trajectory mode
+      control_mode = "";            // starts in unknown state
       previous_msg_button_left = 0; // to help getting just the button change (pull-up) and not full-time state
       previous_msg_button_left = 0; // to help getting just the button change (pull-up) and not full-time state
       button_left_counter = 1;      // Joints: 1=shoulder_pan, 2=shoulder_lift, 3=elbow, 4= wrist_1, 5=wrist_2, 6=wrist_3
@@ -98,6 +98,30 @@ namespace futama2_teleop
       twist_pub_ =
           create_publisher<geometry_msgs::msg::TwistStamped>("/servo_node/delta_twist_cmds", 10);
       joint_pub_ = create_publisher<control_msgs::msg::JointJog>("/servo_node/delta_joint_cmds", 10);
+
+      servo_type_client_ =
+          create_client<moveit_msgs::srv::ServoCommandType>("/servo_node/switch_command_type");
+      if (!servo_type_client_->wait_for_service(std::chrono::seconds(5)))
+      {
+        RCLCPP_WARN(
+            get_logger(), "Could not connect to servo_node. Will try again with indefinite timeout.");
+        servo_type_client_->wait_for_service();
+      }
+      RCLCPP_INFO(get_logger(), "Connected to servo_node.");
+
+      controller_type_client_ = create_client<controller_manager_msgs::srv::SwitchController>(
+          "controller_manager/switch_controller");
+      if (!controller_type_client_->wait_for_service(std::chrono::seconds(5)))
+      {
+        RCLCPP_WARN(
+            get_logger(),
+            "Could not connect to controller_manager. Will try again with indefinite timeout.");
+        controller_type_client_->wait_for_service();
+      }
+      RCLCPP_INFO(get_logger(), "Connected to controller_manager.");
+
+      // make sure we start in trajectory mode
+      switch_to_trajectory_mode();
 
       key_thread_ = new std::thread([this]
                                     { quit(keyLoop()); });
@@ -173,27 +197,6 @@ namespace futama2_teleop
       publish_twist = false;
       publish_joint = false;
 
-      servo_type_client_ =
-          create_client<moveit_msgs::srv::ServoCommandType>("/servo_node/switch_command_type");
-      if (!servo_type_client_->wait_for_service(std::chrono::seconds(5)))
-      {
-        RCLCPP_WARN(
-            get_logger(), "Could not connect to servo_node. Will try again with indefinite timeout.");
-        servo_type_client_->wait_for_service();
-      }
-      RCLCPP_INFO(get_logger(), "Connected to servo_node.");
-
-      controller_type_client_ = create_client<controller_manager_msgs::srv::SwitchController>(
-          "controller_manager/switch_controller");
-      if (!controller_type_client_->wait_for_service(std::chrono::seconds(5)))
-      {
-        RCLCPP_WARN(
-            get_logger(),
-            "Could not connect to controller_manager. Will try again with indefinite timeout.");
-        controller_type_client_->wait_for_service();
-      }
-      RCLCPP_INFO(get_logger(), "Connected to controller_manager.");
-
       puts("Reading from keyboard (THE COMMANDS WILL BE CHANGED IN THE FUTURE)");
       puts("---------------------------");
       puts("Use 'C' to go into Cartesian mode and 'J' to go into Joint mode.");
@@ -244,31 +247,37 @@ namespace futama2_teleop
           break;
         case KEYCODE_LEFT:
           RCLCPP_DEBUG(get_logger(), "LEFT");
+          keyboard_cmd_flag = true;
           twist_msg->twist.linear.y = -1.0;
           publish_twist = true;
           break;
         case KEYCODE_RIGHT:
           RCLCPP_DEBUG(get_logger(), "RIGHT");
+          keyboard_cmd_flag = true;
           twist_msg->twist.linear.y = 1.0;
           publish_twist = true;
           break;
         case KEYCODE_UP:
           RCLCPP_DEBUG(get_logger(), "UP");
+          keyboard_cmd_flag = true;
           twist_msg->twist.linear.x = 1.0;
           publish_twist = true;
           break;
         case KEYCODE_DOWN:
           RCLCPP_DEBUG(get_logger(), "DOWN");
+          keyboard_cmd_flag = true;
           twist_msg->twist.linear.x = -1.0;
           publish_twist = true;
           break;
         case KEYCODE_PERIOD:
           RCLCPP_DEBUG(get_logger(), "PERIOD");
+          keyboard_cmd_flag = true;
           twist_msg->twist.linear.z = -1.0;
           publish_twist = true;
           break;
         case KEYCODE_SEMICOLON:
           RCLCPP_DEBUG(get_logger(), "SEMICOLON");
+          keyboard_cmd_flag = true;
           twist_msg->twist.linear.z = 1.0;
           publish_twist = true;
           break;

@@ -260,16 +260,19 @@ Steps:
 
 In order to make a 3D reconstruction of the inspected object following the manual or automated inspection [experiments](#robot-usage), one requires the use a [rosbag](https://docs.ros.org/en/rolling/Tutorials/Beginner-CLI-Tools/Recording-And-Playing-Back-Data/Recording-And-Playing-Back-Data.html) with:
 
-`ros2 bag record /camera/camera/color/image_rect_raw /camera/camera/depth/color/points /camera/camera/depth/image_rect_raw /camera/camera/color/camera_info \
-  /camera1/color/image_rect_raw /camera1/depth/color/points /camera1/depth/image_rect_raw /camera1/color/camera_info \
-  /camera2/color/image_rect_raw /camera2/depth/color/points /camera2/depth/image_rect_raw /camera2/color/camera_info \
-  /spacenav/twist /tf /tf_static /joy /spacenav/joy /rtabmap/odom\
-  /monitored_planning_scene /robot_description /display_planned_path`
+`ros2 bag record --storage-config-file /home/rar/git/FuTaMa2/futama2_robot/futama2_teleop/config/mcap_writer_options1.yaml \
+  --qos-profile-overrides-path=/home/rar/git/FuTaMa2/futama2_robot/futama2_teleop/config/qos.yaml  \
+  --max-cache-size 1048576000 \
+  /camera/camera/color/image_rect_raw /camera/camera/depth/color/points /camera/camera/depth/image_rect_raw /camera/camera/color/camera_info \
+  /camera1/camera1/color/image_rect_raw /camera1/camera1/depth/color/points /camera1/camera1/depth/image_rect_raw /camera1/camera1/color/camera_info \
+  /camera2/camera2/color/image_rect_raw /camera2/camera2/depth/color/points /camera2/camera2/depth/image_rect_raw /camera2/camera2/color/camera_info \
+  /tf /tf_static \
+  /monitored_planning_scene /robot_description`
 
 If only one camera is required, simply do:
 
 `ros2 bag record /camera/camera/color/image_rect_raw /camera/camera/depth/color/points /camera/camera/depth/image_rect_raw /camera/camera/color/camera_info \
-  /spacenav/twist /tf /tf_static /joy /spacenav/joy /rtabmap/odom\
+  /tf /tf_static\
   /monitored_planning_scene /robot_description /display_planned_path`
 
 (TODO add the recording of the /planning_scene, currently it doesn't manage the Queue somehow)

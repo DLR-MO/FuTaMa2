@@ -47,12 +47,14 @@ def generate_launch_description():
     multicam_cmd = DeclareLaunchArgument(
         "multicam",
         description="Are you using the three cameras?",
-        default_value="false",
+        choices=["false", "true"],
+        default_value='false',
     )
     spacemouse = LaunchConfiguration("spacemouse")
     spacemouse_cmd = DeclareLaunchArgument(
         "spacemouse",
         description="Is the spacemouse available?",
+        choices=["false", "true"],
         default_value='false',
     )
     insp_mode = LaunchConfiguration("insp_mode")
@@ -134,10 +136,10 @@ def generate_launch_description():
         parameters=move_group_params,
     )
 
-    auto_insp_node = Node(
-        name="auto_insp",
+    auto_insp_demo_node = Node(
+        name="auto_insp_demo",
         package="futama2_teleop",
-        executable="auto_insp_node.py",
+        executable="auto_insp_demo_node.py",
         output="both",
         parameters=move_group_params,
         condition=IfCondition(EqualsSubstitution(insp_mode, "automatic")),
@@ -256,9 +258,11 @@ def generate_launch_description():
         launch_arguments={
             "pointcloud.enable": "true",
             "align_depth.enable": "true",
+            #"depth_module.enable_auto_exposure": "true",
             "device_type": camera_mdl,
             "serial_no": "_128422271521",
-            "depth_module.profile": "1280x720x15"
+            "depth_module.profile": "1280x720x30",
+            "rgb_camera.profile": "1280x720x30",
         }.items(),
         condition=IfCondition(EqualsSubstitution(camera_mdl, "d405")),
     )
@@ -272,8 +276,10 @@ def generate_launch_description():
         launch_arguments={
             "pointcloud.enable": "true",
             "align_depth.enable": "true",
+            #"depth_module.enable_auto_exposure": "true",
             "device_type": camera_mdl,
-            "depth_module.profile": "1280x720x15"
+                        "depth_module.profile": "1280x720x30",
+            "rgb_camera.profile": "1280x720x30",
         }.items(),
         condition=IfCondition(EqualsSubstitution(camera_mdl, "d435i")),
     )
@@ -287,9 +293,13 @@ def generate_launch_description():
         launch_arguments={
             "pointcloud.enable1": "true",
             "pointcloud.enable2": "true",
-            # "align_depth": "true",
+            #"align_depth": "true",
             "serial_no1": "_128422272518",
             "serial_no2": "_128422272647",
+            "depth_module.profile1": "1280x720x30",
+            "rgb_camera.profile1": "1280x720x30",
+            "depth_module.profile2": "1280x720x30",
+            "rgb_camera.profile2": "1280x720x30",
         }.items(),
         condition=IfCondition(EqualsSubstitution(multicam, "true")),
     )
@@ -316,13 +326,18 @@ def generate_launch_description():
             spacemouse_cmd,
             octomap_cmd,
             robot_driver_cmd,
+<<<<<<< HEAD
             #auto_insp_node,
+=======
+            auto_insp_demo_node,
+>>>>>>> main
             rs_launch,rs_launch_d435i,rs_multi_camera_launch,
             foto_capture_node,
             odometry_node,
             rviz_node,
             TimerAction(period=2.0,
-                        actions=[load_composable_nodes,
+                        actions=[
+                                load_composable_nodes,
                                 move_group_node,
                                 move_group_with_octomap_node,]),
         ]
