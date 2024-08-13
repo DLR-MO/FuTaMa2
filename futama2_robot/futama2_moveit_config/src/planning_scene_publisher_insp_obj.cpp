@@ -28,11 +28,11 @@
 
 namespace futama2_moveit_config
 {
-  class PlanningScenePublisherCube : public rclcpp::Node
+  class PlanningScenePublisherInspObj : public rclcpp::Node
   {
   public:
-    PlanningScenePublisherCube(const rclcpp::NodeOptions &options)
-        : Node("planning_scene_publisher", options)
+    PlanningScenePublisherInspObj(const rclcpp::NodeOptions &options)
+        : Node("planning_scene_publisher_insp_obj", options)
     {
       this->declare_parameter("mode", rclcpp::PARAMETER_STRING);
 
@@ -163,7 +163,7 @@ namespace futama2_moveit_config
       } });
     }
 
-    ~PlanningScenePublisherCube() override
+    ~PlanningScenePublisherInspObj() override
     {
       if (collision_pub_thread_.joinable())
         collision_pub_thread_.join();
@@ -179,4 +179,4 @@ namespace futama2_moveit_config
 
 // Register the component with class_loader
 #include <rclcpp_components/register_node_macro.hpp>
-RCLCPP_COMPONENTS_REGISTER_NODE(futama2_moveit_config::PlanningScenePublisherCube)
+RCLCPP_COMPONENTS_REGISTER_NODE(futama2_moveit_config::PlanningScenePublisherInspObj)

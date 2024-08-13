@@ -257,12 +257,12 @@ def generate_launch_description():
         ),
         launch_arguments={
             "pointcloud.enable": "true",
-            "align_depth.enable": "true",
+            #"align_depth.enable": "true",
             #"depth_module.enable_auto_exposure": "true",
             "device_type": camera_mdl,
             "serial_no": "_128422271521",
-            "depth_module.profile": "1280x720x30",
-            "rgb_camera.profile": "1280x720x30",
+            #"depth_module.profile": "1280x720x15",
+            #"rgb_camera.profile": "1280x720x15",
         }.items(),
         condition=IfCondition(EqualsSubstitution(camera_mdl, "d405")),
     )
@@ -275,11 +275,11 @@ def generate_launch_description():
         ),
         launch_arguments={
             "pointcloud.enable": "true",
-            "align_depth.enable": "true",
+            #"align_depth.enable": "true",
             #"depth_module.enable_auto_exposure": "true",
             "device_type": camera_mdl,
-                        "depth_module.profile": "1280x720x30",
-            "rgb_camera.profile": "1280x720x30",
+            #"depth_module.profile": "1280x720x15",
+            #"rgb_camera.profile": "1280x720x15",
         }.items(),
         condition=IfCondition(EqualsSubstitution(camera_mdl, "d435i")),
     )
@@ -296,10 +296,10 @@ def generate_launch_description():
             #"align_depth": "true",
             "serial_no1": "_128422272518",
             "serial_no2": "_128422272647",
-            "depth_module.profile1": "1280x720x30",
-            "rgb_camera.profile1": "1280x720x30",
-            "depth_module.profile2": "1280x720x30",
-            "rgb_camera.profile2": "1280x720x30",
+            #"depth_module.profile1": "1280x720x15",
+            #"rgb_camera.profile1": "1280x720x15",
+            #"depth_module.profile2": "1280x720x15",
+            #"rgb_camera.profile2": "1280x720x15",
         }.items(),
         condition=IfCondition(EqualsSubstitution(multicam, "true")),
     )
@@ -326,14 +326,10 @@ def generate_launch_description():
             spacemouse_cmd,
             octomap_cmd,
             robot_driver_cmd,
-<<<<<<< HEAD
-            #auto_insp_node,
-=======
             auto_insp_demo_node,
->>>>>>> main
-            rs_launch,rs_launch_d435i,rs_multi_camera_launch,
-            foto_capture_node,
-            odometry_node,
+            rs_launch,#rs_launch_d435i,rs_multi_camera_launch,
+            #foto_capture_node,
+            #odometry_node,
             rviz_node,
             TimerAction(period=2.0,
                         actions=[

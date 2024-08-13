@@ -122,10 +122,10 @@ def generate_launch_description():
         parameters=move_group_params,
     )
 
-    auto_insp_node = Node(
-        name="auto_insp",
+    auto_insp_oip_node = Node(
+        name="auto_insp_oip",
         package="futama2_teleop",
-        executable="auto_insp_node.py",
+        executable="auto_insp_oip_node.py",
         output="both",
         parameters=move_group_params,
     )
@@ -193,7 +193,7 @@ def generate_launch_description():
             # For publishing the wing and the base box
             launch_ros.descriptions.ComposableNode(
                 package="futama2_moveit_config",
-                plugin="futama2_moveit_config::PlanningScenePublisherCube",
+                plugin="futama2_moveit_config::PlanningScenePublisherInspObj",
                 name="planning_scene_publisher",
                 parameters=[{"mode": mode}
                             #"use_sim_time": EqualsSubstitution(mode, "sim"),
@@ -264,7 +264,7 @@ def generate_launch_description():
             octomap_cmd,
             multicam_cmd,
             robot_driver_cmd,
-            auto_insp_node,
+            auto_insp_oip_node,
             rs_launch,rs_multi_camera_launch,
             foto_capture_node,
             odometry_node,
