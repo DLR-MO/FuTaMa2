@@ -177,16 +177,6 @@ def generate_launch_description():
         parameters=[{"insp_mode": insp_mode}]
     )
 
-    tf_static_publisher1 = Node(package = "tf2_ros", 
-        executable = "static_transform_publisher",
-        arguments = ["0.04", "0.0", "0.0", "0.0", "0.0", "0.0", "realsense_center_link", "camera_link"])
-    tf_static_publisher2 = Node(package = "tf2_ros", 
-        executable = "static_transform_publisher",
-        arguments = ["0.0", "0.0", "0.02", "0.0", "-1.5708", "1.5708", "realsense_center_link", "camera1_link"])
-    tf_static_publisher3 = Node(package = "tf2_ros", 
-        executable = "static_transform_publisher",
-        arguments = ["0.0", "0.0", "-0.02", "0.0", "1.5708", "1.5708", "realsense_center_link", "camera2_link"])
-
     servo_params = {"moveit_servo": load_yaml(
         "futama2_teleop", "config/futama2_ur_servo.yaml")}
 
@@ -346,10 +336,5 @@ def generate_launch_description():
                                 load_composable_nodes,
                                 move_group_node,
                                 move_group_with_octomap_node,]),
-            TimerAction(period=5.0,
-                        actions=[
-                                tf_static_publisher1,
-                                tf_static_publisher2,
-                                tf_static_publisher3,]),
         ]
     )
