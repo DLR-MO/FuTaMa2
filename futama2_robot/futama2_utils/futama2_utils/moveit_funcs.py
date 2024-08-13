@@ -15,7 +15,7 @@ def plan_and_execute(
     single_plan_parameters=None,
     multi_plan_parameters=None,
     sleep_time=0.0,
-):
+) -> bool:
     """Helper function to plan and execute a motion."""
     # plan to goal
     # self.logger.info("Planning trajectory")
@@ -35,7 +35,8 @@ def plan_and_execute(
         # logger.info("Executing plan")
         robot_trajectory = plan_result.trajectory
         robot.execute(robot_trajectory, controllers=[])
+        time.sleep(sleep_time)
+        return True
     else:
         logger.error("Planning failed")
-
-    time.sleep(sleep_time)
+        return False

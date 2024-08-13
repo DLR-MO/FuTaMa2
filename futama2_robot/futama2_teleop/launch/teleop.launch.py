@@ -326,7 +326,11 @@ def generate_launch_description():
             spacemouse_cmd,
             octomap_cmd,
             robot_driver_cmd,
+<<<<<<< HEAD
+            #auto_insp_node,
+=======
             auto_insp_demo_node,
+>>>>>>> main
             rs_launch,rs_launch_d435i,rs_multi_camera_launch,
             foto_capture_node,
             odometry_node,

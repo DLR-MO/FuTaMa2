@@ -47,14 +47,62 @@ namespace futama2_moveit_config
       // Load the collision scene asynchronously
       collision_pub_thread_ = std::thread([this]()
                                           {
-      // Create collision object, in the way of servoing
+      // Create collision object wing, in the way of servoing
       moveit_msgs::msg::CollisionObject collision_object;
-      Eigen::Vector3d scale(1.0,1.0,1.0);
-      shapes::Mesh * m = shapes::createMeshFromResource(
-        "package://futama2_description/meshes/collision/cube.stl",scale);
+      Eigen::Vector3d scale_wing(1.0, 1.0, 1.0);
+      shapes::Mesh * m_wing = shapes::createMeshFromResource(
+        "package://futama2_description/meshes/collision/GOM_Wing_1_hyperreduced.stl",scale_wing);
 
       collision_object.header.frame_id = "world";
       collision_object.id = "box";
+
+      // Wing mesh (.stl, columnts, rows)
+      shape_msgs::msg::Mesh wing_mesh;
+      shapes::ShapeMsg wing_mesh_msg;
+      shapes::constructMsgFromShape(m_wing, wing_mesh_msg);
+      wing_mesh = boost::get<shape_msgs::msg::Mesh>(wing_mesh_msg);
+      collision_object.meshes.resize(2);
+      collision_object.meshes[0] = wing_mesh;
+      collision_object.mesh_poses.resize(2);
+      collision_object.mesh_poses[0].position.x = -0.30 - 0.15;
+      collision_object.mesh_poses[0].position.y = -1.6 - 0.14;
+      collision_object.mesh_poses[0].position.z = -0.35;
+      collision_object.mesh_poses[0].orientation.w = 0.0;
+      collision_object.mesh_poses[0].orientation.x = 0.0;
+      collision_object.mesh_poses[0].orientation.y = 0.48;
+      collision_object.mesh_poses[0].orientation.z = 0.88;
+
+      // Push meshes
+      collision_object.meshes.push_back(wing_mesh);
+      collision_object.mesh_poses.push_back(collision_object.mesh_poses[0]);
+    
+      collision_object.operation = collision_object.ADD;
+
+      // Create inspection object, in the way of servoing
+      Eigen::Vector3d scale_inspection_object(1 , 1, 1);
+      shapes::Mesh * m_inspection_object = shapes::createMeshFromResource(
+        "package://futama2_description/meshes/collision/dlr_robo_test.stl",scale_inspection_object);
+
+      // Obstacle mesh (.stl, columnts, rows)
+      shape_msgs::msg::Mesh inspection_object_mesh;
+      shapes::ShapeMsg inspection_object_mesh_msg;
+      shapes::constructMsgFromShape(m_inspection_object, inspection_object_mesh_msg);
+      inspection_object_mesh = boost::get<shape_msgs::msg::Mesh>(inspection_object_mesh_msg);
+      collision_object.meshes[1] = inspection_object_mesh;
+
+      collision_object.mesh_poses[1].position.x = - 0.698 + 0.15;
+      collision_object.mesh_poses[1].position.y = 1.01 - 0.14;
+      collision_object.mesh_poses[1].position.z = 0.098;
+
+      collision_object.mesh_poses[1].orientation.w = 0.0;
+      collision_object.mesh_poses[1].orientation.x = 0.0;
+      collision_object.mesh_poses[1].orientation.y = 0.0;
+      collision_object.mesh_poses[1].orientation.z = 1.0;
+
+      // Push meshes
+      collision_object.meshes.push_back(inspection_object_mesh);
+      collision_object.mesh_poses.push_back(collision_object.mesh_poses[1]);
+      collision_object.operation = collision_object.ADD;
 
       // Aluminum base BOX for robot
       shape_msgs::msg::SolidPrimitive aluminum_base_ur;
@@ -62,9 +110,9 @@ namespace futama2_moveit_config
       aluminum_base_ur.dimensions = {1.22, 1.22, 0.916};
 
       geometry_msgs::msg::Pose aluminum_base_ur_pose;
-      aluminum_base_ur_pose.position.x = 0.47;
-      aluminum_base_ur_pose.position.y = 0.46;
-      aluminum_base_ur_pose.position.z = -0.46;
+      aluminum_base_ur_pose.position.x = -0.46;
+      aluminum_base_ur_pose.position.y = 0.47;
+      aluminum_base_ur_pose.position.z = -0.45;
 
       collision_object.primitives.push_back(aluminum_base_ur);
       collision_object.primitive_poses.push_back(aluminum_base_ur_pose);
@@ -82,42 +130,19 @@ namespace futama2_moveit_config
 
       collision_object.primitives.push_back(floor);
       collision_object.primitive_poses.push_back(floor_pose);
+    
+      // Workstation table
+      shape_msgs::msg::SolidPrimitive workstation_table;
+      workstation_table.type = workstation_table.BOX;
+      workstation_table.dimensions = {1.60, 0.80, 0.916};
 
-      // Base BOX for object
-      shape_msgs::msg::SolidPrimitive base_object;
-      base_object.type = base_object.BOX;
-      base_object.dimensions = {0.5, 0.5, 1.0};
+      geometry_msgs::msg::Pose workstation_table_pose;
+      workstation_table_pose.position.x = 0.95;
+      workstation_table_pose.position.y = 0.26;
+      workstation_table_pose.position.z = -0.45;
 
-      geometry_msgs::msg::Pose base_object_pose;
-      base_object_pose.position.x = -1.0;
-      base_object_pose.position.y = 0.0;
-      base_object_pose.position.z = -0.5;
-
-      collision_object.primitives.push_back(base_object);
-      collision_object.primitive_poses.push_back(base_object_pose);
-
-      // Cube mesh (.stl, columnts, rows)
-      shape_msgs::msg::Mesh cube_mesh;
-      shapes::ShapeMsg cube_mesh_msg;
-      shapes::constructMsgFromShape(m, cube_mesh_msg);
-      cube_mesh = boost::get<shape_msgs::msg::Mesh>(cube_mesh_msg);
-      collision_object.meshes.resize(1);
-      collision_object.meshes[0] = cube_mesh;
-      collision_object.mesh_poses.resize(1);
-
-      collision_object.mesh_poses[0].position.x = -1.0;
-      collision_object.mesh_poses[0].position.y = 0.0;
-      collision_object.mesh_poses[0].position.z = 0.0;
-
-      collision_object.mesh_poses[0].orientation.w = 1.0;
-      collision_object.mesh_poses[0].orientation.x = 0.0;
-      collision_object.mesh_poses[0].orientation.y = 0.0;
-      collision_object.mesh_poses[0].orientation.z = 0.0;
-
-      // Push meshes
-      collision_object.meshes.push_back(cube_mesh);
-      collision_object.mesh_poses.push_back(collision_object.mesh_poses[0]);
-      collision_object.operation = collision_object.ADD;
+      collision_object.primitives.push_back(workstation_table);
+      collision_object.primitive_poses.push_back(workstation_table_pose);
       
       moveit_msgs::msg::PlanningSceneWorld psw;
       psw.collision_objects.push_back(collision_object);

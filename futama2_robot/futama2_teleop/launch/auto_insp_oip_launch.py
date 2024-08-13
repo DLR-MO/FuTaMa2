@@ -36,6 +36,13 @@ def generate_launch_description():
             "mode": mode,
         }.items(),
     )
+    multicam = LaunchConfiguration("multicam")
+    multicam_cmd = DeclareLaunchArgument(
+        "multicam",
+        description="Are you using the three cameras?",
+        choices=["false", "true"],
+        default_value="false",
+    )
     camera_mdl = LaunchConfiguration("camera_mdl")
     camera_mdl_cmd = DeclareLaunchArgument(
         "camera_mdl",
@@ -213,35 +220,38 @@ def generate_launch_description():
         ],
     )
 
-    # One camera launch
+    # One camera launch 
     rs_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [PathJoinSubstitution(
-                [FindPackageShare("futama2_teleop"), "launch", "rs_launch.py"])]
+                [FindPackageShare("realsense2_camera"), "launch", "rs_launch.py"])]
         ),
         launch_arguments={
             "pointcloud.enable": "true",
-            "align_depth.enable": "true",
+            #"align_depth.enable": "true",
             "device_type": camera_mdl,
             "serial_no": "_128422271521",
             "depth_module.profile": "1280x720x15"
         }.items(),
         condition=IfCondition(EqualsSubstitution(camera_mdl, "d405")),
     )
-
-    # just when using the d435i camera at home (Adrian)
-    rs_launch_d435i = IncludeLaunchDescription(
+    # Three cameras launch
+    rs_multi_camera_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [PathJoinSubstitution(
-                [FindPackageShare("futama2_teleop"), "launch", "rs_launch.py"])]
+                [FindPackageShare("realsense2_camera"), "launch", "rs_multi_camera_launch.py"])]
         ),
         launch_arguments={
-            "pointcloud.enable": "true",
-            "align_depth.enable": "true",
-            "device_type": camera_mdl,
-            "depth_module.profile": "1280x720x15"
+            "pointcloud.enable1": "true",
+            "pointcloud.enable2": "true",
+            #"align_depth1": "true",
+            #"device_type1": camera_mdl,
+            "serial_no1": "_128422272518",
+            "serial_no2": "_128422272647",
+            "depth_module.profile1": "1280x720x15",
+            "depth_module.profile2": "1280x720x15"
         }.items(),
-        condition=IfCondition(EqualsSubstitution(camera_mdl, "d435i")),
+        condition=IfCondition(EqualsSubstitution(multicam, "true")),
     )
 
     return LaunchDescription(
@@ -252,9 +262,10 @@ def generate_launch_description():
             mode_cmd,
             camera_mdl_cmd,
             octomap_cmd,
+            multicam_cmd,
             robot_driver_cmd,
             auto_insp_node,
-            rs_launch,rs_launch_d435i,
+            rs_launch,rs_multi_camera_launch,
             foto_capture_node,
             odometry_node,
             rviz_node,
