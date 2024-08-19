@@ -31,7 +31,6 @@ def generate_launch_description():
         choices=["real", "mock", "sim", "urdf"],
         default_value="mock",
     )
-
     container = Node(
         name="robot_container",
         package="rclcpp_components",

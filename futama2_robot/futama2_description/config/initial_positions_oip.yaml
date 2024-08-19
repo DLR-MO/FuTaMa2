@@ -1,0 +1,11 @@
+# SPDX-FileCopyrightText: 2024 German Aerospace Center <adrian.ricardezortigosa@dlr.de>
+#
+# SPDX-License-Identifier: MIT
+
+# just for mock mode
+shoulder_pan_joint: -3.5623192116958697
+shoulder_lift_joint: -3.041889434161857
+elbow_joint: 1.4975415186189582
+wrist_1_joint: 4.654534432544195
+wrist_2_joint: -1.1278610279416987
+wrist_3_joint: -2.311206477723827
