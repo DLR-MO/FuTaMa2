@@ -239,19 +239,6 @@ def generate_launch_description():
                             )
                         ),
             ),
-            #launch_ros.descriptions.ComposableNode(
-            #    package="spacenav",
-            #    plugin="spacenav::Spacenav",
-            #    name="spacenav_node",
-            #    parameters=[{"use_sim_time": EqualsSubstitution(mode, "sim")}],
-                # extra_arguments=[{"use_intra_process_comms": True}],
-                # if you are actually using the spacemouse, otherwise, only keyboard run
-            #    condition=IfCondition(
-            #                PythonExpression(
-            #                    ["'", spacemouse, "' == 'true' and '", insp_mode, "' == 'automatic'"]
-            #                )
-            #            ),
-            #),
         ],
     )
 
@@ -267,8 +254,8 @@ def generate_launch_description():
             #"depth_module.enable_auto_exposure": "true",
             "device_type": camera_mdl,
             "serial_no": "_128422271521",
-            #"depth_module.profile": "1280x720x15",
-            #"rgb_camera.profile": "1280x720x15",
+            "depth_module.profile": "1280x720x15",
+            "rgb_camera.profile": "1280x720x15",
         }.items(),
         condition=IfCondition(EqualsSubstitution(camera_mdl, "d405")),
     )
@@ -284,8 +271,8 @@ def generate_launch_description():
             #"align_depth.enable": "true",
             #"depth_module.enable_auto_exposure": "true",
             "device_type": camera_mdl,
-            #"depth_module.profile": "1280x720x15",
-            #"rgb_camera.profile": "1280x720x15",
+            "depth_module.profile": "1280x720x15",
+            "rgb_camera.profile": "1280x720x15",
         }.items(),
         condition=IfCondition(EqualsSubstitution(camera_mdl, "d435i")),
     )
@@ -302,10 +289,10 @@ def generate_launch_description():
             #"align_depth": "true",
             "serial_no1": "_128422272518",
             "serial_no2": "_128422272647",
-            #"depth_module.profile1": "1280x720x15",
-            #"rgb_camera.profile1": "1280x720x15",
-            #"depth_module.profile2": "1280x720x15",
-            #"rgb_camera.profile2": "1280x720x15",
+            "depth_module.profile1": "1280x720x15",
+            "rgb_camera.profile1": "1280x720x15",
+            "depth_module.profile2": "1280x720x15",
+            "rgb_camera.profile2": "1280x720x15",
         }.items(),
         condition=IfCondition(EqualsSubstitution(multicam, "true")),
     )
