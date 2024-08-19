@@ -166,7 +166,7 @@ Quick Troubleshooting: TODO STILL NOT WORKING THE TF2-GEOMETRY-MSGS
 Once all previous packages are installed / linked in the ws, then do:
 - `cd ~/git`
 - `git clone https://github.com/DLR-MO/futama2`
-- `ln -s ~/git/futama2/futama2_robot ~/futama2_ws/src`
+- `ln -s ~/git/FuTaMa2/futama2_robot ~/futama2_ws/src`
 - `cd ~/futama2_ws`
 - `rosdep update && rosdep install -r -y --from-paths . --ignore-src --rosdistro $ROS_DISTRO -y` (check that most of dependencies are resolved)
 - `colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release`
