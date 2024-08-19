@@ -3,11 +3,12 @@
 # SPDX-License-Identifier: MIT
 
 import launch_ros
+import os
 from launch import LaunchDescription
 from launch_ros.actions import Node, LoadComposableNodes, ComposableNodeContainer
 from ament_index_python.packages import get_package_share_directory
 from moveit_configs_utils import MoveItConfigsBuilder
-from ur_moveit_config.launch_common import load_yaml
+import yaml
 from moveit_configs_utils.launches import generate_move_group_launch
 from launch.conditions import IfCondition
 
@@ -20,6 +21,13 @@ from launch.actions import DeclareLaunchArgument, LogInfo, RegisterEventHandler,
 from launch.events.process import ProcessIO
 from launch.event_handlers import (OnExecutionComplete, OnProcessExit,
                                    OnProcessIO, OnProcessStart, OnShutdown)
+
+
+def load_yaml(package_name, file_name):
+    package_path = get_package_share_directory(package_name)
+    file_path = os.path.join(package_path, file_name)
+    with open(file_path, 'r') as file:
+        return yaml.safe_load(file)
 
 def generate_launch_description():
     mode = LaunchConfiguration("mode")

@@ -3,11 +3,12 @@
 # SPDX-License-Identifier: MIT
 
 import launch_ros
+import os
+import yaml
 from launch import LaunchDescription
 from launch_ros.actions import Node, LoadComposableNodes, ComposableNodeContainer
 from ament_index_python.packages import get_package_share_directory
 from moveit_configs_utils import MoveItConfigsBuilder
-from ur_moveit_config.launch_common import load_yaml
 from moveit_configs_utils.launches import generate_move_group_launch
 from launch.conditions import IfCondition
 
@@ -20,6 +21,12 @@ from launch.actions import DeclareLaunchArgument, LogInfo, RegisterEventHandler,
 from launch.events.process import ProcessIO
 from launch.event_handlers import (OnExecutionComplete, OnProcessExit,
                                    OnProcessIO, OnProcessStart, OnShutdown)
+
+def load_yaml(package_name, file_name):
+    package_path = get_package_share_directory(package_name)
+    file_path = os.path.join(package_path, file_name)
+    with open(file_path, 'r') as file:
+        return yaml.safe_load(file)
 
 def generate_launch_description():
     mode = LaunchConfiguration("mode")
@@ -177,8 +184,7 @@ def generate_launch_description():
         parameters=[{"insp_mode": insp_mode}]
     )
 
-    servo_params = {"moveit_servo": load_yaml(
-        "futama2_teleop", "config/futama2_ur_servo.yaml")}
+    servo_params = {"moveit_servo": load_yaml("futama2_teleop", "config/futama2_ur_servo.yaml")}
 
     # Launch as much as possible in components to reduce latency
     load_composable_nodes = LoadComposableNodes(
@@ -304,17 +310,6 @@ def generate_launch_description():
         condition=IfCondition(EqualsSubstitution(multicam, "true")),
     )
 
-    # Execution of SLAM usingo only one camera
-    bonxai_mapping_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([
-            PathJoinSubstitution([
-                FindPackageShare('futama2_slam'),
-                'launch',
-                'bonxai_mapping.launch.py'
-            ])
-        ]),
-    )
-
     return LaunchDescription(
         [
             # This specific order of the execution worked in real and mock robots,
@@ -328,8 +323,8 @@ def generate_launch_description():
             robot_driver_cmd,
             auto_insp_demo_node,
             rs_launch,#rs_launch_d435i,rs_multi_camera_launch,
-            #foto_capture_node,
-            #odometry_node,
+            foto_capture_node,
+            odometry_node,
             rviz_node,
             TimerAction(period=2.0,
                         actions=[
