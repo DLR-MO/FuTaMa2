@@ -21,6 +21,7 @@ setup(
         ("share/" + package_name + "/meshes/visual/", glob("meshes/visual/*")),
     ],
     install_requires=["setuptools"],
+    py_modules=[],
     zip_safe=True,
     maintainer="Adrian Ricardez Ortigosa",
     maintainer_email="adrian.ricardezortigosa@dlr.de",
