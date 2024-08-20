@@ -3,12 +3,12 @@
 # SPDX-License-Identifier: MIT
 
 # for mock demo mode:
-shoulder_pan_joint: -3.0001783956611474
-shoulder_lift_joint: 2.884383214068645
-elbow_joint: 1.7447354945945788
-wrist_1_joint: -1.1983974034823937
-wrist_2_joint: -0.9242497580888018
-wrist_3_joint: -4.584684407740443
+shoulder_pan_joint: 4.712434768676758
+shoulder_lift_joint: -1.1430185598186036
+elbow_joint: 2.4478374163257044
+wrist_1_joint: 3.5035568910786132
+wrist_2_joint: 1.570771336555481
+wrist_3_joint: -5.49770695367922
 
 # For oip planner:
 #shoulder_pan_joint: -3.5623192116958697

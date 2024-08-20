@@ -143,7 +143,7 @@ def generate_launch_description():
         parameters=move_group_params,
     )
 
-    auto_insp_oip_node = Node(
+    auto_insp_demo_node = Node(
         name="auto_insp_demo",
         package="futama2_teleop",
         executable="auto_insp_demo_node.py",
@@ -308,10 +308,10 @@ def generate_launch_description():
             spacemouse_cmd,
             octomap_cmd,
             robot_driver_cmd,
-            auto_insp_oip_node,
-            rs_launch,#rs_launch_d435i,rs_multi_camera_launch,
-            foto_capture_node,
-            odometry_node,
+            #auto_insp_demo_node,
+            #rs_launch,#rs_launch_d435i,rs_multi_camera_launch,
+            #foto_capture_node,
+            #odometry_node,
             rviz_node,
             TimerAction(period=2.0,
                         actions=[
