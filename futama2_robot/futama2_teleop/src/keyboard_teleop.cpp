@@ -248,31 +248,31 @@ namespace futama2_teleop
         case KEYCODE_LEFT:
           RCLCPP_DEBUG(get_logger(), "LEFT");
           keyboard_cmd_flag = true;
-          twist_msg->twist.linear.y = -1.0;
+          twist_msg->twist.linear.x = 1.0;
           publish_twist = true;
           break;
         case KEYCODE_RIGHT:
           RCLCPP_DEBUG(get_logger(), "RIGHT");
           keyboard_cmd_flag = true;
-          twist_msg->twist.linear.y = 1.0;
+          twist_msg->twist.linear.x = -1.0;
           publish_twist = true;
           break;
         case KEYCODE_UP:
           RCLCPP_DEBUG(get_logger(), "UP");
           keyboard_cmd_flag = true;
-          twist_msg->twist.linear.x = 1.0;
+          twist_msg->twist.linear.y = -1.0;
           publish_twist = true;
           break;
         case KEYCODE_DOWN:
           RCLCPP_DEBUG(get_logger(), "DOWN");
           keyboard_cmd_flag = true;
-          twist_msg->twist.linear.x = -1.0;
+          twist_msg->twist.linear.y = 1.0;
           publish_twist = true;
           break;
         case KEYCODE_PERIOD:
           RCLCPP_DEBUG(get_logger(), "PERIOD");
           keyboard_cmd_flag = true;
-          twist_msg->twist.linear.z = -1.0;
+          twist_msg->twist.linear.z = 1.0;
           publish_twist = true;
           break;
         case KEYCODE_SEMICOLON:

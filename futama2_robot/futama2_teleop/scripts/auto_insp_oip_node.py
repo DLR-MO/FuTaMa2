@@ -20,6 +20,7 @@ from rclpy.node import Node
 
 from std_msgs.msg import Header
 import numpy as np
+from controller_manager_msgs.srv import SwitchController
 
 from nav_msgs.msg import Odometry, Path
 from scipy.spatial.transform import Rotation as R
@@ -79,7 +80,16 @@ class AutoInsp(Node):
                       -0.18334272503852844, -1.076518492482137e-05, 0.9830490946769714, 2.7753067115554586e-05)
         path_msg = self.to_path_msg([first_pose, *poses])
 
+        # Service client: Switch Controller
+        self.switchcontroller_client = self.create_client(
+            SwitchController, '/controller_manager/switch_controller')
+        while not self.switchcontroller_client.wait_for_service(timeout_sec=1.0):
+            self.get_logger().info('service not available, waiting again...')
+
         time.sleep(5)
+
+        # start the robot from origin, and avoid robot state update error to be able to use the forward position controller later
+        self.switch_to_trajectory_mode()
 
         self.publish_path(path_msg)
 
@@ -149,6 +159,14 @@ class AutoInsp(Node):
 
         self.reached_points.append(reached)
         self.logger.info('PLANNING AND EXECUTING TO GIVEN POSE')
+
+    def switch_to_trajectory_mode(self):
+        self.req = SwitchController.Request()
+        self.req.activate_controllers = {"joint_trajectory_controller"}
+        self.req.deactivate_controllers = {"forward_position_controller"}
+        self.future = self.switchcontroller_client.call_async(self.req)
+        self.logger.info("CONTROLLER TO JOINT TRAJECTORY SWITCHED!")
+        time.sleep(1)
 
     def publish_path(self, path_msg: Path):
         self.path_pub.publish(path_msg)

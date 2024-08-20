@@ -201,7 +201,7 @@ def generate_launch_description():
             # For publishing the wing and the base box
             launch_ros.descriptions.ComposableNode(
                 package="futama2_moveit_config",
-                plugin="futama2_moveit_config::PlanningScenePublisherInspObj",
+                plugin="futama2_moveit_config::PlanningScenePublisher",
                 name="planning_scene_publisher",
                 parameters=[{"mode": mode}
                             #"use_sim_time": EqualsSubstitution(mode, "sim"),

@@ -71,8 +71,8 @@ namespace futama2_teleop
         twist_msg.header.frame_id = frame_to_publish_;
         twist_msg.header.stamp = now();
         // todo add some kind of scaling factor here?
-        twist_msg.twist.linear.x = msg->axes[X];
-        twist_msg.twist.linear.y = msg->axes[Y];
+        twist_msg.twist.linear.x = msg->axes[Y];   // todo to change to positiv x, currently y
+        twist_msg.twist.linear.y = -msg->axes[X];   // todo same for this one, plus change the sign to positive
         twist_msg.twist.linear.z = msg->axes[Z];
         twist_msg.twist.angular.x = msg->axes[RX];
         twist_msg.twist.angular.y = msg->axes[RY];
