@@ -20,7 +20,7 @@ Developed packages of this repo:
 
 A high-level overview can be graphically summariyed with the following picture:
 
-<img src="images/graphical_abstract.png" width=80% height=80%>
+<img src="images/high-level-module-understanding.PNG" width=80% height=80%>
 
 ## Table of Contents
 
