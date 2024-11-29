@@ -31,8 +31,7 @@ A high-level overview can be graphically summariyed with the following picture:
   3. [Universal Robots](#3-universal-robots)
   4. [ Octomap](#4-octomap)
   5. [Spacenav](#5-spacenav)
-  6. [RTABmap](#6-rtab-map-not-required-but-todo)
-  7. [FuTaMa2](#7-futama2-from-source)
+  6. [FuTaMa2](#7-futama2-from-source)
   - [Docker](#docker)
 - [Robot Usage](#robot-usage)
 - [Maintainers](#maintainers), [Contributing](#contributing) & [License](#license)
@@ -145,23 +144,7 @@ Required binaries:
 Required binaries: spacenav
 - Quick test: Visualize the topics by running the node with `ros2 run spacenav spacenav_node` 
 
-## 6. RTAB-Map (not required, but TODO)
-
-Binaries required that might not be satisfied when resolving dependencies: velodyne, behaviortree_cpp, octomap_server. Installed but not recognized (TO CHECK): libpointmatcher.
-
-The [rtabmap-ros](https://github.com/introlab/rtabmap_ros/tree/ros2) package is a [wrapper](https://roboticsbackend.com/create-a-ros-driver-package-introduction-what-is-a-ros-wrapper-1-4/) of [RTAB-Map](http://introlab.github.io/rtabmap/)(Real-Time Appearance-Based Mapping). It is a powerful Stereo and Lidar Graph-Based [SLAM](https://de.wikipedia.org/wiki/Simultaneous_Localization_and_Mapping) (Simultaneous Localization and Mapping) approach based on an incremental appearance-based loop closure detector. In other words, it maps the surroundings using a camera's RGB-D data.
-
-- Dependencies: follow the instructions for building from source on [grid_map](https://github.com/ANYbotics/grid_map/tree/rolling) (here, the nav2 packages will also take place), [slam_toolbox](https://github.com/SteveMacenski/slam_toolbox), and [RSL](https://github.com/PickNikRobotics/RSL)
-
-- Follow the installation from source from the official [rtabmap_ros](https://github.com/introlab/rtabmap_ros/tree/ros2) repo. When rgbd_cameras>1 (multi-RGB-D cameras), it is recommended for building:
-
-```colcon build --symlink-install --cmake-args -DRTABMAP_SYNC_MULTI_RGBD=ON -DRTABMAP_SYNC_USER_DATA=ON -DCMAKE_BUILD_TYPE=Release```
-
-Quick Troubleshooting: TODO STILL NOT WORKING THE TF2-GEOMETRY-MSGS
-
-- You might need to install some extra dependencies which couldn't be resolved. Simply type ```sudo apt install ros-$ROS_DISTRO-<package_name>``` (with minus symbol "-" instad of underscore "_") e.g. ```sudo apt install ros-$ROS_DISTRO-pcl-ros```, being the package name, such as pcl_ros, rviz_default_plugins, etc.. and then build the workspace again until it's 100%. The tf2_geometry_msgs package might be required to be removed and installed with "get": ```sudo apt-get install ros-$ROS_DISTRO-tf2-geometry-msgs```
-
-## 7. FuTaMa2 from Source
+## 6. FuTaMa2 from Source
 Once all previous packages are installed / linked in the ws, then do:
 - `cd ~/git`
 - `git clone https://github.com/DLR-MO/futama2`
