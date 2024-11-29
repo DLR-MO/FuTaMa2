@@ -7,21 +7,20 @@ SPDX-License-Identifier: MIT
 # FuTaMa2 Project
 ## (Fuel Tank Maintenance 2)
 
-The aim of this project is to provide the [Robot-Assisted-Repair](https://wiki.dlr.de/display/MO/Robot.Assisted+Repair) team of the [German Space Center (DLR) - Maintenance, Repair and Overhaul Institute (MO)](https://www.dlr.de/en/mo) and the robotic inspection community using a set of hardware and software tools using [ROS2](https://docs.ros.org/en/rolling/Installation.html). This will help to explore the challenges of manual inspection and automatic inspection methods performed by the integrated system: UR10e robotic arm + Eeloscope2, which feature 3 RGB-D cameras and 6 LEDs on its end effector. Since there exists not much open-source documentation about these topics, this project was proposed to fill that research gap and to encourage modular and continuous research. The potential contribution to the audience is to enable technology transfer possibilities to other systems using known packages such as Moveit2, Octomap, Realsense,..., as a reference framework.
+The aim of this project is to provide the [Robot-Assisted-Inspection-and-Repair](https://wiki.dlr.de/display/MO/Robot.Assisted+Repair) team of the [German Space Center (DLR) - Maintenance, Repair and Overhaul Institute (MO)](https://www.dlr.de/en/mo) and the community of robotic inspection using a set of hardware and software tools using [ROS2](https://docs.ros.org/en/rolling/Installation.html). This will help to explore the challenges of manual inspection and automatic inspection methods performed by the integrated system: UR10e robotic arm + Eeloscope2 (sucessor of [Eeloscope1](https://www.mdpi.com/2226-4310/8/5/136)), which feature 3 RGB-D cameras and 6 LEDs on its end effector. Since there exists not much open-source documentation about these topics, this project was proposed to fill that research gap and to encourage modular and continuous research. The potential contribution to the audience is to enable technology transfer possibilities to other systems using known packages such as Moveit2, Octomap, and Realsense, as a reference framework.
 
-The use case utilized in this study was the inspection of a aircraft wing fuel tank (Boeing 737-700 for most commercial uses).
-A research article with the methodology, analysis, approach and results of the experiments will be published soon on the [MDPI Open Access Journal](https://www.mdpi.com/) (~July 2024). 
+The use case utilized in this study was the inspection of a aircraft wing fuel tank (Boeing 737-700).
+A research article with the methodology, analysis, approach and results of the experiments is intended to be published soon on the [MDPI Open Access Journal](https://www.mdpi.com/). 
 
 Developed packages of this repo:
 1. [futama2_description](futama2_robot/futama2_description/) -> urdf, IP, and controllers setup, robot state publisher, STL, meshes, ...
 2. [futama2_moveit_config](futama2_robot/futama2_moveit_config/) -> config for moveit and planning scene
 3. [futama2_teleop](futama2_robot/futama2_teleop/) -> demo of manual and automatic teleoperations, foto capturing, higher-level functions for robotic inspection
 4. [futama2_utils](futama2_robot/futama2_utils/) -> utilities (so far only one for the moveit planner)
-5. futama2_slam (TO DO, not required at the moment) -> rtabmap implementation (SLAM and rtabmapviz)
 
-A high-level general understanding can be graphically shown as the following (the ROS modules exchange their topics in a very different way as shown):
+A high-level overview can be graphically summariyed with the following picture:
 
-<img src="images/high-level-module-understanding.PNG" width=80% height=80%>
+<img src="images/graphical_abstract.PNG" width=80% height=80%>
 
 ## Table of Contents
 
