@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="futama2">
 
   <link name="futama2_base_link">
@@ -22,10 +23,10 @@
       </geometry>
     </collision>
   </link>
-  
+
   <link name="realsense_tpu_link">
     <inertial>
-      <origin xyz="0.032157 0.00051011 -0.0001135" rpy="0 0 0" />
+      <origin xyz="0.032157 0.00051011 -0.0001135" rpy="0 0 0"/>
       <mass value="0.2645" />
       <inertia ixx="8.7232E-05" ixy="-1.7837E-06" ixz="3.0021E-09" iyy="0.00010899" iyz="-1.976E-08" izz="0.00014445" />
     </inertial>
