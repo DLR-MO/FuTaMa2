@@ -97,7 +97,8 @@ namespace futama2_teleop
       // for servo_node
       twist_pub_ =
           create_publisher<geometry_msgs::msg::TwistStamped>("/servo_node/delta_twist_cmds", 10);
-      joint_pub_ = create_publisher<control_msgs::msg::JointJog>("/servo_node/delta_joint_cmds", 10);
+      joint_pub_ = 
+          create_publisher<control_msgs::msg::JointJog>("/servo_node/delta_joint_cmds", 10);
 
       servo_type_client_ =
           create_client<moveit_msgs::srv::ServoCommandType>("/servo_node/switch_command_type");
@@ -272,7 +273,7 @@ namespace futama2_teleop
         case KEYCODE_PERIOD:
           RCLCPP_DEBUG(get_logger(), "PERIOD");
           keyboard_cmd_flag = true;
-          twist_msg->twist.linear.z = 1.0;
+          twist_msg->twist.linear.z = -1.0;
           publish_twist = true;
           break;
         case KEYCODE_SEMICOLON:

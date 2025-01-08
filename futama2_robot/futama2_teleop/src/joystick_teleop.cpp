@@ -42,7 +42,8 @@ namespace futama2_teleop
 
       twist_pub_ =
           create_publisher<geometry_msgs::msg::TwistStamped>("/servo_node/delta_twist_cmds", 10);
-      joint_pub_ = create_publisher<control_msgs::msg::JointJog>("/servo_node/delta_joint_cmds", 10);
+      joint_pub_ = 
+          create_publisher<control_msgs::msg::JointJog>("/servo_node/delta_joint_cmds", 10);
 
       // Create a service client to start the ServoNode
       servo_type_client_ =

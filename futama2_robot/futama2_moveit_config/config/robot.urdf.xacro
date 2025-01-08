@@ -6,10 +6,9 @@
     <xacro:include filename="$(find futama2_description)/urdf/robot.urdf.xacro" />
 
     <!-- Import control_xacro -->
-    <xacro:include filename="robot.ros2_control.xacro" />
+    <!--<xacro:include filename="robot.ros2_control.xacro" />-->
 
-
-    <xacro:robot_ros2_control name="fakeSystem" initial_positions_file="$(arg initial_positions_file)"/>
+    <!--<xacro:robot_ros2_control name="fakeSystem" initial_positions_file="$(arg initial_positions_file)"/>-->
 
 </robot>
 
