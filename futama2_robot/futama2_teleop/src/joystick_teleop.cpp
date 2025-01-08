@@ -21,8 +21,8 @@ namespace futama2_teleop
     X = 0,
     Y = 1,
     Z = 2,
-    RX = 3,
-    RY = 4,
+    RX = 4,   // numbers inverted with y since in reality it is inverted
+    RY = 3,
     RZ = 5,
   };
 
@@ -76,7 +76,7 @@ namespace futama2_teleop
         twist_msg.twist.linear.y = -msg->axes[X];   // todo same for this one, plus change the sign to positive
         twist_msg.twist.linear.z = msg->axes[Z];
         twist_msg.twist.angular.x = msg->axes[RX];
-        twist_msg.twist.angular.y = msg->axes[RY];
+        twist_msg.twist.angular.y = -msg->axes[RY];
         twist_msg.twist.angular.z = msg->axes[RZ];
         twist_pub_->publish(twist_msg);
       }
