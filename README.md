@@ -7,9 +7,13 @@ SPDX-License-Identifier: MIT
 # FuTaMa2 Project
 ## (Fuel Tank Maintenance 2)
 
-The aim of this project is to provide the [Robot-Assisted-Inspection-and-Repair](https://wiki.dlr.de/display/MO/Robot.Assisted+Repair) team of the [German Space Center (DLR) - Maintenance, Repair and Overhaul Institute (MO)](https://www.dlr.de/en/mo) and the community of robotic inspection using a set of hardware and software tools using [ROS2](https://docs.ros.org/en/rolling/Installation.html). This will help to explore the challenges of manual inspection and automatic inspection methods performed by the integrated system: UR10e robotic arm + Eeloscope2 (sucessor of [Eeloscope1](https://www.mdpi.com/2226-4310/8/5/136)), which feature 3 RGB-D cameras and 6 LEDs on its end effector. Since there exists not much open-source documentation about these topics, this project was proposed to fill that research gap and to encourage modular and continuous research. The potential contribution to the audience is to enable technology transfer possibilities to other systems using known packages such as Moveit2, Octomap, and Realsense, as a reference framework.
+The aim of this project is to provide the [Robot-Assisted-Inspection-and-Repair](https://wiki.dlr.de/display/MO/Robot.Assisted+Repair) team of the [German Space Center (DLR) - Maintenance, Repair and Overhaul Institute (MO)](https://www.dlr.de/en/mo) and the community of robotic inspection using a set of hardware and software ([ROS2](https://docs.ros.org/en/rolling/Installation.html)) tools for addressing the challenges of manual and automatic inspection methods performed by the integrated system: UR10e robotic arm + Eeloscope2 (sucessor of [Eeloscope1](https://www.mdpi.com/2226-4310/8/5/136)), which feature:
+- 3 RGB-D cameras Intel Realsense D435 
+- 6 LEDs for the cameras' view
 
-The use case utilized in this study was the inspection of a aircraft wing fuel tank (Boeing 737-700).
+Since there exists not much open-source documentation about these topics in robotic inspection, this project was proposed to fill that research gap and to encourage modular and continuous research. The potential contribution to the audience is to enable technology transfer possibilities to other systems.
+
+The use case utilized in this study was the inspection of a aircraft (Boeing 737-700) wing fuel tank.
 A research article with the methodology, analysis, approach and results of the experiments is intended to be published soon on the [MDPI Open Access Journal](https://www.mdpi.com/). 
 
 Developed packages of this repo:
@@ -18,9 +22,9 @@ Developed packages of this repo:
 3. [futama2_teleop](futama2_robot/futama2_teleop/) -> demo of manual and automatic teleoperations, foto capturing, higher-level functions for robotic inspection
 4. [futama2_utils](futama2_robot/futama2_utils/) -> utilities (so far only one for the moveit planner)
 
-A high-level overview can be graphically summariyed with the following picture:
+A high-level overview can be graphically summarized with the following picture:
 
-<img src="images/high-level-module-understanding.PNG" width=80% height=80%>
+<img src="images/high-level-module-understanding.PNG" width=60% height=60%>
 
 ## Table of Contents
 
@@ -29,41 +33,32 @@ A high-level overview can be graphically summariyed with the following picture:
   1. [Realsense-ROS](#1-realsense-ros)
   2. [Moveit2 packages](#2-moveit2)
   3. [Universal Robots](#3-universal-robots)
-  4. [ Octomap](#4-octomap)
+  4. [Octomap](#4-octomap)
   5. [Spacenav](#5-spacenav)
   6. [FuTaMa2](#7-futama2-from-source)
-  - [Docker](#docker)
-- [Robot Usage](#robot-usage)
+- [Docker](#docker)
+- [Package Usage](#robot-usage)
 - [Maintainers](#maintainers), [Contributing](#contributing) & [License](#license)
 
 ## Preparation and Recommendations
 
-- Install the [ROS2 Rolling](https://docs.ros.org/en/rolling/Installation.html) distro for [Ubuntu 22.04 LTS Jammy](https://releases.ubuntu.com/jammy/)
-- Install [Terminator](https://wiki.ubuntuusers.de/Terminator/)
+- Install the [ROS2 Rolling](https://docs.ros.org/en/rolling/Installation.html) distro for [Ubuntu 24.04 LTS Jammy](https://releases.ubuntu.com/jammy/)
 - Follow the [ROS System Setup basics](https://wiki.dlr.de/display/MO/ROS+System+Setup) (if you have access to the DLR wiki)
-- Install Visual Studio [Code](https://code.visualstudio.com/docs/setup/linux) and its extensions: ROS2, Python, C++, Git, CMake.
-- Prepare git, e.g. add a [ssh-key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account) to your git account.
-- Follow the fundamental ROS2 [tutorials](https://docs.ros.org/en/rolling/Tutorials.html), e.g. how to [build from source](https://docs.ros.org/en/eloquent/Installation/Linux-Development-Setup.html), how to search and install/uninstall binaries (`apt search ros-$ROS_DISTRO-<package_name>`, `sudo apt install ros-$ROS_DISTRO-<package_name>`, `sudo apt remove ros-$ROS_DISTRO-<package_name>`)
-- How to use the `--symlink-install` [argument](https://answers.ros.org/question/371822/what-is-the-use-of-symlink-install-in-ros2-colcon-build/) when building from source, especially if one will mantain python code such as launch files or scripts.
-- Generally, on each repo, the main mantainer will explain the installation steps for their package (e.g. usually one needs to [manage dependencies](https://docs.ros.org/en/foxy/Tutorials/Intermediate/Rosdep.html) and maybe other additional steps.
-
-### Mini-Tutorial linking and building packages in the workspace (ws):
-
-1. In the Home directory, create a folder named git, where all cloned packages will be.
-2. Again in Home, create a new [workspace](https://docs.ros.org/en/rolling/Tutorials/Beginner-Client-Libraries/Creating-A-Workspace/Creating-A-Workspace.html) (in this case it could be called e.g. "futama2_ws" for ROS2 convention). 
-3. After cloning packages with [git commands](https://git-scm.com/docs), one can link these packages to the ws with `ln -s ~/git/<package_directory_name> ~/futama2_ws/src/`
-4. Ready to resolve dependencies and build packages as explained above, continue to the next section.
+- Generally, on each repo, the main mantainers will explain the installation steps for their package (e.g. usually one needs to [manage dependencies](https://docs.ros.org/en/foxy/Tutorials/Intermediate/Rosdep.html) and maybe other additional steps.
 
 # Installation of Packages
+
+The installation steps mentioned here are only documented based on the user experience of the mantainer, but some are to be included in the dependencies of the futama2_packages for easier installation (such as Moveit2).
+
 ## 1. Realsense-ROS
 
-Packages that will manage the connection and usage of the Intel Realsense depth cameras. In this project, the [D405](https://www.intelrealsense.com/depth-camera-d405/) and [D435i](https://www.intelrealsense.com/depth-camera-d435i/) (without using the internal IMU) were tested out.
+Packages that will manage the connection with the cameras. The model of the cameras [D405]shttps://www.intelrealsense.com/depth-camera-d405/) was tested out ([D435i](https://www.intelrealsense.com/depth-camera-d435i/) posible without using the imu).
 
 Required binaries:
 
 - [Here the instructions](https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md#installing-the-packages) for installing the [librealsense](https://github.com/IntelRealSense/librealsense) (SDK) package (["Step2-Option1-Linux Debian Installation"](https://github.com/IntelRealSense/realsense-ros)), since one could encounter multiple issues if building from source (not recommended).
 
-- Other possible required binary packages: [xacro](https://github.com/ros/xacro/tree/ros2), [diagnostic_updater](https://github.com/ros/diagnostics), [launch_pytest](https://github.com/ros2/launch)
+- Other possible required binary packages to be installed with apt install ros-rolling-«package_name»: [xacro](https://github.com/ros/xacro/tree/ros2), [diagnostic_updater](https://github.com/ros/diagnostics), [launch_pytest](https://github.com/ros2/launch),...
 
 Building from source:
 
@@ -80,10 +75,10 @@ Troubleshooting:
 
 ### Quick camera test
 
-- One should now be able to open the Realsense Viewer with `realsense-viewer`, which will serve for us just as an installation checker.
+- After proper isntallation, one should be able to open the Realsense Viewer with `realsense-viewer`, which will serve just as an installation checker.
 - All documentation about calibration can be found in: [Overview](https://dev.intelrealsense.com/docs/calibration), [Tunning Best Performance](https://dev.intelrealsense.com/docs/tuning-depth-cameras-for-best-performance) (execute the Depth Quality Tool with `rs-depth-quality`), [Self-Calibration](https://dev.intelrealsense.com/docs/self-calibration-for-depth-cameras) (the On-Chip Calibration only considers exstrinsic parameters), and the [Dynamic Calibration Tool](https://www.intel.com/content/www/us/en/download/645988/intel-realsense-d400-series-dynamic-calibration-tool.html) (open with `usr/bin/Intel.Realsense.DynamicCalibrator`).
 
-<img src="images/realsense-viewer.png" width=40% height=40%>
+<img src="images/realsense-viewer.png" width=30% height=30%>
 
 Troubleshooting:
 
@@ -102,27 +97,25 @@ and visualize the topics on ```rviz2```. The four most useful topics are:
 - /camera/camera/depth/image_rect_raw
 - /camera/camera/depth/color/points
 
-<img src="images/realsense-ros.png" width=37% height=37%>
+<img src="images/realsense-ros.png" width=30% height=30%>
 
 For more information please consult the official RealSense [usage](https://github.com/IntelRealSense/realsense-ros?tab=readme-ov-file#usage) section.
 
 ## 2. Moveit2
-Packages that enable robotic manipulation featuring motion planning, 3D perception, kinematics, etc. Official documentation [here](https://moveit.picknik.ai/main/index.html).
+Packages that enable robotic manipulation featuring motion planning, 3D perception, kinematics, etc. Official installation steps [here](https://moveit.picknik.ai/main/doc/tutorials/getting_started/getting_started.html).
 
 Required binaries:
 - osqp_vendor, ament-cmake-google-benchmark, stomp, ros_testing
 
 Build from source:
-- [Moveit2](https://moveit.ros.org/install-moveit2/source/). The generated packages need to be linked from git directory to the ws: moveit2, moveit_msgs, moveit_resources, moveit_visual_tools, generate_parameter_library.
+- [Moveit2](https://moveit.ros.org/install-moveit2/source/). IF using a separate git directory, the generated packages need to be linked from git directory to the ws: moveit2, moveit_msgs, moveit_resources, moveit_visual_tools, generate_parameter_library.
 
-- The moveit2_tutorials to test the packages functionalities can also be tested following these [instructions](https://moveit.picknik.ai/main/doc/tutorials/getting_started/getting_started.html).
-
-Dependencies not resolved -> urdfdom and urdfdom_headers are installed automatically but not recognized by moveit, are they important?
+Dependencies not resolved -> urdfdom and urdfdom_headers are installed automatically but not recognized by moveit. They are not required for the purposes of the futama2 project.
 
 ## 3. Universal Robots
 ROS2 manipulator drivers for the lightweight UR robotic manipulators.
 
-Required binaries: only the "ur_msgs" package. The rest of the binaries for Rolling seem to be in "passing" phase, but it will be better to do it from source.
+Required binaries: only the "ur_msgs" package. The rest of the binaries for Rolling seem to be in "passing" (2023) phase, but it would be better to do it from source.
 
 Build from source: 
 - ros2 branch from [moveit_visual_tools](https://github.com/moveit/moveit_visual_tools)
