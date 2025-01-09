@@ -7,7 +7,7 @@ SPDX-License-Identifier: MIT
 # FuTaMa2 Project
 ## (Fuel Tank Maintenance 2)
 
-The aim of this project is to provide the [Robot-Assisted-Inspection-and-Repair](https://wiki.dlr.de/display/MO/Robot.Assisted+Repair) team of the [German Space Center (DLR) - Maintenance, Repair and Overhaul Institute (MO)](https://www.dlr.de/en/mo) and the community of robotic inspection using a set of hardware and software ([ROS2](https://docs.ros.org/en/rolling/Installation.html)) tools for addressing the challenges of manual and automatic inspection methods performed by the integrated system: UR10e robotic arm + Eeloscope2 (sucessor of [Eeloscope1](https://www.mdpi.com/2226-4310/8/5/136)), which feature:
+The aim of this project is to provide the [Robot-Assisted-Inspection-and-Repair](https://wiki.dlr.de/display/MO/Robot.Assisted+Repair) team of the [German Space Center (DLR) - Maintenance, Repair and Overhaul Institute (MO)](https://www.dlr.de/en/mo) and the community of robotic inspection using a set of hardware and software ([ROS2](https://docs.ros.org/en/jazzy/Installation.html)) tools for addressing the challenges of manual and automatic inspection methods performed by the integrated system: UR10e robotic arm + Eeloscope2 (sucessor of [Eeloscope1](https://www.mdpi.com/2226-4310/8/5/136)), which feature:
 - 3 RGB-D cameras Intel Realsense D435 
 - 6 LEDs for the cameras' view
 
@@ -37,12 +37,12 @@ A high-level overview can be graphically summarized with the following picture:
   5. [Spacenav](#5-spacenav)
   6. [FuTaMa2](#7-futama2-from-source)
 - [Docker](#docker)
-- [Package Usage](#robot-usage)
+- [Robot Usage](#robot-usage)
 - [Maintainers](#maintainers), [Contributing](#contributing) & [License](#license)
 
 ## Preparation and Recommendations
 
-- Install the [ROS2 Rolling](https://docs.ros.org/en/rolling/Installation.html) distro for [Ubuntu 24.04 LTS Jammy](https://releases.ubuntu.com/jammy/)
+- Install the [ROS2 Jazzy](https://docs.ros.org/en/jazzy/Installation.html) distro for [Ubuntu 24.04 LTS Jammy](https://releases.ubuntu.com/jammy/)
 - Follow the [ROS System Setup basics](https://wiki.dlr.de/display/MO/ROS+System+Setup) (if you have access to the DLR wiki)
 - Generally, on each repo, the main mantainers will explain the installation steps for their package (e.g. usually one needs to [manage dependencies](https://docs.ros.org/en/foxy/Tutorials/Intermediate/Rosdep.html) and maybe other additional steps.
 
@@ -58,7 +58,7 @@ Required binaries:
 
 - [Here the instructions](https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md#installing-the-packages) for installing the [librealsense](https://github.com/IntelRealSense/librealsense) (SDK) package (["Step2-Option1-Linux Debian Installation"](https://github.com/IntelRealSense/realsense-ros)), since one could encounter multiple issues if building from source (not recommended).
 
-- Other possible required binary packages to be installed with apt install ros-rolling-«package_name»: [xacro](https://github.com/ros/xacro/tree/ros2), [diagnostic_updater](https://github.com/ros/diagnostics), [launch_pytest](https://github.com/ros2/launch),...
+- Other possible required binary packages to be installed with apt install ros-jazzy-«package_name»: [xacro](https://github.com/ros/xacro/tree/ros2), [diagnostic_updater](https://github.com/ros/diagnostics), [launch_pytest](https://github.com/ros2/launch),...
 
 Building from source:
 
@@ -69,7 +69,7 @@ Building from source:
 Troubleshooting:
 1. Issues [#1225](https://github.com/IntelRealSense/librealsense/issues/1225) and [#10988](https://github.com/IntelRealSense/librealsense/issues/10988) can be avoided by disabling the [Secure Boot](https://wiki.ubuntu.com/UEFI/SecureBoot/DKMS) (only if you present this error, otherwise, ignore this bullet point).
 
-2. Other problems when [building](https://docs.ros.org/en/rolling/Installation/Alternatives/Ubuntu-Development-Setup.html) might be related to USBs (kernel) or binary installation (debian packages). One can solve them by simply search the log output on the web.
+2. Other problems when [building](https://docs.ros.org/en/jazzy/Installation/Alternatives/Ubuntu-Development-Setup.html) might be related to USBs (kernel) or binary installation (debian packages). One can solve them by simply search the log output on the web.
 
 3. Be aware of the manual plug / unplug of the cameras when following the installation steps. Sometimes one might make mistakes and require to start over again.
 
@@ -108,14 +108,14 @@ Required binaries:
 - osqp_vendor, ament-cmake-google-benchmark, stomp, ros_testing
 
 Build from source:
-- [Moveit2](https://moveit.ros.org/install-moveit2/source/). IF using a separate git directory, the generated packages need to be linked from git directory to the ws: moveit2, moveit_msgs, moveit_resources, moveit_visual_tools, generate_parameter_library.
+- [Moveit2](https://moveit.ros.org/install-moveit2/source/). If using a separate git directory, the generated packages need to be linked from git directory to the ws: moveit2, moveit_msgs, moveit_resources, moveit_visual_tools, generate_parameter_library.
 
 Dependencies not resolved -> urdfdom and urdfdom_headers are installed automatically but not recognized by moveit. They are not required for the purposes of the futama2 project.
 
 ## 3. Universal Robots
 ROS2 manipulator drivers for the lightweight UR robotic manipulators.
 
-Required binaries: only the "ur_msgs" package. The rest of the binaries for Rolling seem to be in "passing" (2023) phase, but it would be better to do it from source.
+Required binaries: only the "ur_msgs" package. The rest of the binaries for Jazzy seem to be in "passing" (2023) phase, but it would be better to do it from source.
 
 Build from source: 
 - ros2 branch from [moveit_visual_tools](https://github.com/moveit/moveit_visual_tools)
@@ -123,7 +123,7 @@ Build from source:
 - rolling branch from [Universal_Robots_ROS2_Description](https://github.com/UniversalRobots/Universal_Robots_ROS2_Description)
 - master branch from [Universal_Robots_Client_Library](https://github.com/UniversalRobots/Universal_Robots_Client_Library)
 
-Please follow the how-to-setup-the-connection [instructions](https://docs.ros.org/en/ros2_packages/rolling/api/ur_robot_driver/installation/robot_setup.html) between external computer and the UR10e robot to link and test the hardware.
+Please follow the how-to-setup-the-connection [instructions](https://github.com/DLR-MO/FuTaMa2/blob/emrox_intgr/documents/TCP_IP%20connection_%20UR10e%20-%20External%20PC.pdf) between external computer and the UR10e robot to link and test the hardware.
 
 ## 4. Octomap
 The [Octomap](https://octomap.github.io/) is an efficient probabilistic 3D Mapping framework Based on [Octrees](https://en.wikipedia.org/wiki/Octree). This stack helps for mapping/voxelizing the environment, which helps for the obstacle avoidance functionality when performing the motion planning from Moveit2.
@@ -132,127 +132,81 @@ Required binaries:
 - octomap, octomap-ros, octomap-server, octomap-mapping, octomap-msgs, octomap-rviz-plugins
 
 ## 5. Spacenav
-[Package](https://index.ros.org/p/spacenav/) required to control de 6 DoF [Spacemouse](https://3dconnexion.com/de/product/spacemouse-compact/)
+[Package](https://index.ros.org/p/spacenav/) required to control de 6 DoF [Spacemouse](https://3dconnexion.com/de/product/spacemouse-compact/).
 
 Required binaries: spacenav
 - Quick test: Visualize the topics by running the node with `ros2 run spacenav spacenav_node` 
 
-## 6. FuTaMa2 from Source
-Once all previous packages are installed / linked in the ws, then do:
-- `cd ~/git`
-- `git clone https://github.com/DLR-MO/futama2`
-- `ln -s ~/git/FuTaMa2/futama2_robot ~/futama2_ws/src`
-- `cd ~/futama2_ws`
-- `rosdep update && rosdep install -r -y --from-paths . --ignore-src --rosdistro $ROS_DISTRO -y` (check that most of dependencies are resolved)
-- `colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release`
-- Ideally, the robot should now be operational!
-
 ## Docker
 
-Will be done in the coming weeks. The installation steps were already followed and they work, but a docker and a .repos file can be added to enable a more ergonomic installation.
+Will be done in the coming weeks. The installation steps were already followed and they work, but a docker and a .repos file can be added to enable an easier installation. TODO
 
 # Robot Usage
 
 ## Hardware Preparation
-The setup shown in [this](#futama2-project) diagram is needed for the robot to work properly (for mock and real environments). If the spacemouse is not available, the robot can still be operational with the keyboard, but the foto capture becomes a little bit trickier. The best is to have the complete setup ready.
+The setup shown in [this](#futama2-project) diagram is needed for the robot to work properly (for mock and real environments). If the spacemouse is not available, the robot can still be operational with the keyboard, but the foto capture becomes trickier. The best is to have the complete setup.
 
-## Main Commands for Experiments
+## Main Commands 
 
-Three main commands that are executed together in separate terminals:
-1. Teleop Launch: `ros2 launch futama2_teleop teleop.launch.py mode:=<mode> camera_mdl:=<camera_mdl> multicam:=<multicam> insp_mode:=<insp_mode> spacemouse:=<spacemouse> octomap:=<octomap>`
-2. Keyboard Node (required only in manual teleoperation, always with or without the spacemouse): `ros2 run futama2_teleop keyboard_node`
-3. For enabling auto exposure `ros2 param set /camera/camera depth_module.enable_auto_exposure true`
+The robot is configured by default to use the join_trajectory_controller (Mode T on the keyboard_node terminal). Move the visual marker of the Moveit Motion Planning plugin in Rviz and press the "Plan & Execute" button before changing to Cartesian mode (C on the second terminal). Mode change is also possible using the buttons of the simple spacemouse (not the new versions at the moment).
 
-Arguments for the main command:
-- mode (robot): **mock** (default) / **real** / **sim** (o3de) / **urdf** (TODO)
-- camera_mdl (tested cameras): **d405** (default at the lab) / **d435i** (e.g. for debugging at home)
-- multicam (single or 3xcam): **false** (default) / **true**
-- insp_mode (inspection mode): **manual** (default) / **automatic**
-- spacemouse (spacemouse availability): **false** (default) / **true**
-- octomap (obstacle avoidance): **false** (default) / **true**
+### Experiment 1 - Mock Hardware Motion Planning & Teleoperation
 
-### 1. Mock Manual Teleoperation with Keyboard / Spacemouse (optimized modules - debugging)
+To quickly test description, planning scene, and locomotion components:
+Two terminals:
+- `ros2 launch futama2_teleop teleop_demo.launch.py mode:=mock insp_mode:=manual spacemouse:=true`
+- `ros2 run futama2_teleop keyboard_node`
 
-This experiment helps on the understanding of the packages, and the robot's functionalities and training of the personnel during inspection tasks (debugging at home e.g. with a D435i camera instead of a D405). Considering that an average laptop is used, multicam session and octomap are disabled to reduce the load in the CPU.
+Change `spacemouse:=false` if keyboard is used instead.
 
-Steps:
+TODO ADD PICTURE MOCK HARDWARE NO CAMERA, USED THIS ONE INSTEAD:
 
-1. Terminal 1 (edit spacemouse if available): `ros2 launch futama2_teleop teleop.launch.py mode:=mock camera_mdl:=d435i multicam:=false insp_mode:=manual spacemouse:=false octomap:=false`
-2. Terminal 2: `ros2 run futama2_teleop keyboard_node`
-3. Since the forward_position_controller cannot respond to immediate commands at the beginning of the node, one needs to command the current controller (joint_trajectory_controller) once by moving the Query Goal State (orange robot, interacting with the sphere marker) to a simple position (not so different from the original one) and then pressing the Plan & Execute button in the MotionPlanning plugin on the left in Rviz.
-4. Once the robot successfully moved with the moveit planner, Terminal 2 is now ready to change controllers (follow the instructions shown there, starting with the Joint mode!) and teleoperate the robot with the keyboard / spacemouse or to change it back to the joint_trajectory_controller and plan and execute with the MotionPlanning plugin.
-5. Terminal 3: once can take "screenshots" of the stamped camera images by pressing both side buttons. If the spacemouse is not available, this function has to be simulated by publishing the following to the /spacenav/joy topic:
+<img src="images/mock-manual-teleop.png" width=40% height=40%>
+
+### Experiment 2 - Real Hardware Teleoperation Motion Planning & Teleoperation
+
+Three terminals:
+- `ros2 launch futama2_teleop teleop_demo.launch.py mode:=real insp_mode:=manual spacemouse:=true camera_mdl:=d435` (Please note that with each launch, the program of the teach pendant of the ur10e needs to restarted)
+- `ros2 run futama2_teleop keyboard_node`
+- `ros2 param set /camera/camera depth_module.enable_auto_exposure true`
+
+Add the `multicam:=true` argument when using the three cameras.
+Add the `octomap:=true` if voxelization for motion planning obstacle avoidance is required.
+Change `spacemouse:=false` if keyboard is used instead.
+
+Additional terminal for foto capturing ("screenshots") function by by pressing both side buttons of the spacemouse. If the spacemouse is not available, this function has to be simulated by publishing the following to the /spacenav/joy topic:
 - `ros2 topic pub --once /spacenav/joy sensor_msgs/Joy \ '{ header: { stamp: 'now', frame_id: "realsense_center_link"}, axes: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], buttons: [1, 1]}'`
 - `ros2 topic pub --once /spacenav/joy sensor_msgs/Joy \ '{ header: { stamp: 'now', frame_id: "realsense_center_link"}, axes: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], buttons: [0, 0]}'`
-- The picture should be now saved then in your workspace.
+- The picture should be now saved then in your workspace or current directory.
 
-<img src="images/mock-manual-teleop.png" width=60% height=60%>
+<img src="images/real-manual-teleop.png" width=40% height=40% />
 
-### 2. Real Manual Teleoperation with Keyboard / Spacemouse (all modules - lab)
+### Experiment 3. OIP Auto Inspection Planner
 
-The principle is the same as in the previous experiment, but setting up the hardware for a more realistic scenario and enabling all robot's functionalities.
+This is a short demo of an automatic inspection based on the [OIP inspection planner](https://gitlab.dlr.de/mo-repo/rar/inspection-path-planner) developed in DLR.
 
-Steps:
+- `ros2 launch futama2_teleop auto_insp_oip_launch.py mode:=mock`
 
-0. Connect and prepare the hardware as explained [here](#3-universal-robots).
-1. Terminal 1 (edit spacemouse and multicam session if different): since we have all equipment with and a proper workstation with powerful CPU, we can enable all modules: `ros2 launch futama2_teleop teleop.launch.py mode:=real camera_mdl:=d405 multicam:=false insp_mode:=manual spacemouse:=true octomap:=true`
-2. Execute the program on the UR10e surface (no error should rise). Please note that each time one launches the nodes, the programs needs to be stopped and restarted (repeat from step 1).
-3. Terminal 2: `ros2 run futama2_teleop keyboard_node`
-4. Same as 3 in [here](#1-mock-manual-teleoperation-with-keyboard--spacemouse-optimized-modules---debugging-tested-with-the-keyboard-todo-spacemouse-validation).
-5. Same as 4 in [here](#1-mock-manual-teleoperation-with-keyboard--spacemouse-optimized-modules---debugging).
-6. Same as 5 in [here](#1-mock-manual-teleoperation-with-keyboard--spacemouse-optimized-modules---debugging).
+Change `mode:=real` if using the real robot instead.
+Add the `multicam:=true` argument when using the three cameras to inspect the object.
 
-<img src="images/real-manual-teleop.png" width=60% height=60% />
+TO BE CHANGED:
 
-### 3. Mock Automatic Inspection (optimized modules - debugging)
-
-This is a short demo of an automatic inspection based on the camera's depth (while approaching the surface), the ur10e's reachability, and the number of iterations required for a surface sweep (5 so far).
-
-Steps:
-
-1. Terminal 1 (edit spacemouse if available): `ros2 launch futama2_teleop teleop.launch.py mode:=mock camera_mdl:=d435i multicam:=false insp_mode:=automatic spacemouse:=false octomap:=false`
-2. Same as 5 in [here](#1-mock-manual-teleoperation-with-keyboard--spacemouse-optimized-modules---debugging).
-
-<img src="images/mock-auto-insp.png" width=60% height=60%>
-
-### 4. Real Automatic Inspection (all modules - lab)
-
-Same principle, but ultimate test using all robot's functionalities.
-
-Steps:
-
-0. Same as 0 in [here](#2-real-manual-teleoperation-with-keyboard--spacemouse-all-modules---lab).
-1. Terminal 1: since we have all equipment with and a proper workstation with powerful CPU (only real robot), we can enable all modules: `ros2 launch futama2_teleop teleop.launch.py mode:=real camera_mdl:=d405 multicam:=false insp_mode:=automatic spacemouse:=true octomap:=true`
-2. Execute the program on the UR10e surface IMMEDIATELY after launching the previous command (no error should rise) to allow the automatic node to start. Please note that each time one launches everything, the program needs to be stopped and restarted (repeat from step 1).
-3. Same as 5 in [here](#1-mock-manual-teleoperation-with-keyboard--spacemouse-optimized-modules---debugging).
-
-<img src="images/real-auto-insp.png" width=60% height=60%>
-
-4. If you also want to perform manual inspection after the automatic one, you can run the spacenav node via command line in another terminal (after the automatic inspection has finished!) and remap it: `ros2 run spacenav spacenav_node --ros-args -r /spacenav/joy:=/joy` (TO DO enable foto capturing during automatic inspection).
-5. You will also need to run the keyboard node: `ros2 run futama2_teleop keyboard_node` to change to cartesian / joint mode.
+<img src="images/mock-auto-insp.png" width=40% height=40%>
 
 ## 3D reconstruction
 
-In order to make a 3D reconstruction of the inspected object following the manual or automated inspection [experiments](#robot-usage), one requires the use a [rosbag](https://docs.ros.org/en/rolling/Tutorials/Beginner-CLI-Tools/Recording-And-Playing-Back-Data/Recording-And-Playing-Back-Data.html) with:
+In order to make a 3D reconstruction of the inspected object following the manual or automated inspection [experiments](#robot-usage), one requires the use a [rosbag](https://docs.ros.org/en/jazzy/Tutorials/Beginner-CLI-Tools/Recording-And-Playing-Back-Data/Recording-And-Playing-Back-Data.html) with the following topics recorded:
 
-`ros2 bag record --storage-config-file /home/rar/git/FuTaMa2/futama2_robot/futama2_teleop/config/mcap_writer_options1.yaml \
-  --qos-profile-overrides-path=/home/rar/git/FuTaMa2/futama2_robot/futama2_teleop/config/qos.yaml  \
-  --max-cache-size 1048576000 \
-  /camera/camera/color/image_rect_raw /camera/camera/depth/color/points /camera/camera/depth/image_rect_raw /camera/camera/color/camera_info \
-  /camera1/camera1/color/image_rect_raw /camera1/camera1/depth/color/points /camera1/camera1/depth/image_rect_raw /camera1/camera1/color/camera_info \
-  /camera2/camera2/color/image_rect_raw /camera2/camera2/depth/color/points /camera2/camera2/depth/image_rect_raw /camera2/camera2/color/camera_info \
-  /tf /tf_static \
-  /monitored_planning_scene /robot_description`
+- «each camera prefix»/color/image_rect_raw
+- «each camera prefix»/depth/color/points of each camera
+- «each camera prefix»/depth/camera_info of each camera
+- /tf
+- /tf_static
+- /monitored_planning_scene
+- /robot_description
 
-If only one camera is required, simply do:
-
-`ros2 bag record /camera/camera/color/image_rect_raw /camera/camera/depth/color/points /camera/camera/depth/image_rect_raw /camera/camera/color/camera_info \
-  /tf /tf_static\
-  /monitored_planning_scene /robot_description /display_planned_path`
-
-(TODO add the recording of the /planning_scene, currently it doesn't manage the Queue somehow)
-
-Once the rosbag is stored, it can be used as the input for the already published [Vinspect](https://github.com/DLR-MO/vinspect) package:
+Once the rosbag is stored, it can be used as the input for the already published [Vinspect](https://github.com/DLR-MO/vinspect) package. Example:
 
 <img src="images/vinspect-reconstruction.PNG" width=40% height=40% />
 <img src="images/zoom-reconstruction.PNG" width=32% height=32% />
@@ -266,7 +220,7 @@ Once the rosbag is stored, it can be used as the input for the already published
 # Maintainers
 
 - Adrian Ricardez Ortigosa adrian.ricardezortigosa@dlr.de
-- Marc Bestmann marc.bestmann@dlr.de
+- Dr. Marc Bestmann marc.bestmann@dlr.de
 
 # Contributing
 
@@ -280,6 +234,6 @@ This work is licensed under multiple licenses:
 
     All original source code, configuration, and documentation is licensed under MIT.
 
-    Some code borrowed is licensed under Apache-2.0.
+    The code borrowed is licensed under Apache-2.0.
 
 For more accurate information, check the individual files.
