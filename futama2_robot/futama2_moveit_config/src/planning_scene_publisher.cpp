@@ -285,7 +285,7 @@ namespace futama2_moveit_config
       // Aluminum base BOX for robot
       shape_msgs::msg::SolidPrimitive aluminum_base_ur;
       aluminum_base_ur.type = aluminum_base_ur.BOX;
-      aluminum_base_ur.dimensions = {1.22, 1.22, 0.916};
+      aluminum_base_ur.dimensions = {1.22, 1.22, 0.895};
 
       geometry_msgs::msg::Pose aluminum_base_ur_pose;
       aluminum_base_ur_pose.position.x = -0.46;
@@ -312,7 +312,7 @@ namespace futama2_moveit_config
       // Workstation table
       shape_msgs::msg::SolidPrimitive workstation_table;
       workstation_table.type = workstation_table.BOX;
-      workstation_table.dimensions = {1.60, 0.80, 0.916};
+      workstation_table.dimensions = {1.60, 0.80, 0.895};
 
       geometry_msgs::msg::Pose workstation_table_pose;
       workstation_table_pose.position.x = 0.95;
