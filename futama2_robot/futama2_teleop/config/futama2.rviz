@@ -5,7 +5,6 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
-        - /MotionPlanning1/Scene Geometry1
         - /MotionPlanning1/Scene Robot1
         - /MotionPlanning1/Planning Request1
         - /MotionPlanning1/Planning Metrics1
@@ -370,7 +369,7 @@ Visualization Manager:
       Planning Scene Topic: monitored_planning_scene
       Robot Description: robot_description
       Scene Geometry:
-        Scene Alpha: 1
+        Scene Alpha: 0.8999999761581421
         Scene Color: 87; 227; 137
         Scene Display Time: 0.009999999776482582
         Show Scene Geometry: true
@@ -514,25 +513,25 @@ Visualization Manager:
       Frames:
         All Enabled: false
         base:
-          Value: false
+          Value: true
         base_link:
           Value: true
         base_link_inertia:
           Value: false
         camera1_link:
-          Value: true
+          Value: false
         camera2_link:
-          Value: true
+          Value: false
         camera_link:
           Value: true
         flange:
-          Value: false
+          Value: true
         forearm_link:
           Value: false
         ft_frame:
-          Value: false
-        futama2_base_link:
           Value: true
+        futama2_base_link:
+          Value: false
         led_back_down_front_link:
           Value: false
         led_back_down_left_link:
@@ -545,6 +544,8 @@ Visualization Manager:
           Value: false
         led_back_up_right_link:
           Value: false
+        object_link:
+          Value: true
         realsense_center_link:
           Value: false
         realsense_front_link:
@@ -556,7 +557,7 @@ Visualization Manager:
         shoulder_link:
           Value: false
         tool0:
-          Value: false
+          Value: true
         upper_arm_link:
           Value: false
         world:
@@ -614,6 +615,8 @@ Visualization Manager:
                                   {}
                           ft_frame:
                             {}
+            object_link:
+              {}
       Update Interval: 0
       Value: true
     - Alpha: 1
@@ -870,7 +873,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 2.461467742919922
+      Distance: 3.145454168319702
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -885,10 +888,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.27979686856269836
+      Pitch: 0.524796724319458
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 1.7740365266799927
+      Yaw: 2.4790360927581787
     Saved: ~
 Window Geometry:
   Displays:

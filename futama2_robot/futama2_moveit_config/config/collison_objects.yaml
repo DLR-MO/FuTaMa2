@@ -1,0 +1,21 @@
+collision_objects:
+  - id: "box"
+    frame_id: "world"
+    meshes:
+      - mesh_path: "package://futama2_description/meshes/collision/GOM_Wing_1_hyperreduced.stl"
+        position: [-0.45, -1.74, -0.35]
+        orientation: [0.0, 0.0, 0.48, 0.88]
+      - mesh_path: "package://futama2_description/meshes/collision/GOM_Wing_1_hyperreduced.stl"
+        position: [-0.45, -2.04, -0.35]
+        orientation: [0.0, 0.0, 0.48, 0.88]
+    primitives:
+      - type: "BOX"
+        dimensions: [0.3, 0.1, 1.8]
+        pose:
+          position: [-0.7, -2.0, -0.65]
+          orientation: [0.707, 0.0, 0.0, 0.707]
+      - type: "BOX"
+        dimensions: [4.0, 4.0, 0.01]
+        pose:
+          position: [0.0, 0.0, -0.89]
+          orientation: [1.0, 0.0, 0.0, 0.0]

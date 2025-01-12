@@ -152,6 +152,15 @@ def generate_launch_description():
         condition=IfCondition(EqualsSubstitution(insp_mode, "automatic")),
     )
 
+    auto_insp_oip_node = Node(
+        name="auto_insp_oip",
+        package="futama2_teleop",
+        executable="auto_insp_oip_node.py",
+        output="both",
+        parameters=move_group_params,
+        condition=IfCondition(EqualsSubstitution(insp_mode, "automatic")),
+    )
+
     # rviz
     rviz_node = Node(
         package="rviz2",
@@ -181,7 +190,8 @@ def generate_launch_description():
         package="futama2_teleop",
         executable="foto_capture_node.py",
         output="screen",
-        parameters=[{"insp_mode": insp_mode}]
+        parameters=[{"insp_mode": insp_mode}],
+        condition=IfCondition(EqualsSubstitution(mode, "real")),
     )
 
     servo_params = {"moveit_servo": load_yaml("futama2_teleop", "config/futama2_ur_servo.yaml")}
@@ -257,7 +267,11 @@ def generate_launch_description():
             "depth_module.profile": "1280x720x15",
             "rgb_camera.profile": "1280x720x15",
         }.items(),
-        condition=IfCondition(EqualsSubstitution(camera_mdl, "d405")),
+        condition=IfCondition(
+                    PythonExpression(
+                        ["'", camera_mdl, "' == 'd405' and '", mode, "' == 'real'"]
+                    )
+                ),
     )
 
     # just when using the d435i camera at home (Adrian)
@@ -274,7 +288,11 @@ def generate_launch_description():
             "depth_module.profile": "1280x720x15",
             "rgb_camera.profile": "1280x720x15",
         }.items(),
-        condition=IfCondition(EqualsSubstitution(camera_mdl, "d435i")),
+        condition=IfCondition(
+                    PythonExpression(
+                        ["'", camera_mdl, "' == 'd435i' and '", mode, "' == 'real'"]
+                    )
+                ),
     )
 
     # Three cameras launch
@@ -297,10 +315,18 @@ def generate_launch_description():
         condition=IfCondition(EqualsSubstitution(multicam, "true")),
     )
 
+    tf_static_oip_object = Node( 
+        package='tf2_ros', 
+        executable='static_transform_publisher', 
+        arguments=['-1.0', '1.0', '0', '0', '0', '0', 'world', 'object_link'], 
+        output='screen',
+        condition=IfCondition(EqualsSubstitution(insp_mode, "automatic")),
+    )
+
+
     return LaunchDescription(
         [
-            # This specific order of the execution worked in real and mock robots,
-            # event handlers were tried but not concluded, so for now, this sequence is functional:
+            tf_static_oip_object,
             mode_cmd,
             camera_mdl_cmd,
             multicam_cmd,
@@ -308,18 +334,20 @@ def generate_launch_description():
             spacemouse_cmd,
             octomap_cmd,
             robot_driver_cmd,
-            auto_insp_demo_node,
-            #rs_launch,#rs_launch_d435i,rs_multi_camera_launch,
+            #rs_launch,
+            #rs_launch_d435i,rs_multi_camera_launch,
             #foto_capture_node,
-            #odometry_node,
+            odometry_node,
             rviz_node,
             load_composable_nodes,
             move_group_node,
             move_group_with_octomap_node,
-            #TimerAction(period=2.0,
-            #            actions=[
-            #                    load_composable_nodes,
-            #                    move_group_node,
-            #                    move_group_with_octomap_node,]),
+            TimerAction(period=8.0,
+                        actions=[
+                            auto_insp_oip_node,
+                        ]),
         ]
     )
+
+# TO DO add auto_oip and auto_wing options and modify affected components (nodes, config yamls, etc.) to
+# have the option for oip auto demo, and wing auto demo

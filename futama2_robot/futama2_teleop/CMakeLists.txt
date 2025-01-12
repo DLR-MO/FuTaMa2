@@ -5,6 +5,7 @@
 cmake_minimum_required(VERSION 3.22)
 project(futama2_teleop)
 
+find_package(ament_cmake REQUIRED)
 find_package(moveit_common REQUIRED)
 moveit_package()
 
@@ -32,32 +33,27 @@ set(THIS_PACKAGE_INCLUDE_DEPENDS
   moveit_visual_tools
 )
 
-# find dependencies
-find_package(ament_cmake REQUIRED)
+# Find dependencies
 find_package(rclpy REQUIRED)
 find_package(moveit_visual_tools REQUIRED)
 find_package(rviz_visual_tools REQUIRED)
-
 find_package(rclcpp REQUIRED)
 find_package(ament_cmake_python REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(control_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
-
-
 find_package(eigen3_cmake_module REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(generate_parameter_library REQUIRED)
+
 foreach(Dependency IN ITEMS ${THIS_PACKAGE_INCLUDE_DEPENDS})
   find_package(${Dependency} REQUIRED)
 endforeach()
 
+# Include headers
 include_directories(
   include
 )
-
-install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
-install(DIRECTORY config DESTINATION share/${PROJECT_NAME})
 
 ######################
 ## Executable Nodes ##
@@ -68,7 +64,7 @@ add_library(joystick_teleop SHARED src/joystick_teleop.cpp)
 ament_target_dependencies(joystick_teleop PUBLIC ${THIS_PACKAGE_INCLUDE_DEPENDS})
 rclcpp_components_register_nodes(joystick_teleop "futama2_teleop::JoystickTeleop")
 
-# keyboard node
+# keyboard_teleop node
 add_library(keyboard_teleop SHARED src/keyboard_teleop.cpp)
 ament_target_dependencies(keyboard_teleop PUBLIC ${THIS_PACKAGE_INCLUDE_DEPENDS})
 rclcpp_components_register_nodes(keyboard_teleop "futama2_teleop::KeyboardNode")
@@ -80,29 +76,29 @@ ament_target_dependencies(keyboard_node ${THIS_PACKAGE_INCLUDE_DEPENDS})
 ## Install ##
 #############
 
-# Install Libraries C++
+# Install C++ libraries
 install(TARGETS
-    joystick_teleop
-    keyboard_teleop
-    EXPORT futama2_teleopTargets
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
-    RUNTIME DESTINATION bin
-    INCLUDES DESTINATION include/${PROJECT_NAME}
+  joystick_teleop
+  keyboard_teleop
+  EXPORT futama2_teleopTargets
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+  RUNTIME DESTINATION bin
+  INCLUDES DESTINATION include/${PROJECT_NAME}
 )
 
-# Install Binaries C++
+# Install C++ executables
 install(
   TARGETS
     keyboard_node
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
-  RUNTIME DESTINATION lib/${PROJECT_NAME}
+  RUNTIME DESTINATION bin/${PROJECT_NAME}
 )
 
-# Install Python modules
+# Install Python scripts
 ament_python_install_package(${PROJECT_NAME})
-# Install Python executables
+
 install(PROGRAMS
   scripts/odometry_node.py
   scripts/foto_capture_node.py
@@ -111,14 +107,16 @@ install(PROGRAMS
   DESTINATION lib/${PROJECT_NAME}
 )
 
-# Share the config and launch files
+# Install config and launch files
 install(DIRECTORY config launch
-	DESTINATION share/${PROJECT_NAME}
-	)
+  DESTINATION share/${PROJECT_NAME}
+)
 
+# Export targets and dependencies
 ament_export_targets(futama2_teleopTargets HAS_LIBRARY_TARGET)
 ament_export_dependencies(${THIS_PACKAGE_INCLUDE_DEPENDS})
 
+# Enable testing
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
