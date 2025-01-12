@@ -163,7 +163,7 @@ TODO ADD PICTURE MOCK HARDWARE NO CAMERA, USED THIS ONE INSTEAD:
 
 <img src="images/mock-manual-teleop.png" width=40% height=40%>
 
-### Experiment 2 - Real Hardware Teleoperation Motion Planning & Teleoperation
+### Experiment 2 - Real Hardware Motion Planning & Teleoperation
 
 Three terminals:
 - `ros2 launch futama2_teleop teleop_demo.launch.py mode:=real insp_mode:=manual spacemouse:=true camera_mdl:=d435` (Please note that with each launch, the program of the teach pendant of the ur10e needs to restarted)
@@ -171,7 +171,9 @@ Three terminals:
 - `ros2 param set /camera/camera depth_module.enable_auto_exposure true`
 
 Add the `multicam:=true` argument when using the three cameras.
+
 Add the `octomap:=true` if voxelization for motion planning obstacle avoidance is required.
+
 Change `spacemouse:=false` if keyboard is used instead.
 
 Additional terminal for foto capturing ("screenshots") function by by pressing both side buttons of the spacemouse. If the spacemouse is not available, this function has to be simulated by publishing the following to the /spacenav/joy topic:
@@ -185,14 +187,15 @@ Additional terminal for foto capturing ("screenshots") function by by pressing b
 
 This is a short demo of an automatic inspection based on the [OIP inspection planner](https://gitlab.dlr.de/mo-repo/rar/inspection-path-planner) developed in DLR.
 
-- `ros2 launch futama2_teleop auto_insp_oip_launch.py mode:=mock`
+- `ros2 launch futama2_teleop teleop_demo.py mode:=mock insp_mode:=automatic`
 
 Change `mode:=real` if using the real robot instead.
+
+Add the `octomap:=true` if voxelization for motion planning obstacle avoidance is required.
+
 Add the `multicam:=true` argument when using the three cameras to inspect the object.
 
-TO BE CHANGED:
-
-<img src="images/mock-auto-insp.png" width=40% height=40%>
+<img src="images/mock-oip-auto.png" width=40% height=40%>
 
 ## 3D reconstruction
 
