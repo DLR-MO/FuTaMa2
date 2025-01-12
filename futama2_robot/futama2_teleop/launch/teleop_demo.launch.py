@@ -211,10 +211,9 @@ def generate_launch_description():
                 package="futama2_moveit_config",
                 plugin="futama2_moveit_config::PlanningScenePublisher",
                 name="planning_scene_publisher",
-                parameters=[{"mode": mode}
+                parameters=[{"mode": mode,
                             #"use_sim_time": EqualsSubstitution(mode, "sim"),
-                            # "mode": mode}
-                             ],
+                            }],
                 # todo activate when transient local topics are implemented for intra process comms
                 # extra_arguments=[{"use_intra_process_comms": True}],
             ),
@@ -224,6 +223,7 @@ def generate_launch_description():
                 name="joy_teleop",
                 parameters=[{"use_sim_time": EqualsSubstitution(mode, "sim")}],
                 # extra_arguments=[{"use_intra_process_comms": True}],
+                condition=IfCondition(EqualsSubstitution(spacemouse, 'true')),
             ),
             launch_ros.descriptions.ComposableNode(
                 package="spacenav",
@@ -313,10 +313,13 @@ def generate_launch_description():
             #foto_capture_node,
             #odometry_node,
             rviz_node,
-            TimerAction(period=2.0,
-                        actions=[
-                                load_composable_nodes,
-                                move_group_node,
-                                move_group_with_octomap_node,]),
+            load_composable_nodes,
+            move_group_node,
+            move_group_with_octomap_node,
+            #TimerAction(period=2.0,
+            #            actions=[
+            #                    load_composable_nodes,
+            #                    move_group_node,
+            #                    move_group_with_octomap_node,]),
         ]
     )

@@ -54,7 +54,6 @@ endforeach()
 include_directories(
   include
 )
-#
 
 foreach(Dependency IN ITEMS ${THIS_PACKAGE_INCLUDE_DEPENDS})
   find_package(${Dependency} REQUIRED)

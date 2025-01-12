@@ -57,7 +57,7 @@ namespace futama2_moveit_config
       // --------------- WING(S) --------------------------------------------------------
       Eigen::Vector3d scale_wing(1.0, 1.0, 1.0);
       shapes::Mesh * m_wing = shapes::createMeshFromResource(
-        "package://futama2_description/meshes/collision/GOM_Wing_1_superreduced.stl",scale_wing); // one mesh for both
+        "package://futama2_description/meshes/collision/GOM_Wing_1_hyperreduced.stl",scale_wing); // one mesh for both
       // Initializing meshes from STL
       shape_msgs::msg::Mesh wing_front_mesh;
       shape_msgs::msg::Mesh wing_back_mesh;
@@ -94,6 +94,8 @@ namespace futama2_moveit_config
       collision_object.meshes.push_back(wing_back_mesh);
       collision_object.mesh_poses.push_back(collision_object.mesh_poses[0]);
       collision_object.mesh_poses.push_back(collision_object.mesh_poses[1]);
+
+      // Add primitives and additional objects here as per original code
       // Wing column 1 object (reference column for the other columns and rows)
       shape_msgs::msg::SolidPrimitive wing_column_1;
       wing_column_1.type = wing_column_1.BOX;
@@ -319,8 +321,9 @@ namespace futama2_moveit_config
 
       collision_object.primitives.push_back(workstation_table);
       collision_object.primitive_poses.push_back(workstation_table_pose);
+      
+      // Ensure all objects are correctly assigned and maintained
 
-      // Add all collision objects
       collision_object.operation = collision_object.ADD;
       
       moveit_msgs::msg::PlanningSceneWorld psw;
@@ -329,18 +332,19 @@ namespace futama2_moveit_config
       auto ps = std::make_unique<moveit_msgs::msg::PlanningScene>();
       ps->world = psw;
       ps->is_diff = true;
-      int subscriber = collision_pub_->get_subscription_count();
-      collision_pub_->publish(std::move(ps));
-      //todo this while part is only necessary because the moveit move_group does not subscribe with transient local durability on planning scene
+
       while (rclcpp::ok()) {
-        if (subscriber != collision_pub_->get_subscription_count()) {
-          // got new subscriber, republish
-          subscriber = collision_pub_->get_subscription_count();
-          collision_pub_->publish(std::move(ps));
-        }
-        sleep(1);
-      } });
-    }
+          size_t subscriber = collision_pub_->get_subscription_count();
+          if (subscriber > 0) {
+              auto ps = std::make_unique<moveit_msgs::msg::PlanningScene>();
+              ps->world = psw;
+              ps->is_diff = true;
+              collision_pub_->publish(*ps); // Use copy publish instead of move
+          }
+          std::this_thread::sleep_for(std::chrono::seconds(1));
+      }
+    });
+  }
 
     ~PlanningScenePublisher() override
     {
