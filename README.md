@@ -150,6 +150,8 @@ The setup shown in [this](#futama2-project) diagram is needed for the robot to w
 
 The robot is configured by default to use the join_trajectory_controller (Mode T on the keyboard_node terminal). Move the visual marker of the Moveit Motion Planning plugin in Rviz and press the "Plan & Execute" button before changing to Cartesian mode (C on the second terminal). Mode change is also possible using the buttons of the simple spacemouse (not the new versions at the moment).
 
+First of all, set the initial positions in: futama2_description/config/initial_positions.yaml. Currently, there are two which were found suitable for wing inspection and auto oip object inspection.
+
 ### Experiment 1 - Mock Hardware Motion Planning & Teleoperation
 
 To quickly test description, planning scene, and locomotion components:
@@ -187,7 +189,7 @@ Additional terminal for foto capturing ("screenshots") function by by pressing b
 
 This is a short demo of an automatic inspection based on the [OIP inspection planner](https://gitlab.dlr.de/mo-repo/rar/inspection-path-planner) developed in DLR.
 
-- `ros2 launch futama2_teleop teleop_demo.py mode:=mock insp_mode:=automatic`
+- `ros2 launch futama2_teleop teleop_demo.py mode:=mock insp_mode:=auto_oip`
 
 Change `mode:=real` if using the real robot instead.
 

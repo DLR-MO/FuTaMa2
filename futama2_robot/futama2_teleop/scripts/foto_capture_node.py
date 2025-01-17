@@ -34,7 +34,7 @@ class FotoCapture(Node):
 
         if self.auto_insp == 'manual':
             self.foto_capture_buttons_topic = "/joy"         # /joy is free for the spacemouse
-        elif self.auto_insp == 'automatic':
+        else:
             self.foto_capture_buttons_topic = "/spacenav/joy" # /joy is busy by the auto twist, /spacenav/joy instead
         # Subscriber: Joy
         self.joy_sub = self.create_subscription(

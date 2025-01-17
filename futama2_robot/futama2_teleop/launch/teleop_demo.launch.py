@@ -36,6 +36,13 @@ def generate_launch_description():
         choices=["real", "mock", "sim"],
         default_value="real",
     )
+    insp_mode = LaunchConfiguration("insp_mode")
+    insp_mode_cmd = DeclareLaunchArgument(
+        "insp_mode",
+        description="How do you want to perform the inspection?",
+        choices=["manual", "auto_oip", "auto_wing"],
+        default_value="manual",
+    )
     robot_driver_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [get_package_share_directory("futama2_description"), "/launch.py"]),
@@ -63,13 +70,6 @@ def generate_launch_description():
         description="Is the spacemouse available?",
         choices=["false", "true"],
         default_value='false',
-    )
-    insp_mode = LaunchConfiguration("insp_mode")
-    insp_mode_cmd = DeclareLaunchArgument(
-        "insp_mode",
-        description="How do you want to perform the inspection?",
-        choices=["manual", "automatic"],
-        default_value="manual",
     )
     octomap = LaunchConfiguration("octomap")
     octomap_cmd = DeclareLaunchArgument(
@@ -149,7 +149,7 @@ def generate_launch_description():
         executable="auto_insp_demo_node.py",
         output="both",
         parameters=move_group_params,
-        condition=IfCondition(EqualsSubstitution(insp_mode, "automatic")),
+        condition=IfCondition(EqualsSubstitution(insp_mode, "auto_wing")),
     )
 
     auto_insp_oip_node = Node(
@@ -158,7 +158,7 @@ def generate_launch_description():
         executable="auto_insp_oip_node.py",
         output="both",
         parameters=move_group_params,
-        condition=IfCondition(EqualsSubstitution(insp_mode, "automatic")),
+        condition=IfCondition(EqualsSubstitution(insp_mode, "auto_oip")),
     )
 
     # rviz
@@ -318,15 +318,13 @@ def generate_launch_description():
     tf_static_oip_object = Node( 
         package='tf2_ros', 
         executable='static_transform_publisher', 
-        arguments=['-1.0', '1.0', '0', '0', '0', '0', 'world', 'object_link'], 
+        arguments=['-0.645', '0.795', '0.098', '0', '0', '0', 'world', 'object_link'], 
         output='screen',
-        condition=IfCondition(EqualsSubstitution(insp_mode, "automatic")),
+        condition=IfCondition(EqualsSubstitution(insp_mode, "auto_oip")),
     )
-
 
     return LaunchDescription(
         [
-            tf_static_oip_object,
             mode_cmd,
             camera_mdl_cmd,
             multicam_cmd,
@@ -337,17 +335,15 @@ def generate_launch_description():
             rs_launch,
             rs_launch_d435i,rs_multi_camera_launch,
             foto_capture_node,
-            odometry_node,
             rviz_node,
             load_composable_nodes,
             move_group_node,
             move_group_with_octomap_node,
-            TimerAction(period=2.0,
+            odometry_node,
+            TimerAction(period=5.0,
                         actions=[
+                            tf_static_oip_object,
                             auto_insp_oip_node,
                         ]),
         ]
     )
-
-# TO DO add auto_oip and auto_wing options and modify affected components (nodes, config yamls, etc.) to
-# have the option for oip auto demo, and wing auto demo

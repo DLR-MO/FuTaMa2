@@ -52,9 +52,7 @@ class AutoInsp(Node):
 
         # Load and publish the path
         poses = get_poses()
-        first_pose = (-1.2055292081832886, -0.17412646114826202, 0.7930378317832947,
-                      -0.18334272503852844, -1.076518492482137e-05, 0.9830490946769714, 2.7753067115554586e-05)
-        path_msg = self.to_path_msg([first_pose, *poses])
+        path_msg = self.to_path_msg([*poses])
         self.publish_path(path_msg)
 
     def robot_states_callback(self, msg):
@@ -63,7 +61,7 @@ class AutoInsp(Node):
     def to_path_msg(self, path_poses_tuple: list[tuple]) -> Path:
         path_msg = Path()
         current_time = self.get_clock().now().to_msg()
-        path_msg.header = Header(frame_id='base_link', stamp=current_time)
+        path_msg.header = Header(frame_id='object_link', stamp=current_time)
         path_msg.poses = [tuple_to_pose(pose, current_time) for pose in path_poses_tuple]
         return path_msg
 

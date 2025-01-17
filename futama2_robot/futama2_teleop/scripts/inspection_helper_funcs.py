@@ -43,7 +43,7 @@ def get_poses(package_name: str = 'futama2_teleop', file_name: str = 'poses.txt'
 
     return poses
 
-
+# tries with camera poses of the front and bottom cameras, as they are more comfortable on the table to test
 CAMERA_POSES = [
     (R.from_euler('XYZ', [0,   0, 0], degrees=True), [0, 0, 0]),  # Front
     (R.from_euler('XYZ', [180, 0, 0], degrees=True), [0, 0, 0]),  # 180°
@@ -57,14 +57,14 @@ def tuple_to_pose(pose: tuple, current_time) -> PoseStamped:
     Converts a tuple representing a pose into a PoseStamped message.
 
     Args:
-        pose (tuple): The pose as (x, y, z, qx, qy, qz, qw).
+        pose (tuple): The pose as (cartesian(x, y, z), quaternion(qx, qy, qz, qw)).
         current_time: ROS2 clock timestamp.
 
     Returns:
         PoseStamped: ROS2 PoseStamped message.
     """
     pose_stamped = PoseStamped()
-    pose_stamped.header = Header(frame_id='base_link', stamp=current_time)
+    pose_stamped.header = Header(frame_id='object_link', stamp=current_time)
     pose_stamped.pose.position.x = pose[0]
     pose_stamped.pose.position.y = pose[1]
     pose_stamped.pose.position.z = pose[2]

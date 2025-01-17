@@ -1,5 +1,4 @@
-# SPDX-FileCopyrightText: 2024 German Aerospace Center <adrian.ricardezortigosa@dlr.de>
-#
+# SPDX-FileCopyrightText: 2024 German Aerospace Center
 # SPDX-License-Identifier: MIT
 
 cmake_minimum_required(VERSION 3.22)
@@ -69,8 +68,9 @@ add_library(keyboard_teleop SHARED src/keyboard_teleop.cpp)
 ament_target_dependencies(keyboard_teleop PUBLIC ${THIS_PACKAGE_INCLUDE_DEPENDS})
 rclcpp_components_register_nodes(keyboard_teleop "futama2_teleop::KeyboardNode")
 
+# Define the executable for keyboard_node
 add_executable(keyboard_node src/keyboard_teleop.cpp)
-ament_target_dependencies(keyboard_node ${THIS_PACKAGE_INCLUDE_DEPENDS})
+ament_target_dependencies(keyboard_node PUBLIC ${THIS_PACKAGE_INCLUDE_DEPENDS})
 
 #############
 ## Install ##
@@ -88,12 +88,9 @@ install(TARGETS
 )
 
 # Install C++ executables
-install(
-  TARGETS
-    keyboard_node
-  ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin/${PROJECT_NAME}
+install(TARGETS
+  keyboard_node
+  DESTINATION lib/${PROJECT_NAME}
 )
 
 # Install Python scripts
