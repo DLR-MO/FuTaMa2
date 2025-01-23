@@ -88,7 +88,6 @@ class AutoInsp(Node):
         self.logger.error("All planning attempts failed")
         return False
 
-
     def switch_to_trajectory_mode(self):
         self._switch_controller("joint_trajectory_controller", "forward_position_controller")
         self.logger.info("Switched to trajectory mode")
@@ -105,6 +104,7 @@ class AutoInsp(Node):
             self.logger.error("Failed to switch controllers")
 
     def auto_insp_demo_mode(self):
+        # SEQUENCE OF MOVEMENTS
         self.move_to_pose(POSE_CONFINED_SPACE_FRONT)
         self.move_to_pose(POSE_ORIGIN)
         self.destroy_node()
@@ -120,7 +120,6 @@ def main(args=None):
     finally:
         node.destroy_node()
         rclpy.shutdown()
-
 
 if __name__ == '__main__':
     main()
