@@ -3,17 +3,17 @@
 # SPDX-License-Identifier: MIT
 
 # for mock wing inspection:
-#shoulder_pan_joint: 4.712434768676758
-#shoulder_lift_joint: -1.1430185598186036
-#elbow_joint: 2.4478374163257044
-#wrist_1_joint: 3.5035568910786132
-#wrist_2_joint: 1.570771336555481
-#wrist_3_joint: -5.49770695367922
+shoulder_pan_joint: 4.712434768676758
+shoulder_lift_joint: -1.1430185598186036
+elbow_joint: 2.4478374163257044
+wrist_1_joint: 3.5035568910786132
+wrist_2_joint: 1.570771336555481
+wrist_3_joint: -5.49770695367922
 
 # for mock auto oip inspection:
-shoulder_pan_joint: -5.767372101990559
-shoulder_lift_joint: -2.712591000026029
-elbow_joint: 1.4093879773898201
-wrist_1_joint: -1.711256129668051
-wrist_2_joint: 5.592825959370828
-wrist_3_joint: -2.375377862874404
+#shoulder_pan_joint: -5.767372101990559
+#shoulder_lift_joint: -2.712591000026029
+#elbow_joint: 1.4093879773898201
+#wrist_1_joint: -1.711256129668051
+#wrist_2_joint: 5.592825959370828
+#wrist_3_joint: -2.375377862874404

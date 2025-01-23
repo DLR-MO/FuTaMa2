@@ -1,0 +1,43 @@
+planning_scene_monitor_options:
+  name: "planning_scene_monitor"
+  robot_description: "robot_description"
+  joint_state_topic: "/joint_states"
+  attached_collision_object_topic: "/attached_collision_object"
+  publish_planning_scene_topic: "/planning_scene"
+  monitored_planning_scene_topic: "/monitored_planning_scene"
+  wait_for_initial_state_timeout: 10.0
+
+planning_pipelines:
+  pipeline_names: ["ompl", "pilz_industrial_motion_planner", "chomp"]  # List all pipelines you plan to use
+
+plan_request_params:
+  planning_attempts: 5  # Increase attempts to allow the robot to retry planning
+  planning_pipeline: ompl
+  max_velocity_scaling_factor: 1.0
+  max_acceleration_scaling_factor: 1.0
+
+ompl_rrtc:
+  plan_request_params:
+    planning_attempts: 5  # Increase attempts to make the planner more flexible
+    planning_pipeline: ompl
+    planner_id: "RRTConnectkConfigDefault"
+    max_velocity_scaling_factor: 1.0
+    max_acceleration_scaling_factor: 1.0
+    planning_time: 5.0  # Increase planning time to allow more complex plans
+
+pilz_lin:
+  plan_request_params:
+    planning_attempts: 3  # Allow additional retries for the Pilz planner
+    planning_pipeline: pilz_industrial_motion_planner
+    planner_id: "PTP"
+    max_velocity_scaling_factor: 1.0
+    max_acceleration_scaling_factor: 1.0
+    planning_time: 1.0  # Slightly increase planning time for Pilz
+
+chomp_planner:
+  plan_request_params:
+    planning_attempts: 3  # Allow more retries for CHOMP planner
+    planning_pipeline: chomp
+    max_velocity_scaling_factor: 1.0
+    max_acceleration_scaling_factor: 1.0
+    planning_time: 2.0  # Increase planning time for CHOMP to handle complex paths

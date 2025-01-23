@@ -91,7 +91,7 @@ def generate_launch_description():
                      .robot_description(file_path="config/robot.urdf.xacro")
                      .moveit_cpp(
         file_path=get_package_share_directory("futama2_teleop")
-        + "/config/motion_planning_python_api_tutorial.yaml")
+        + "/config/motion_planning.yaml")
     ).to_moveit_configs()
 
     move_group_configuration = {
@@ -143,10 +143,10 @@ def generate_launch_description():
         parameters=move_group_params,
     )
 
-    auto_insp_demo_node = Node(
-        name="auto_insp_demo",
+    auto_insp_wing_node = Node(
+        name="auto_insp_wing",
         package="futama2_teleop",
-        executable="auto_insp_demo_node.py",
+        executable="auto_insp_wing_node.py",
         output="both",
         parameters=move_group_params,
         condition=IfCondition(EqualsSubstitution(insp_mode, "auto_wing")),
@@ -343,6 +343,7 @@ def generate_launch_description():
             TimerAction(period=5.0,
                         actions=[
                             tf_static_oip_object,
+                            auto_insp_wing_node,
                             auto_insp_oip_node,
                         ]),
         ]

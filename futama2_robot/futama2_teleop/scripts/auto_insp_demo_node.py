@@ -4,6 +4,10 @@
 #
 # SPDX-License-Identifier: MIT
 
+# Previous version of the auto_insp_wing_node.py which used to work on APZ I (paper FuTaMa2)
+# now it has changed and the forward position controller is not being used
+# as constrained plans will be generated in the future instead from twist
+
 """
 Node that executes the automatic robotic inspection process around the wing.
 """
@@ -29,10 +33,11 @@ const_eq = max_vel/(min_depth_dist)         # [-], tested with 0.001
 depth_dist = 0                              # [mm]
 start_time = 0                              # [s]
 
-pose_origin = [-1.2055292081832886, -0.17412646114826202, 0.7930378317832947,
-               -0.18334272503852844, -1.076518492482137e-05, 0.9830490946769714, 2.7753067115554586e-05]
-pose_confined_space_front = [-1.602797494407978, -0.08713420711220163, 0.1624797976718972,
-                             -0.2173614367016838, 0.02425603873074822, 0.9749612559673085, -0.04020198729814948]
+pose_origin = [0.17433129251003265, -1.216812252998352, 0.849524974822998,
+               0.033915333449840546, 0.03393150493502617, -0.7062444090843201, 0.7063407301902771]
+pose_confined_space_front = [-0.3134135603904724, -1.5278343439102173, 0.07761852443218231,
+                             0.29451873898506165, 0.2945699691772461, -0.6427989602088928, 0.6428815722465515]
+
 previous_pose = [0, 0, 0,
                  0, 0, 0, 0]
 
