@@ -282,19 +282,15 @@ def generate_launch_description():
         ),
         launch_arguments={
             "pointcloud.enable": "true",
-            #"align_depth.enable": "true",
+            "align_depth.enable": "true",
             #"depth_module.enable_auto_exposure": "true",
             "device_type": camera_mdl,
             "depth_module.profile": "1280x720x15",
             "rgb_camera.profile": "1280x720x15",
         }.items(),
-        condition=IfCondition(
-                    PythonExpression(
-                        ["'", camera_mdl, "' == 'd435i' and '", mode, "' == 'real'"]
-                    )
-                ),
+        condition=IfCondition(EqualsSubstitution(camera_mdl, "d435i")),
     )
-
+    
     # Three cameras launch
     rs_multi_camera_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
