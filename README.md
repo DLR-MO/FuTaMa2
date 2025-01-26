@@ -56,15 +56,15 @@ Packages that will manage the connection with the cameras. The model of the came
 
 Required binaries:
 
-- [Here the instructions](https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md#installing-the-packages) for installing the [librealsense](https://github.com/IntelRealSense/librealsense) (SDK) package (["Step2-Option1-Linux Debian Installation"](https://github.com/IntelRealSense/realsense-ros)), since one could encounter multiple issues if building from source (not recommended).
+- [Here the instructions](https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md#installing-the-packages) for installing the [librealsense](https://github.com/IntelRealSense/librealsense) (SDK) package (coming from ["Step2-Option1-Linux Debian Installation"](https://github.com/IntelRealSense/realsense-ros)), since one could encounter multiple issues if building from source (not recommended).
 
 - Other possible required binary packages to be installed with apt install ros-jazzy-«package_name»: [xacro](https://github.com/ros/xacro/tree/ros2), [diagnostic_updater](https://github.com/ros/diagnostics), [launch_pytest](https://github.com/ros2/launch),...
 
 Building from source:
 
-- The ros2-development branch of the [wrapper](https://github.com/IntelRealSense/realsense-ros), (["Step3-Option2-Install"](https://github.com/IntelRealSense/realsense-ros)).
+- The ros2-master branch of the [wrapper](https://github.com/IntelRealSense/realsense-ros), (coming from ["Step3-Option2-Install"](https://github.com/IntelRealSense/realsense-ros)).
 
-- Since the rosdep can't resolve the librealsense installed binaries, it is recommended to build from source the development branch of the [librealsense](https://github.com/IntelRealSense/librealsense/tree/development) package too.
+- Since the rosdep can't resolve the librealsense installed binaries, it is recommended to build from source the master branch of the [librealsense](https://github.com/IntelRealSense/librealsense/tree/development) package too.
 
 Troubleshooting:
 1. Issues [#1225](https://github.com/IntelRealSense/librealsense/issues/1225) and [#10988](https://github.com/IntelRealSense/librealsense/issues/10988) can be avoided by disabling the [Secure Boot](https://wiki.ubuntu.com/UEFI/SecureBoot/DKMS) (only if you present this error, otherwise, ignore this bullet point).
