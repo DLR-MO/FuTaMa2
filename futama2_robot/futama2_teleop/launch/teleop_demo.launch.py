@@ -135,14 +135,6 @@ def generate_launch_description():
         condition=IfCondition(EqualsSubstitution(octomap, "true")),
     )
 
-    motion_planning_python_api_node = Node(
-        name="motion_planning_python_api_node",
-        package="futama2_teleop",
-        executable="motion_planning_python_api.py",
-        output="both",
-        parameters=move_group_params,
-    )
-
     auto_insp_wing_node = Node(
         name="auto_insp_wing",
         package="futama2_teleop",
