@@ -105,6 +105,7 @@ install(PROGRAMS
   scripts/auto_insp_demo_node.py
   scripts/auto_insp_wing_node.py
   scripts/auto_insp_oip_node.py
+  scripts/minimal_motion_planner_api.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
