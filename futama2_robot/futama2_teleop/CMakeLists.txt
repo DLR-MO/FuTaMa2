@@ -102,8 +102,6 @@ ament_python_install_package(${PROJECT_NAME})
 install(PROGRAMS
   scripts/odometry_node.py
   scripts/foto_capture_node.py
-  scripts/auto_insp_demo_node.py
-  scripts/auto_insp_wing_node.py
   scripts/auto_insp_oip_node.py
   scripts/minimal_motion_planner_api.py
   scripts/jogging_sim.py

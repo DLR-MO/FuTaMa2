@@ -146,58 +146,45 @@ Will be done in the coming weeks. The installation steps were already followed a
 ## Hardware Preparation
 The setup shown in [this](#futama2-project) diagram is needed for the robot to work properly (for mock and real environments). If the spacemouse is not available, the robot can still be operational with the keyboard, but the foto capture becomes trickier. The best is to have the complete setup.
 
-## Main Commands 
-
 The robot is configured by default to use the join_trajectory_controller (Mode T on the keyboard_node terminal). Move the visual marker of the Moveit Motion Planning plugin in Rviz and press the "Plan & Execute" button before changing to Cartesian mode (C on the second terminal). Mode change is also possible using the buttons of the simple spacemouse (not the new versions at the moment).
 
-First of all, set the initial positions in: futama2_description/config/initial_positions.yaml. Currently, there are two which were found suitable for wing inspection and auto oip object inspection.
+Set the initial positions in: futama2_description/config/initial_positions.yaml. Currently, there are two which were found suitable for wing inspection and auto oip object inspection.
 
-### Experiment 1 - Mock Hardware Motion Planning & Teleoperation
+### Main commands
 
-To quickly test description, planning scene, and locomotion components:
-Two terminals:
-- `ros2 launch futama2_teleop teleop_demo.launch.py mode:=mock insp_mode:=manual spacemouse:=true`
-- `ros2 run futama2_teleop keyboard_node`
+1. `ros2 launch futama2_teleop teleop_demo.launch.py mode:=mock insp_mode:=manual camera_mdl:=d405 spacemouse:=false multicam:=false octomap:=false`
+2. `ros2 run futama2_teleop keyboard_node`
 
-Change `spacemouse:=false` if keyboard is used instead.
+* Change `spacemouse:=true` if spacemouse is available.
+* Change `mode:=real` when using real hardware
+* Change `camera_mdl:=d435i` when debugging at e.g. home and only d43i camera available
+* Change `multi_cam:=true` if the three D405 cameras are used
+* Change `octomap:=true` if voxelization for newly discovered objects is required for obstacle avoidance
+* Change `insp_mode:=auto_minimal` if you want to run a short demo on moving to a pose nearby the wing
+* Change `insp_mode:=auto_oip` if you want to run a short demo of automatic inspection based on the [OIP inspection planner](https://gitlab.dlr.de/mo-repo/rar/inspection-path-planner)
 
-TODO ADD PICTURE MOCK HARDWARE NO CAMERA, USED THIS ONE INSTEAD:
+3. If you want to launch the motion APIs standalone, change `insp_mode:=manual` and:
+* `ros2 launch futama2_teleop minimal_motion_planner_api.launch.py`
+* `ros2 launch futama2_teleop auto_insp_oip.launch.py`
 
-<img src="images/mock-manual-teleop.png" width=40% height=40%>
+When using the real robot: `ros2 param set /camera/camera depth_module.enable_auto_exposure true`
 
-### Experiment 2 - Real Hardware Motion Planning & Teleoperation
+TODO : CHECK WHAT TO SHOW FROM PICS, MAYBE MAKE A COLLAGE:
 
-Three terminals:
-- `ros2 launch futama2_teleop teleop_demo.launch.py mode:=real insp_mode:=manual spacemouse:=true camera_mdl:=d435` (Please note that with each launch, the program of the teach pendant of the ur10e needs to restarted)
-- `ros2 run futama2_teleop keyboard_node`
-- `ros2 param set /camera/camera depth_module.enable_auto_exposure true`
+<img src="images/mock-servo.png" width=40% height=40%>
 
-Add the `multicam:=true` argument when using the three cameras.
+<img src="images/auto-minimal.png" width=40% height=40%>
 
-Add the `octomap:=true` if voxelization for motion planning obstacle avoidance is required.
+<img src="images/mock-oip-auto.png" width=40% height=40%>
 
-Change `spacemouse:=false` if keyboard is used instead.
+### Photo capturing
 
-Additional terminal for foto capturing ("screenshots") function by by pressing both side buttons of the spacemouse. If the spacemouse is not available, this function has to be simulated by publishing the following to the /spacenav/joy topic:
+Additional terminal for photo capturing ("screenshots") function by by pressing both side buttons of the spacemouse. If the spacemouse is not available, this function has to be simulated by publishing the following to the /spacenav/joy topic:
 - `ros2 topic pub --once /spacenav/joy sensor_msgs/Joy \ '{ header: { stamp: 'now', frame_id: "realsense_center_link"}, axes: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], buttons: [1, 1]}'`
 - `ros2 topic pub --once /spacenav/joy sensor_msgs/Joy \ '{ header: { stamp: 'now', frame_id: "realsense_center_link"}, axes: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], buttons: [0, 0]}'`
 - The picture should be now saved then in your workspace or current directory.
 
 <img src="images/real-manual-teleop.png" width=40% height=40% />
-
-### Experiment 3. OIP Auto Inspection Planner
-
-This is a short demo of an automatic inspection based on the [OIP inspection planner](https://gitlab.dlr.de/mo-repo/rar/inspection-path-planner) developed in DLR.
-
-- `ros2 launch futama2_teleop teleop_demo.py mode:=mock insp_mode:=auto_oip`
-
-Change `mode:=real` if using the real robot instead.
-
-Add the `octomap:=true` if voxelization for motion planning obstacle avoidance is required.
-
-Add the `multicam:=true` argument when using the three cameras to inspect the object.
-
-<img src="images/mock-oip-auto.png" width=40% height=40%>
 
 ## 3D reconstruction
 

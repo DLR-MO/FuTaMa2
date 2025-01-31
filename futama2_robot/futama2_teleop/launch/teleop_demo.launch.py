@@ -40,7 +40,7 @@ def generate_launch_description():
     insp_mode_cmd = DeclareLaunchArgument(
         "insp_mode",
         description="How do you want to perform the inspection?",
-        choices=["manual", "auto_oip", "auto_wing"],
+        choices=["manual", "auto_oip", "auto_minimal"],
         default_value="manual",
     )
     robot_driver_cmd = IncludeLaunchDescription(
@@ -133,13 +133,13 @@ def generate_launch_description():
         condition=IfCondition(EqualsSubstitution(octomap, "true")),
     )
 
-    auto_insp_wing_node = Node(
-        name="auto_insp_wing",
+    minimal_motion_planner_api_node = Node(
+        name="minimal_motion_planner_api",
         package="futama2_teleop",
-        executable="auto_insp_wing_node.py",
+        executable="minimal_motion_planner_api.py",
         output="both",
         parameters=move_group_params,
-        condition=IfCondition(EqualsSubstitution(insp_mode, "auto_wing")),
+        condition=IfCondition(EqualsSubstitution(insp_mode, "auto_minimal")),
     )
 
     auto_insp_oip_node = Node(
@@ -329,7 +329,7 @@ def generate_launch_description():
             TimerAction(period=5.0,
                         actions=[
                             tf_static_oip_object,
-                            auto_insp_wing_node,
+                            minimal_motion_planner_api_node,
                             auto_insp_oip_node,
                         ]),
         ]
