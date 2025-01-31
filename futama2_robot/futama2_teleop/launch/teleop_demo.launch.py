@@ -89,10 +89,8 @@ def generate_launch_description():
     # Start the actual move_group node/action server
     moveit_config = (MoveItConfigsBuilder("robot", package_name="futama2_moveit_config")
                      .robot_description(file_path="config/robot.urdf.xacro")
-                     .moveit_cpp(
-        file_path=get_package_share_directory("futama2_teleop")
-        + "/config/motion_planning.yaml")
-    ).to_moveit_configs()
+                     .moveit_cpp(file_path=get_package_share_directory("futama2_teleop")+"/config/motion_planning.yaml")
+                     ).to_moveit_configs()
 
     move_group_configuration = {
         # with only this on, the octomap is still visible, but stuck!
