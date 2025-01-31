@@ -40,9 +40,9 @@ def launch_setup(context, *args, **kwargs):
         .to_moveit_configs()
     )
 
-    jog_node = Node(
-        package="elise_jogging_moveit",
-        executable="jog.py",
+    jogging_sim_node = Node(
+        package="futama2_teleop",
+        executable="jogging_sim.py",
         parameters=[use_sim_time]
     )
 
@@ -54,17 +54,19 @@ def launch_setup(context, *args, **kwargs):
         parameters=[moveit_config.to_dict() | use_sim_time],
     )
 
-    # RViz
+    # rviz
     rviz_node = Node(
         package="rviz2",
         executable="rviz2",
-        name="rviz2",
         output="log",
+        respawn=False,
+        arguments=[
+            "-d", get_package_share_directory("futama2_teleop") + "/config/futama2.rviz"],
         parameters=[
             moveit_config.robot_description,
+            moveit_config.planning_pipelines,
             moveit_config.robot_description_semantic,
             moveit_config.robot_description_kinematics,
-            moveit_config.planning_pipelines,
             moveit_config.joint_limits,
         ],
     )
@@ -80,7 +82,7 @@ def launch_setup(context, *args, **kwargs):
 
     nodes_to_start = [
         static_tf,
-        #jog_node,
+        #jogging_sim_node,
         rviz_node,
         run_move_group_node,
     ]

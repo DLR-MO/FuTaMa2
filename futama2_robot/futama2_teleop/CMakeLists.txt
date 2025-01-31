@@ -106,6 +106,7 @@ install(PROGRAMS
   scripts/auto_insp_wing_node.py
   scripts/auto_insp_oip_node.py
   scripts/minimal_motion_planner_api.py
+  scripts/jogging_sim.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
