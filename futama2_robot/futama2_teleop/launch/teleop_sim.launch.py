@@ -1,138 +1,88 @@
-# SPDX-FileCopyrightText: 2024 German Aerospace Center <adrian.ricardezortigosa@dlr.de>
-#
-# SPDX-License-Identifier: MIT
-
-import launch_ros
-import os
-import yaml
+from pathlib import Path
 from launch import LaunchDescription
-from launch_ros.actions import Node, LoadComposableNodes, ComposableNodeContainer
+from launch.actions import DeclareLaunchArgument, OpaqueFunction
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch.conditions import IfCondition, UnlessCondition
+from launch_ros.actions import Node
+from launch_ros.substitutions import FindPackageShare
+from launch.actions import ExecuteProcess
 from ament_index_python.packages import get_package_share_directory
 from moveit_configs_utils import MoveItConfigsBuilder
-from launch.conditions import IfCondition
 
-from launch.actions import IncludeLaunchDescription
-from launch_ros.substitutions import FindPackageShare
-from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, EqualsSubstitution, PythonExpression
+from launch_ros.actions import ComposableNodeContainer
+from launch_ros.descriptions import ComposableNode
 
-from launch.actions import DeclareLaunchArgument, LogInfo, RegisterEventHandler, TimerAction, IncludeLaunchDescription
-from launch.events.process import ProcessIO
-from launch.event_handlers import (OnExecutionComplete, OnProcessExit,
-                                   OnProcessIO, OnProcessStart, OnShutdown)
-
-def load_yaml(package_name, file_name):
-    package_path = get_package_share_directory(package_name)
-    file_path = os.path.join(package_path, file_name)
-    with open(file_path, 'r') as file:
-        return yaml.safe_load(file)
 
 def generate_launch_description():
-    robot_driver_cmd = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            [get_package_share_directory("futama2_description"), "/launch.py"]),
-        launch_arguments={
-            "mode": 'mock',
-        }.items(),
+
+    declared_arguments = []
+
+    return LaunchDescription(
+        declared_arguments + [OpaqueFunction(function=launch_setup)]
     )
-        
-    # MoveIt configuration (but don't publish transforms)
-    moveit_config = (MoveItConfigsBuilder("robot", package_name="futama2_moveit_config")
-                     .robot_description(file_path="config/robot.urdf.xacro")
-                     .moveit_cpp(
-        file_path=get_package_share_directory("futama2_teleop")
-        + "/config/motion_planning_python_api_tutorial.yaml")
-    ).to_moveit_configs()
 
-    # Set up MoveIt group node configuration
-    move_group_configuration = {
-        "publish_robot_description_semantic": True,
-        "allow_trajectory_execution": False,
-        "capabilities": "",
-        "disable_capabilities": "",
-        "publish_planning_scene": False,
-        "publish_geometry_updates": False,
-        "publish_state_updates": False,
-        "publish_transforms_updates": False,
-        "monitor_dynamics": False,
-    }
 
-    move_group_params = [
-        moveit_config.to_dict(),
-        move_group_configuration,
-    ]
+def launch_setup(context, *args, **kwargs):
 
-    move_group_node = Node(
+    current_file_path = Path(__file__).resolve()
+    current_directory = str(current_file_path.parent)
+
+    use_sim_time = { "use_sim_time": True}
+    moveit_config = (
+        MoveItConfigsBuilder("robot", package_name="futama2_moveit_config")
+        .robot_description(file_path="config/robot.urdf.xacro")
+        .planning_scene_monitor(
+            publish_robot_description=True, publish_robot_description_semantic=True
+        )
+        .planning_pipelines(
+            pipelines=["ompl", "chomp", "pilz_industrial_motion_planner"]
+        )
+        .to_moveit_configs()
+    )
+
+    jog_node = Node(
+        package="elise_jogging_moveit",
+        executable="jog.py",
+        parameters=[use_sim_time]
+    )
+
+    # Start the actual move_group node/action server
+    run_move_group_node = Node(
         package="moveit_ros_move_group",
         executable="move_group",
         output="screen",
-        parameters=move_group_params,
+        parameters=[moveit_config.to_dict() | use_sim_time],
     )
 
-    # RViz visualization
+    # RViz
     rviz_node = Node(
         package="rviz2",
         executable="rviz2",
+        name="rviz2",
         output="log",
-        respawn=False,
-        arguments=[
-            "-d", get_package_share_directory("futama2_teleop") + "/config/futama2.rviz"],
         parameters=[
             moveit_config.robot_description,
-            moveit_config.planning_pipelines,
             moveit_config.robot_description_semantic,
             moveit_config.robot_description_kinematics,
+            moveit_config.planning_pipelines,
             moveit_config.joint_limits,
         ],
     )
 
-    servo_params = {"moveit_servo": load_yaml("futama2_teleop", "config/futama2_ur_servo.yaml")}
-
-    # Launch composable nodes to reduce latency and enable real-time control
-    load_composable_nodes = LoadComposableNodes(
-        target_container="robot_container",
-        composable_node_descriptions=[
-            # Joystick teleoperation for manual control
-            launch_ros.descriptions.ComposableNode(
-                package="futama2_teleop",
-                plugin="futama2_teleop::JoystickTeleop",
-                name="joy_teleop",
-                parameters=[{"use_sim_time": 'true'}],
-            ),
-            # Spacemouse (or Spacenav) integration for 3D input control
-            launch_ros.descriptions.ComposableNode(
-                package="spacenav",
-                plugin="spacenav::Spacenav",
-                name="spacenav_node",
-                parameters=[{"use_sim_time": 'true'}],
-                remappings=[("/spacenav/joy", "/joy")],  # Remap to joystick topic if needed
-            ),
-            # Servo for MoveIt integration for teleoperation
-            launch_ros.descriptions.ComposableNode(
-                package="moveit_servo",
-                plugin="moveit_servo::ServoNode",
-                name="servo_node",
-                parameters=[
-                    moveit_config.robot_description,
-                    moveit_config.robot_description_semantic,
-                    moveit_config.robot_description_kinematics,
-                    {
-                        "moveit_servo": load_yaml("futama2_teleop", "config/futama2_ur_servo.yaml"),
-                        "use_sim_time": 'true',
-                    }
-                ], 
-            ),
-        ],
+    # # Static TF
+    static_tf = Node(
+        package="tf2_ros",
+        executable="static_transform_publisher",
+        name="static_transform_publisher",
+        output="log",
+        arguments=["0.0", "0.0", "0.0", "0.0", "0.0", "0.0", "world", "base_link"],
     )
 
-    return LaunchDescription(
-        [
-            robot_driver_cmd,
-            rviz_node,
-            TimerAction(period=2.0,
-                        actions=[
-                            load_composable_nodes,
-                            move_group_node,
-                        ]),
-        ]
-    )
+    nodes_to_start = [
+        static_tf,
+        #jog_node,
+        rviz_node,
+        run_move_group_node,
+    ]
+
+    return nodes_to_start
