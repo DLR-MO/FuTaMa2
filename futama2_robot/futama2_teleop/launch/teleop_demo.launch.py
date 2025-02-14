@@ -184,8 +184,6 @@ def generate_launch_description():
         condition=IfCondition(EqualsSubstitution(mode, "real")),
     )
 
-    servo_params = {"moveit_servo": load_yaml("futama2_teleop", "config/futama2_ur_servo.yaml")}
-
     # Launch as much as possible in components to reduce latency
     load_composable_nodes = LoadComposableNodes(
         target_container="robot_container",
