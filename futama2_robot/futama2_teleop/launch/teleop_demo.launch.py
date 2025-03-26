@@ -64,11 +64,11 @@ def generate_launch_description():
         choices=["false", "true"],
         default_value='false',
     )
-    spacemouse = LaunchConfiguration("spacemouse")
-    spacemouse_cmd = DeclareLaunchArgument(
-        "spacemouse",
-        description="Is the spacemouse available?",
-        choices=["false", "true"],
+    spacemouse_mdl = LaunchConfiguration("spacemouse_mdl")
+    spacemouse_mdl_cmd = DeclareLaunchArgument(
+        "spacemouse_mdl",
+        description="Which spacemouse model is available?",
+        choices=["false", "simple", "pro"],
         default_value='false',
     )
     octomap = LaunchConfiguration("octomap")
@@ -183,6 +183,31 @@ def generate_launch_description():
         parameters=[{"insp_mode": insp_mode}],
         condition=IfCondition(EqualsSubstitution(mode, "real")),
     )
+    
+    joystick_teleoperating_modes = Node(
+        package="futama2_teleop",
+        executable="joystick_teleoperating_modes.py",
+        output="screen",
+        parameters=[{"spacemouse_mdl": spacemouse_mdl}],
+        condition=IfCondition(
+                    PythonExpression(
+                        ["'", spacemouse_mdl, "' != 'false' and '", insp_mode, "' == 'manual'"]
+                    )
+                ),
+    )
+
+    spacemouse_filter = Node(
+        package="rar_filters",
+        executable="spacemouse_filter_ros2.py",
+        output="screen",
+        condition=IfCondition(
+                    PythonExpression(
+                        ["'", spacemouse_mdl, "' != 'false' and '", insp_mode, "' == 'manual'"]
+                    )
+                ),
+    )
+
+    servo_params = {"moveit_servo": load_yaml("futama2_teleop", "config/futama2_ur_servo.yaml")}
 
     # Launch as much as possible in components to reduce latency
     load_composable_nodes = LoadComposableNodes(
@@ -221,19 +246,22 @@ def generate_launch_description():
                 name="joy_teleop",
                 parameters=[{"use_sim_time": EqualsSubstitution(mode, "sim")}],
                 # extra_arguments=[{"use_intra_process_comms": True}],
-                condition=IfCondition(EqualsSubstitution(spacemouse, 'true')),
+                condition=IfCondition(
+                            PythonExpression(
+                                ["'", spacemouse_mdl, "' != 'false' and '", insp_mode, "' == 'manual'"]
+                            )
+                        ),
             ),
             launch_ros.descriptions.ComposableNode(
                 package="spacenav",
                 plugin="spacenav::Spacenav",
                 name="spacenav_node",
                 parameters=[{"use_sim_time": EqualsSubstitution(mode, "sim")}],
-                remappings=[("/spacenav/joy", "/joy")],
                 # extra_arguments=[{"use_intra_process_comms": True}],
                 # if you are actually using the spacemouse, otherwise, only keyboard run
                 condition=IfCondition(
                             PythonExpression(
-                                ["'", spacemouse, "' == 'true' and '", insp_mode, "' == 'manual'"]
+                                ["'", spacemouse_mdl, "' != 'false' and '", insp_mode, "' == 'manual'"]
                             )
                         ),
             ),
@@ -313,9 +341,11 @@ def generate_launch_description():
             camera_mdl_cmd,
             multicam_cmd,
             insp_mode_cmd,
-            spacemouse_cmd,
+            spacemouse_mdl_cmd,
             octomap_cmd,
             robot_driver_cmd,
+            spacemouse_filter,
+            joystick_teleoperating_modes,
             rs_launch,
             rs_launch_d435i,rs_multi_camera_launch,
             foto_capture_node,

@@ -92,7 +92,7 @@ namespace futama2_teleop
 
       // subscriber to get the axis[6] and the buttons[2] from the spacemouse
       joy_sub_ = create_subscription<sensor_msgs::msg::Joy>(
-          "joy", 10, std::bind(&KeyboardTeleop::joy_callback, this, _1));
+          "joy_ur", 10, std::bind(&KeyboardTeleop::joy_callback, this, _1));
 
       // for servo_node
       twist_pub_ =

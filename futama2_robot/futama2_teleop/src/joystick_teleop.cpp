@@ -37,7 +37,7 @@ namespace futama2_teleop
       // Setup pub/sub
       // todo set QoS for pub and sub in a sensitive way
       joy_sub_ = create_subscription<sensor_msgs::msg::Joy>(
-          "/joy", 10, [this](const sensor_msgs::msg::Joy::ConstSharedPtr &msg)
+          "/joy_ur", 10, [this](const sensor_msgs::msg::Joy::ConstSharedPtr &msg)
           { return joyCB(msg); });
 
       twist_pub_ =

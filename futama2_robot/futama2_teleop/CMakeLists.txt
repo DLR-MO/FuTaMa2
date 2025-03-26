@@ -104,7 +104,12 @@ install(PROGRAMS
   scripts/foto_capture_node.py
   scripts/auto_insp_oip_node.py
   scripts/minimal_motion_planner_api.py
+<<<<<<< HEAD
   scripts/jogging_sim.py
+=======
+  scripts/joystick_teleoperating_modes.py
+  scripts/initial_motion_planner_api.py
+>>>>>>> 959d401 (joystick_teleoperating_modes python success! futama2 reacts well to the mode change)
   DESTINATION lib/${PROJECT_NAME}
 )
 
