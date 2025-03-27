@@ -519,6 +519,14 @@ Visualization Manager:
           Value: false
         camera2_link:
           Value: false
+        camera_color_frame:
+          Value: true
+        camera_color_optical_frame:
+          Value: true
+        camera_depth_frame:
+          Value: true
+        camera_depth_optical_frame:
+          Value: true
         camera_link:
           Value: true
         flange:
@@ -589,7 +597,12 @@ Visualization Manager:
                                   camera2_link:
                                     {}
                                   camera_link:
-                                    {}
+                                    camera_color_frame:
+                                      camera_color_optical_frame:
+                                        {}
+                                    camera_depth_frame:
+                                      camera_depth_optical_frame:
+                                        {}
                                   led_back_down_front_link:
                                     {}
                                   led_back_down_left_link:
@@ -820,6 +833,19 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /path
       Value: true
+    - Class: rviz_default_plugins/Marker
+      Enabled: true
+      Name: Marker
+      Namespaces:
+        nearest_voxel_arrow: true
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /nearest_voxel_marker
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -866,25 +892,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 3.286168098449707
+      Distance: 2.103147506713867
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.25854945182800293
-        Y: -0.8702565431594849
-        Z: 0.08190484344959259
+        X: 0.36494794487953186
+        Y: -1.0298502445220947
+        Z: 0.17763812839984894
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.3447968065738678
+      Pitch: 0.5847968459129333
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 2.9640369415283203
+      Yaw: 3.2290377616882324
     Saved: ~
 Window Geometry:
   Displays:
