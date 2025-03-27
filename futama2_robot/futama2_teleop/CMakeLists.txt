@@ -104,7 +104,6 @@ install(PROGRAMS
   scripts/foto_capture_node.py
   scripts/auto_insp_oip_node.py
   scripts/minimal_motion_planner_api.py
-  scripts/joystick_teleoperating_modes.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

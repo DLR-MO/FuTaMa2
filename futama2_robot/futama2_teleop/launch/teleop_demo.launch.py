@@ -185,10 +185,11 @@ def generate_launch_description():
     )
     
     joystick_teleoperating_modes = Node(
-        package="futama2_teleop",
+        package="rar_teleop_modes",
         executable="joystick_teleoperating_modes.py",
         output="screen",
-        parameters=[{"spacemouse_mdl": spacemouse_mdl}],
+        parameters=[{"spacemouse_mdl": spacemouse_mdl},
+                    {"robot_variant:" "emrox"}],
         condition=IfCondition(
                     PythonExpression(
                         ["'", spacemouse_mdl, "' != 'false' and '", insp_mode, "' == 'manual'"]
