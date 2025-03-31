@@ -99,7 +99,7 @@ class AutoInsp(Node):
         self.logger.info("Switching to trajectory mode...")
         req = SwitchController.Request()
         req.activate_controllers = ["joint_trajectory_controller"]
-        req.deactivate_controllers = ["forward_position_controller"]
+        req.deactivate_controllers = ["forward_velocity_controller"]
         self.switchcontroller_client.call_async(req)
         time.sleep(1)
 

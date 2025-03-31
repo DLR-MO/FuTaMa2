@@ -25,8 +25,8 @@ low_latency_mode: false  # Set this to true to publish as soon as an incoming Tw
 command_out_type: std_msgs/Float64MultiArray
 
 # What to publish? Can save some bandwidth as most robots only require positions or velocities
-publish_joint_positions: true
-publish_joint_velocities: false
+publish_joint_positions: false
+publish_joint_velocities: true
 publish_joint_accelerations: false
 
 ## Plugins for smoothing outgoing commands
@@ -67,7 +67,7 @@ cartesian_command_in_topic: ~/delta_twist_cmds  # Topic for incoming Cartesian t
 joint_command_in_topic: ~/delta_joint_cmds # Topic for incoming joint angle commands
 joint_topic: /joint_states
 status_topic: ~/status # Publish status to this topic
-command_out_topic: /forward_position_controller/commands # Publish outgoing commands here
+command_out_topic: /forward_velocity_controller/commands # Publish outgoing commands here
 
 ## Collision checking for the entire robot body
 check_collisions: true # Check collisions?

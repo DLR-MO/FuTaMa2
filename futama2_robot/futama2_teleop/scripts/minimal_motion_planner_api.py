@@ -68,7 +68,7 @@ class SinglePoseMotionPlanner(Node):
         self.get_logger().info("🔄 Switching to trajectory mode...")
         req = SwitchController.Request()
         req.activate_controllers = {"joint_trajectory_controller"}
-        req.deactivate_controllers = {"forward_position_controller"}
+        req.deactivate_controllers = {"forward_velocity_controller"}
 
         client = self.create_client(SwitchController, '/controller_manager/switch_controller')
         while not client.wait_for_service(timeout_sec=1.0):

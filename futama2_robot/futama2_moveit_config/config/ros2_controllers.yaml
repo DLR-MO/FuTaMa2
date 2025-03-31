@@ -1,4 +1,3 @@
-# This config file is used by ros2_control
 controller_manager:
   ros__parameters:
     update_rate: 100  # Hz
@@ -6,19 +5,15 @@ controller_manager:
     joint_trajectory_controller:
       type: joint_trajectory_controller/JointTrajectoryController
 
-    # maybe not required
     scaled_joint_trajectory_controller:
       type: ur_controllers/ScaledJointTrajectoryController
 
-    # for the spacemouse or keyboard
-    forward_position_controller:
-      type: position_controllers/JointGroupPositionController
+    forward_velocity_controller:
+      type: forward_command_controller/ForwardCommandController
 
-    # for the states of the UR joints
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
 
-    # for the UR speed scaling
     speed_scaling_state_broadcaster:
       type: ur_controllers/SpeedScalingStateBroadcaster
 
@@ -79,9 +74,9 @@ scaled_joint_trajectory_controller:
       wrist_3_joint: { trajectory: 0.2, goal: 0.1 }
     speed_scaling_interface_name: speed_scaling/speed_scaling_factor
 
-forward_position_controller:
+forward_velocity_controller:
   ros__parameters:
-    default: true
+    default: false
     joints:
       - shoulder_pan_joint
       - shoulder_lift_joint
@@ -90,7 +85,6 @@ forward_position_controller:
       - wrist_2_joint
       - wrist_3_joint
     command_interfaces:
-      - position
+      - velocity
     state_interfaces:
-      - position
-    interface_name: position
+      - velocity

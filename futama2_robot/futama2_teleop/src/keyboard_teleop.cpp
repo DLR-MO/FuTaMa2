@@ -141,7 +141,7 @@ namespace futama2_teleop
       controller_manager_msgs::srv::SwitchController::Request::SharedPtr req =
           std::make_shared<controller_manager_msgs::srv::SwitchController::Request>();
       req->deactivate_controllers = {"joint_trajectory_controller"};
-      req->activate_controllers = {"forward_position_controller"};
+      req->activate_controllers = {"forward_velocity_controller"};
       req->strictness = controller_manager_msgs::srv::SwitchController::Request::BEST_EFFORT;
       controller_type_client_->async_send_request(req);
     }
@@ -153,7 +153,7 @@ namespace futama2_teleop
       {
         controller_manager_msgs::srv::SwitchController::Request::SharedPtr req =
             std::make_shared<controller_manager_msgs::srv::SwitchController::Request>();
-        req->deactivate_controllers = {"forward_position_controller"};
+        req->deactivate_controllers = {"forward_velocity_controller"};
         req->activate_controllers = {"joint_trajectory_controller"};
         req->strictness = controller_manager_msgs::srv::SwitchController::Request::BEST_EFFORT;
         controller_type_client_->async_send_request(req);

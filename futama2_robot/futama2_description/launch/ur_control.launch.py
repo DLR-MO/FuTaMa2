@@ -328,7 +328,7 @@ def launch_setup(context, *args, **kwargs):
         "speed_scaling_state_broadcaster",
         "force_torque_sensor_broadcaster",
     ]
-    controllers_inactive = ["forward_position_controller"]
+    controllers_inactive = ["forward_velocity_controller"]
 
     controller_spawners = [controller_spawner(controllers_active)] + [
         controller_spawner(controllers_inactive, active=False)
@@ -494,7 +494,7 @@ def generate_launch_description():
     declared_arguments.append(
         DeclareLaunchArgument(
             "initial_joint_controller",
-            default_value="forward_position_controller",
+            default_value="forward_velocity_controller",
             description="Initially loaded robot controller.",
         )
     )
