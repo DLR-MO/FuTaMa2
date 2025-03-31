@@ -189,7 +189,7 @@ def generate_launch_description():
         executable="joystick_teleoperating_modes.py",
         output="screen",
         parameters=[{"spacemouse_mdl": spacemouse_mdl},
-                    {"robot_variant:" "emrox"}],
+                    {"robot_variant": "ur_only"}],
         condition=IfCondition(
                     PythonExpression(
                         ["'", spacemouse_mdl, "' != 'false' and '", insp_mode, "' == 'manual'"]
@@ -206,6 +206,20 @@ def generate_launch_description():
                         ["'", spacemouse_mdl, "' != 'false' and '", insp_mode, "' == 'manual'"]
                     )
                 ),
+    )
+
+    # joy from spacemouse
+    spacemouse = Node(
+        package='spacenav', 
+        executable='spacenav_node', 
+        output='screen',
+        name='spacenav_node',
+        parameters=[{
+            'zero_when_static': False,
+            'static_count_threshold': 1000,
+            'static_trans_deadband': 0.01,
+            'static_rot_deadband': 0.01
+        }]
     )
 
     servo_params = {"moveit_servo": load_yaml("futama2_teleop", "config/futama2_ur_servo.yaml")}
@@ -253,19 +267,19 @@ def generate_launch_description():
                             )
                         ),
             ),
-            launch_ros.descriptions.ComposableNode(
-                package="spacenav",
-                plugin="spacenav::Spacenav",
-                name="spacenav_node",
-                parameters=[{"use_sim_time": EqualsSubstitution(mode, "sim")}],
+            #launch_ros.descriptions.ComposableNode(
+            #    package="spacenav",
+            #    plugin="spacenav::Spacenav",
+            #    name="spacenav_node",
+            #    parameters=[{"use_sim_time": EqualsSubstitution(mode, "sim")}],
                 # extra_arguments=[{"use_intra_process_comms": True}],
                 # if you are actually using the spacemouse, otherwise, only keyboard run
-                condition=IfCondition(
-                            PythonExpression(
-                                ["'", spacemouse_mdl, "' != 'false' and '", insp_mode, "' == 'manual'"]
-                            )
-                        ),
-            ),
+            #    condition=IfCondition(
+            #                PythonExpression(
+            #                    ["'", spacemouse_mdl, "' != 'false' and '", insp_mode, "' == 'manual'"]
+            #                )
+            #            ),
+            #),
         ],
     )
 
@@ -345,6 +359,7 @@ def generate_launch_description():
             spacemouse_mdl_cmd,
             octomap_cmd,
             robot_driver_cmd,
+            spacemouse,
             spacemouse_filter,
             joystick_teleoperating_modes,
             rs_launch,

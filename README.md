@@ -152,16 +152,16 @@ Set the initial positions in: futama2_description/config/initial_positions.yaml.
 
 ### Main commands
 
-1. `ros2 launch futama2_teleop teleop_demo.launch.py mode:=mock insp_mode:=manual camera_mdl:=d405 spacemouse:=false multicam:=false octomap:=false`
+1. `ros2 launch futama2_teleop teleop_demo.launch.py mode:=mock insp_mode:=manual camera_mdl:=d405 spacemouse_mdl:=pro multicam:=false octomap:=false`
 2. `ros2 run futama2_teleop keyboard_node`
 
-* Change `spacemouse:=true` if spacemouse is available.
-* Change `mode:=real` when using real hardware
-* Change `camera_mdl:=d435i` when debugging at e.g. home and only d43i camera available
-* Change `multi_cam:=true` if the three D405 cameras are used
-* Change `octomap:=true` if voxelization for newly discovered objects is required for obstacle avoidance
-* Change `insp_mode:=auto_minimal` if you want to run a short demo on moving to a pose nearby the wing
-* Change `insp_mode:=auto_oip` if you want to run a short demo of automatic inspection based on the [OIP inspection planner](https://gitlab.dlr.de/mo-repo/rar/inspection-path-planner)
+* Change to `spacemouse:=simple` if the spacemouse with only two buttons is available, or `false` if not available.
+* Change to `mode:=real` when using real hardware.
+* Change to `camera_mdl:=d435i` when debugging at e.g. home and only d43i camera available
+* Change to `multi_cam:=true` if the three D405 cameras are used
+* Change to `octomap:=true` if voxelization for newly discovered objects is required for obstacle avoidance
+* Change to `insp_mode:=auto_minimal` if you want to run a short demo on moving to a pose nearby the wing
+* Change to `insp_mode:=auto_oip` if you want to run a short demo of automatic inspection based on the [OIP inspection planner](https://gitlab.dlr.de/mo-repo/rar/inspection-path-planner)
 
 3. If you want to launch the motion APIs standalone, change `insp_mode:=manual` and:
 * `ros2 launch futama2_teleop minimal_motion_planner_api.launch.py`
