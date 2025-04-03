@@ -222,8 +222,6 @@ def generate_launch_description():
         }]
     )
 
-    servo_params = {"moveit_servo": load_yaml("futama2_teleop", "config/futama2_ur_servo.yaml")}
-
     # Launch as much as possible in components to reduce latency
     load_composable_nodes = LoadComposableNodes(
         target_container="robot_container",
@@ -236,13 +234,9 @@ def generate_launch_description():
                     moveit_config.robot_description,
                     moveit_config.robot_description_semantic,
                     moveit_config.robot_description_kinematics,
-                    {
-                        "moveit_servo": load_yaml("futama2_teleop", "config/futama2_ur_servo.yaml"),
-                        "use_sim_time": EqualsSubstitution(mode, "sim")
-                    }
-                ], 
-                # todo currently disabled due to bug in moveit https://github.com/ros-planning/moveit2/issues/2632
-                # extra_arguments=[{"use_intra_process_comms": True}],
+                    {**load_yaml("futama2_teleop", "config/futama2_ur_servo.yaml")},
+                    {"use_sim_time": False},
+                ],
             ),
             # For publishing the wing and the base box
             launch_ros.descriptions.ComposableNode(
@@ -362,8 +356,8 @@ def generate_launch_description():
             spacemouse,
             spacemouse_filter,
             joystick_teleoperating_modes,
-            rs_launch,
-            rs_launch_d435i,rs_multi_camera_launch,
+            rs_launch,rs_launch_d435i,
+            rs_multi_camera_launch,
             foto_capture_node,
             rviz_node,
             load_composable_nodes,
