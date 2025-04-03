@@ -192,6 +192,10 @@ namespace futama2_teleop
 
 } // namespace futama2_teleop
 
+// Optionally register as component
+#include <rclcpp_components/register_node_macro.hpp>
+RCLCPP_COMPONENTS_REGISTER_NODE(futama2_teleop::JoystickTeleopPerceptCollAvoidance)
+
 // ---------- MAIN ----------
 int main(int argc, char **argv)
 {

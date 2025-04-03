@@ -65,17 +65,17 @@ include_directories(
 ## Library Nodes ##
 ######################
 
-# joystick_teleop node
+# joystick_teleop
 add_library(joystick_teleop SHARED src/joystick_teleop.cpp)
 ament_target_dependencies(joystick_teleop PUBLIC ${THIS_PACKAGE_INCLUDE_DEPENDS})
 rclcpp_components_register_nodes(joystick_teleop "futama2_teleop::JoystickTeleop")
 
-# joystick_teleop node
+# joystick_teleop_percept_coll_avoidance
 add_library(joystick_teleop_percept_coll_avoidance SHARED src/joystick_teleop_percept_coll_avoidance.cpp)
 ament_target_dependencies(joystick_teleop_percept_coll_avoidance PUBLIC ${THIS_PACKAGE_INCLUDE_DEPENDS})
 rclcpp_components_register_nodes(joystick_teleop_percept_coll_avoidance "futama2_teleop::JoystickTeleopPerceptCollAvoidance")
 
-# keyboard_teleop node
+# keyboard_teleop
 add_library(keyboard_teleop SHARED src/keyboard_teleop.cpp)
 ament_target_dependencies(keyboard_teleop PUBLIC ${THIS_PACKAGE_INCLUDE_DEPENDS})
 rclcpp_components_register_nodes(keyboard_teleop "futama2_teleop::KeyboardNode")

@@ -222,6 +222,14 @@ def generate_launch_description():
         }]
     )
 
+    # joy from spacemouse
+    octomap_distance_node = Node(
+        package='futama2_teleop', 
+        executable='octomap_distance_node', 
+        output='screen',
+        name='octomap_distance_node',
+    )
+
     # Launch as much as possible in components to reduce latency
     load_composable_nodes = LoadComposableNodes(
         target_container="robot_container",
@@ -251,8 +259,8 @@ def generate_launch_description():
             ),
             launch_ros.descriptions.ComposableNode(
                 package="futama2_teleop",
-                plugin="futama2_teleop::JoystickTeleop",
-                name="joy_teleop",
+                plugin="futama2_teleop::JoystickTeleopPerceptCollAvoidance",
+                name="joystick_teleop_percept_coll_avoidance",
                 parameters=[{"use_sim_time": EqualsSubstitution(mode, "sim")}],
                 # extra_arguments=[{"use_intra_process_comms": True}],
                 condition=IfCondition(
@@ -364,6 +372,7 @@ def generate_launch_description():
             move_group_node,
             move_group_with_octomap_node,
             odometry_node,
+            octomap_distance_node,
             TimerAction(period=5.0,
                         actions=[
                             tf_static_oip_object,
