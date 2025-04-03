@@ -1,13 +1,15 @@
+// SPDX-FileCopyrightText: 2024 German Aerospace Center <adrian.ricardezortigosa@dlr.de>
+// SPDX-License-Identifier: MIT
+
 #include <rclcpp/rclcpp.hpp>
 #include <moveit_msgs/msg/planning_scene.hpp>
 #include <geometry_msgs/msg/point.hpp>
-#include <geometry_msgs/msg/vector3.hpp>
+#include <geometry_msgs/msg/vector3_stamped.hpp>
 #include <std_msgs/msg/float64.hpp>
 #include <octomap/octomap.h>
 #include <octomap_msgs/conversions.h>
 #include <tf2_ros/transform_listener.h>
 #include <tf2_ros/buffer.h>
-// #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <visualization_msgs/msg/marker.hpp>
 
 using std::placeholders::_1;
@@ -23,6 +25,7 @@ public:
 
         dist_pub_ = this->create_publisher<std_msgs::msg::Float64>("distance_to_nearest_voxel", 10);
         marker_pub_ = this->create_publisher<visualization_msgs::msg::Marker>("nearest_voxel_marker", 10);
+        vector_pub_ = this->create_publisher<geometry_msgs::msg::Vector3Stamped>("collision_vector", 10);
 
         tf_buffer_ = std::make_shared<tf2_ros::Buffer>(this->get_clock());
         tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
@@ -32,6 +35,7 @@ private:
     rclcpp::Subscription<moveit_msgs::msg::PlanningScene>::SharedPtr sub_;
     rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr dist_pub_;
     rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr marker_pub_;
+    rclcpp::Publisher<geometry_msgs::msg::Vector3Stamped>::SharedPtr vector_pub_;
     std::shared_ptr<tf2_ros::Buffer> tf_buffer_;
     std::shared_ptr<tf2_ros::TransformListener> tf_listener_;
 
@@ -91,7 +95,16 @@ private:
         msg_out.data = min_dist;
         dist_pub_->publish(msg_out);
 
-        // 2. Publish marker
+        // 2. Compute and publish collision vector
+        geometry_msgs::msg::Vector3Stamped vector_msg;
+        vector_msg.header.stamp = this->now();
+        vector_msg.header.frame_id = "world";
+        vector_msg.vector.x = closest_voxel.x() - query_point.x();
+        vector_msg.vector.y = closest_voxel.y() - query_point.y();
+        vector_msg.vector.z = closest_voxel.z() - query_point.z();
+        vector_pub_->publish(vector_msg);
+
+        // 3. Publish marker
         visualization_msgs::msg::Marker marker;
         marker.header.frame_id = "world";
         marker.header.stamp = this->now();
@@ -111,9 +124,9 @@ private:
         marker.points.push_back(start);
         marker.points.push_back(end);
 
-        marker.scale.x = 0.01;  // shaft diameter
-        marker.scale.y = 0.02;  // head diameter
-        marker.scale.z = 0.02;  // head length
+        marker.scale.x = 0.01;
+        marker.scale.y = 0.02;
+        marker.scale.z = 0.02;
 
         marker.color.r = 1.0;
         marker.color.g = 0.2;
@@ -125,6 +138,9 @@ private:
 
         RCLCPP_INFO_THROTTLE(this->get_logger(), *this->get_clock(), 1000,
                              "Distance to nearest voxel from realsense_center_link: %.3f m", min_dist);
+        RCLCPP_INFO_THROTTLE(this->get_logger(), *this->get_clock(), 1000,
+                             "Collision vector [x: %.3f, y: %.3f, z: %.3f]", 
+                             vector_msg.vector.x, vector_msg.vector.y, vector_msg.vector.z);
     }
 };
 

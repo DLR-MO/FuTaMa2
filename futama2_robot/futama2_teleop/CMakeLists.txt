@@ -62,7 +62,7 @@ include_directories(
 )
 
 ######################
-## Executable Nodes ##
+## Library Nodes ##
 ######################
 
 # joystick_teleop node
@@ -70,14 +70,31 @@ add_library(joystick_teleop SHARED src/joystick_teleop.cpp)
 ament_target_dependencies(joystick_teleop PUBLIC ${THIS_PACKAGE_INCLUDE_DEPENDS})
 rclcpp_components_register_nodes(joystick_teleop "futama2_teleop::JoystickTeleop")
 
+# joystick_teleop node
+add_library(joystick_teleop_percept_coll_avoidance SHARED src/joystick_teleop_percept_coll_avoidance.cpp)
+ament_target_dependencies(joystick_teleop_percept_coll_avoidance PUBLIC ${THIS_PACKAGE_INCLUDE_DEPENDS})
+rclcpp_components_register_nodes(joystick_teleop_percept_coll_avoidance "futama2_teleop::JoystickTeleopPerceptCollAvoidance")
+
 # keyboard_teleop node
 add_library(keyboard_teleop SHARED src/keyboard_teleop.cpp)
 ament_target_dependencies(keyboard_teleop PUBLIC ${THIS_PACKAGE_INCLUDE_DEPENDS})
 rclcpp_components_register_nodes(keyboard_teleop "futama2_teleop::KeyboardNode")
 
+######################
+## Executable Nodes ##
+######################
+
+# Define the executable for joystick_node
+add_executable(joystick_teleop_node src/joystick_teleop.cpp)
+ament_target_dependencies(joystick_teleop_node PUBLIC ${THIS_PACKAGE_INCLUDE_DEPENDS})
+
+# Define the executable for joystick_node
+add_executable(joystick_teleop_percept_coll_avoidance_node src/joystick_teleop_percept_coll_avoidance.cpp)
+ament_target_dependencies(joystick_teleop_percept_coll_avoidance_node PUBLIC ${THIS_PACKAGE_INCLUDE_DEPENDS})
+
 # Define the executable for keyboard_node
-add_executable(keyboard_node src/keyboard_teleop.cpp)
-ament_target_dependencies(keyboard_node PUBLIC ${THIS_PACKAGE_INCLUDE_DEPENDS})
+add_executable(keyboard_teleop_node src/keyboard_teleop.cpp)
+ament_target_dependencies(keyboard_teleop_node PUBLIC ${THIS_PACKAGE_INCLUDE_DEPENDS})
 
 add_executable(octomap_distance_node src/octomap_distance_node.cpp)
 
@@ -100,7 +117,6 @@ target_link_libraries(octomap_distance_node
   tf2_ros::tf2_ros
 )
 
-
 #############
 ## Install ##
 #############
@@ -108,6 +124,7 @@ target_link_libraries(octomap_distance_node
 # Install C++ libraries
 install(TARGETS
   joystick_teleop
+  joystick_teleop_percept_coll_avoidance
   keyboard_teleop
   EXPORT futama2_teleopTargets
   LIBRARY DESTINATION lib
@@ -118,7 +135,9 @@ install(TARGETS
 
 # Install C++ executables
 install(TARGETS
-  keyboard_node
+  joystick_teleop_node
+  joystick_teleop_percept_coll_avoidance_node
+  keyboard_teleop_node
   octomap_distance_node
   DESTINATION lib/${PROJECT_NAME}
 )
