@@ -242,9 +242,29 @@ def generate_launch_description():
                     moveit_config.robot_description,
                     moveit_config.robot_description_semantic,
                     moveit_config.robot_description_kinematics,
-                    {**load_yaml("futama2_teleop", "config/futama2_ur_servo.yaml")},
+                    {**load_yaml("futama2_teleop", "config/futama2_ur_servo_front.yaml")},
                     {"use_sim_time": False},
                 ],
+                remappings=[
+                    ("~/delta_twist_cmds", "/servo/delta_twist_cmds/front"),
+                    ("~/status", "/servo/status/front")
+                ]
+            ),
+            launch_ros.descriptions.ComposableNode(
+                package="moveit_servo",
+                plugin="moveit_servo::ServoNode",
+                name="servo_node",
+                parameters=[
+                    moveit_config.robot_description,
+                    moveit_config.robot_description_semantic,
+                    moveit_config.robot_description_kinematics,
+                    {**load_yaml("futama2_teleop", "config/futama2_ur_servo_fit.yaml")},
+                    {"use_sim_time": False},
+                ],
+                remappings=[
+                    ("~/delta_twist_cmds", "/servo/delta_twist_cmds/fit"),
+                    ("~/status", "/servo/status/fit")
+                ]
             ),
             # For publishing the wing and the base box
             launch_ros.descriptions.ComposableNode(
@@ -363,7 +383,7 @@ def generate_launch_description():
             robot_driver_cmd,
             spacemouse,
             spacemouse_filter,
-            joystick_teleoperating_modes,
+            #joystick_teleoperating_modes,
             rs_launch,rs_launch_d435i,
             rs_multi_camera_launch,
             foto_capture_node,

@@ -39,9 +39,13 @@ namespace futama2_teleop
       MAX_SCALING = 0.5;
       COLLISION_VECTOR_TOPIC = "/collision_vector";
 
-      joy_sub_ = create_subscription<sensor_msgs::msg::Joy>(
-          "/joy_ur", 10, [this](const sensor_msgs::msg::Joy::ConstSharedPtr &msg)
-          { return joyCB(msg); });
+      joy_front_sub_ = create_subscription<sensor_msgs::msg::Joy>(
+        "/servo/joy_ur/front", 10, [this](const sensor_msgs::msg::Joy::ConstSharedPtr &msg)
+        { joyCBfront(msg); });
+    
+      joy_fit_sub_ = create_subscription<sensor_msgs::msg::Joy>(
+          "/servo/joy_ur/fit", 10, [this](const sensor_msgs::msg::Joy::ConstSharedPtr &msg)
+          { joyCBfit(msg); });
 
       collision_vector_sub_ = create_subscription<geometry_msgs::msg::Vector3Stamped>(
           COLLISION_VECTOR_TOPIC, 10,
@@ -51,7 +55,8 @@ namespace futama2_teleop
             received_collision_vector_ = true;
           });
 
-      twist_pub_ = create_publisher<geometry_msgs::msg::TwistStamped>("/servo_node/delta_twist_cmds", 10);
+      twist_front_pub_ = create_publisher<geometry_msgs::msg::TwistStamped>("/servo_node/delta_twist_cmds/front", 10);
+      twist_fit_pub_ = create_publisher<geometry_msgs::msg::TwistStamped>("/servo_node/delta_twist_cmds/fit", 10);
       joint_pub_ = create_publisher<control_msgs::msg::JointJog>("/servo_node/delta_joint_cmds", 10);
 
       servo_type_client_ = create_client<moveit_msgs::srv::ServoCommandType>("/servo_node/switch_command_type");
@@ -68,7 +73,7 @@ namespace futama2_teleop
     }
 
   private:
-    void joyCB(const sensor_msgs::msg::Joy::ConstSharedPtr &msg)
+    void joyCBfront(const sensor_msgs::msg::Joy::ConstSharedPtr &msg)
     {
       if (cartesian_control_)
       {
@@ -85,7 +90,36 @@ namespace futama2_teleop
 
         twist_msg.twist = scale_twist_by_collision_vector(twist_msg.twist);
 
-        twist_pub_->publish(twist_msg);
+        twist_front_pub_->publish(twist_msg);
+      }
+      else
+      {
+        control_msgs::msg::JointJog joint_msg;
+        joint_msg.header.stamp = now();
+        joint_msg.joint_names.push_back("shoulder_pan_joint");
+        joint_msg.velocities.push_back(msg->axes[X]);
+        joint_pub_->publish(std::move(joint_msg));
+      }
+    }
+
+    void joyCBfit(const sensor_msgs::msg::Joy::ConstSharedPtr &msg)
+    {
+      if (cartesian_control_)
+      {
+        geometry_msgs::msg::TwistStamped twist_msg;
+        twist_msg.header.frame_id = frame_to_publish_;
+        twist_msg.header.stamp = now();
+
+        twist_msg.twist.linear.x = msg->axes[Y];
+        twist_msg.twist.linear.y = -msg->axes[X];
+        twist_msg.twist.linear.z = msg->axes[Z];
+        twist_msg.twist.angular.x = msg->axes[RX];
+        twist_msg.twist.angular.y = -msg->axes[RY];
+        twist_msg.twist.angular.z = msg->axes[RZ];
+
+        twist_msg.twist = scale_twist_by_collision_vector(twist_msg.twist);
+
+        twist_fit_pub_->publish(twist_msg);
       }
       else
       {
@@ -169,9 +203,11 @@ namespace futama2_teleop
     }
 
     // ROS Members
-    rclcpp::Subscription<sensor_msgs::msg::Joy>::SharedPtr joy_sub_;
+    rclcpp::Subscription<sensor_msgs::msg::Joy>::SharedPtr joy_front_sub_;
+    rclcpp::Subscription<sensor_msgs::msg::Joy>::SharedPtr joy_fit_sub_;
     rclcpp::Subscription<geometry_msgs::msg::Vector3Stamped>::SharedPtr collision_vector_sub_;
-    rclcpp::Publisher<geometry_msgs::msg::TwistStamped>::SharedPtr twist_pub_;
+    rclcpp::Publisher<geometry_msgs::msg::TwistStamped>::SharedPtr twist_front_pub_;
+    rclcpp::Publisher<geometry_msgs::msg::TwistStamped>::SharedPtr twist_fit_pub_;
     rclcpp::Publisher<control_msgs::msg::JointJog>::SharedPtr joint_pub_;
     rclcpp::Client<moveit_msgs::srv::ServoCommandType>::SharedPtr servo_type_client_;
 

@@ -1,0 +1,75 @@
+moveit_servo.use_gazebo: false
+
+# Recommended: "speed_units" for real-world units (m/s and rad/s)
+moveit_servo.command_in_type: "speed_units"
+
+# Recommended: conservative speeds to start with
+moveit_servo.scale.linear: 0.07         # [m/s] Safe speed for EE Cartesian motion
+moveit_servo.scale.rotational: 0.07     # [rad/s] Good for slow wrist rotation
+moveit_servo.scale.joint: 0.1           # [rad/s] Safe joint velocity
+
+# Publishing at 100 Hz
+moveit_servo.publish_period: 0.01
+
+# Off = consistent timing; On = faster response
+moveit_servo.low_latency_mode: false
+
+# Choose message type based on robot controller
+moveit_servo.command_out_type: std_msgs/Float64MultiArray
+
+# Most robots only need velocities
+moveit_servo.publish_joint_positions: false
+moveit_servo.publish_joint_velocities: true
+moveit_servo.publish_joint_accelerations: false
+
+# Recommended plugin and smoothing enabled
+moveit_servo.use_smoothing: true
+moveit_servo.smoothing_filter_plugin_name: "online_signal_smoothing::ButterworthFilterPlugin"
+
+# Filtering joint states for stability (5–20 typical)
+moveit_servo.low_pass_filter_coeff: 15.0
+
+# Let move_group publish the planning scene
+moveit_servo.is_primary_planning_scene_monitor: false
+
+# Match your planning group and frames
+moveit_servo.move_group_name: fit
+moveit_servo.planning_frame: base_link
+moveit_servo.ee_frame: fit_link
+moveit_servo.robot_link_command_frame: base_link
+
+# Safety: stop if no command in 0.2 seconds
+moveit_servo.incoming_command_timeout: 0.2
+
+# Ensure the robot halts reliably
+moveit_servo.num_outgoing_halt_msgs_to_publish: 3
+
+# Conservative singularity thresholds
+moveit_servo.lower_singularity_threshold: 100.0
+moveit_servo.hard_stop_singularity_threshold: 200.0
+moveit_servo.joint_limit_margins: [0.15, 0.15, 0.15, 0.15, 0.15, 0.15]
+moveit_servo.leaving_singularity_threshold_multiplier: 2.0
+
+# Input command topics
+moveit_servo.cartesian_command_in_topic: ~/delta_twist_cmds/fit
+moveit_servo.joint_command_in_topic: ~/delta_joint_cmds
+moveit_servo.joint_topic: /joint_states
+moveit_servo.status_topic: ~/status/fit
+moveit_servo.command_out_topic: /forward_velocity_controller/commands
+
+# === Collision Checking ===
+moveit_servo.check_collisions: true
+
+# Run collision checking at 30 Hz
+moveit_servo.collision_check_rate: 30.0
+
+# Use "threshold_distance" for simplicity
+moveit_servo.collision_check_type: threshold_distance
+
+# Start slowing down if obstacle/self is within 5 cm
+moveit_servo.self_collision_proximity_threshold: 0.02
+moveit_servo.scene_collision_proximity_threshold: 0.02
+
+# Conservative safety settings (only used in "stop_distance" mode)
+moveit_servo.collision_distance_safety_factor: 1000.0
+moveit_servo.min_allowable_collision_distance: 0.03

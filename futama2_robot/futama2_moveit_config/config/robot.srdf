@@ -12,8 +12,8 @@
     <group name="front">
         <chain base_link="base_link" tip_link="realsense_front_link"/>
     </group>
-    <group name="rotation_center">
-        <chain base_link="base_link" tip_link="rotation_center_link"/>
+    <group name="fit">
+        <chain base_link="base_link" tip_link="fit_link"/>
     </group>
     <!--GROUP STATES: Purpose: Define a named state for a particular group, in terms of joint values. This is useful to define states like 'folded arms'-->
     <group_state name="zero" group="front">
@@ -25,6 +25,22 @@
         <joint name="wrist_3_joint" value="0"/>
     </group_state>
     <group_state name="initial" group="front">
+        <joint name="elbow_joint" value="2.0"/>
+        <joint name="shoulder_lift_joint" value="-1.57"/>
+        <joint name="shoulder_pan_joint" value="3.14"/>
+        <joint name="wrist_1_joint" value="1.75"/>
+        <joint name="wrist_2_joint" value="-1.4"/>
+        <joint name="wrist_3_joint" value="-1.4"/>
+    </group_state>
+    <group_state name="zero" group="fit">
+        <joint name="elbow_joint" value="0"/>
+        <joint name="shoulder_lift_joint" value="0"/>
+        <joint name="shoulder_pan_joint" value="0"/>
+        <joint name="wrist_1_joint" value="0"/>
+        <joint name="wrist_2_joint" value="0"/>
+        <joint name="wrist_3_joint" value="0"/>
+    </group_state>
+    <group_state name="initial" group="fit">
         <joint name="elbow_joint" value="2.0"/>
         <joint name="shoulder_lift_joint" value="-1.57"/>
         <joint name="shoulder_pan_joint" value="3.14"/>

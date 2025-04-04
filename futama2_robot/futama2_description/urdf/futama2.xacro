@@ -107,16 +107,16 @@
     <child link="camera2_link" />
   </joint>
 
-  <link name="rotation_center_link">
+  <link name="fit_link">
       <inertial>
       <mass value="0.01"/>
       <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyx="0.0" iyy="0.01" iyz="0.0" izx="0.0" izy="0.0" izz="0.01"/>
     </inertial>
   </link>
-  <joint name="rotation_center_joint" type="fixed">
-    <origin xyz="0.291129 0.0 0.3105" rpy="0 0 0" />
+  <joint name="fit_joint" type="fixed">
+    <origin xyz="0.08 0.0 0.48" rpy="0 0 0" />
     <parent link="futama2_base_link"/>
-    <child link="rotation_center_link" />
+    <child link="fit_link" />
   </joint>
 
   <link name="led_back_up_left_link"/>

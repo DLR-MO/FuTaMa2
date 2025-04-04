@@ -4,9 +4,9 @@ moveit_servo.use_gazebo: false
 moveit_servo.command_in_type: "speed_units"
 
 # Recommended: conservative speeds to start with
-moveit_servo.scale.linear: 0.5         # [m/s] Safe speed for EE Cartesian motion
-moveit_servo.scale.rotational: 0.5     # [rad/s] Good for slow wrist rotation
-moveit_servo.scale.joint: 0.5          # [rad/s] Safe joint velocity
+moveit_servo.scale.linear: 0.07         # [m/s] Safe speed for EE Cartesian motion
+moveit_servo.scale.rotational: 0.07     # [rad/s] Good for slow wrist rotation
+moveit_servo.scale.joint: 0.1           # [rad/s] Safe joint velocity
 
 # Publishing at 100 Hz
 moveit_servo.publish_period: 0.01
@@ -51,10 +51,10 @@ moveit_servo.joint_limit_margins: [0.15, 0.15, 0.15, 0.15, 0.15, 0.15]
 moveit_servo.leaving_singularity_threshold_multiplier: 2.0
 
 # Input command topics
-moveit_servo.cartesian_command_in_topic: ~/delta_twist_cmds
+moveit_servo.cartesian_command_in_topic: ~/delta_twist_cmds/front
 moveit_servo.joint_command_in_topic: ~/delta_joint_cmds
 moveit_servo.joint_topic: /joint_states
-moveit_servo.status_topic: ~/status
+moveit_servo.status_topic: ~/status/front
 moveit_servo.command_out_topic: /forward_velocity_controller/commands
 
 # === Collision Checking ===

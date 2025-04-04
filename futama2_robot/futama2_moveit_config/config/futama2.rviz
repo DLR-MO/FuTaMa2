@@ -94,7 +94,7 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        rotation_center_link:
+        fit_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -239,7 +239,7 @@ Visualization Manager:
             Alpha: 1
             Show Axes: false
             Show Trail: false
-          rotation_center_link:
+          fit_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
@@ -373,7 +373,7 @@ Visualization Manager:
             Alpha: 1
             Show Axes: false
             Show Trail: false
-          rotation_center_link:
+          fit_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
@@ -487,7 +487,7 @@ Visualization Manager:
             Alpha: 1
             Show Axes: false
             Show Trail: false
-          rotation_center_link:
+          fit_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
@@ -557,7 +557,7 @@ Visualization Manager:
           Value: true
         realsense_front_link:
           Value: true
-        rotation_center_link:
+        fit_link:
           Value: true
         shoulder_link:
           Value: false
@@ -602,7 +602,7 @@ Visualization Manager:
                                     {}
                                   realsense_front_link:
                                     {}
-                                rotation_center_link:
+                                fit_link:
                                   {}
                           ft_frame:
                             {}
