@@ -14,7 +14,7 @@ from nav_msgs.msg import Odometry, Path
 from geometry_msgs.msg import PoseStamped, PoseArray
 from controller_manager_msgs.srv import SwitchController
 from moveit.planning import MoveItPy
-from futama2_utils import moveit_funcs
+from rar_moveit import moveit_funcs
 from inspection_helper_funcs import get_poses, tuple_to_pose, alternative_poses, CAMERA_POSES
 from scipy.spatial.transform import Rotation as R
 import numpy as np

@@ -12,7 +12,7 @@ from rclpy.node import Node
 from geometry_msgs.msg import PoseStamped
 from controller_manager_msgs.srv import SwitchController
 from moveit.planning import MoveItPy
-from futama2_utils import moveit_funcs
+from rar_moveit import moveit_funcs
 import time
 
 # ✅ Define Target Pose
