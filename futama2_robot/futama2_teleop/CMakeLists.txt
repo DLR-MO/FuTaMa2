@@ -49,8 +49,6 @@ find_package(moveit_core REQUIRED)
 find_package(moveit_ros_planning REQUIRED)
 find_package(moveit_visual_tools REQUIRED)
 find_package(generate_parameter_library REQUIRED)
-find_package(octomap REQUIRED)
-find_package(octomap_msgs REQUIRED)
 find_package(moveit_msgs REQUIRED)
 foreach(Dependency IN ITEMS ${THIS_PACKAGE_INCLUDE_DEPENDS})
   find_package(${Dependency} REQUIRED)
@@ -96,27 +94,6 @@ ament_target_dependencies(joystick_teleop_percept_coll_avoidance_node PUBLIC ${T
 add_executable(keyboard_teleop_node src/keyboard_teleop.cpp)
 ament_target_dependencies(keyboard_teleop_node PUBLIC ${THIS_PACKAGE_INCLUDE_DEPENDS})
 
-add_executable(octomap_distance_node src/octomap_distance_node.cpp)
-
-ament_target_dependencies(octomap_distance_node
-  rclcpp
-  std_msgs
-  geometry_msgs
-  moveit_msgs
-  octomap
-  octomap_msgs
-  tf2
-  tf2_ros
-  tf2_geometry_msgs
-  visualization_msgs
-)
-
-target_link_libraries(octomap_distance_node
-  octomap
-  octomath
-  tf2_ros::tf2_ros
-)
-
 #############
 ## Install ##
 #############
@@ -138,7 +115,6 @@ install(TARGETS
   joystick_teleop_node
   joystick_teleop_percept_coll_avoidance_node
   keyboard_teleop_node
-  octomap_distance_node
   DESTINATION lib/${PROJECT_NAME}
 )
 
@@ -146,7 +122,6 @@ install(TARGETS
 ament_python_install_package(${PROJECT_NAME})
 
 install(PROGRAMS
-  scripts/odometry_node.py
   scripts/foto_capture_node.py
   scripts/auto_insp_oip_node.py
   scripts/minimal_motion_planner_api.py

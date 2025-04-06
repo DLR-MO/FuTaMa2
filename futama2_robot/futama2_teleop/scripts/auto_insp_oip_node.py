@@ -29,7 +29,7 @@ class AutoInsp(Node):
         self.possible_camera_poses = CAMERA_POSES
 
         # Initialize publishers and subscribers
-        self.odom_sub = self.create_subscription(Odometry, '/rtabmap/odom', self.robot_states_callback, 10)
+        self.odom_sub = self.create_subscription(Odometry, '/odom', self.robot_states_callback, 10)
         self.path_pub = self.create_publisher(Path, 'path', 10)
         self.current_point_pub = self.create_publisher(PoseStamped, 'point', 10)
         self.reached_point_pub = self.create_publisher(PoseStamped, 'reached_point', 10)
@@ -83,7 +83,7 @@ class AutoInsp(Node):
 
         cameras = self.possible_camera_poses.copy()
         for camera, cam_pose in zip(cameras, alternative_poses(pose, cameras)):
-            self.move_group.set_goal_state(pose_stamped_msg=cam_pose, pose_link='realsense_front_link')
+            self.move_group.set_goal_state(pose_stamped_msg=cam_pose, pose_link='realsense_center_link')
             reached = moveit_funcs.plan_and_execute(self.futama2, self.move_group, self.logger)
 
             if reached:
