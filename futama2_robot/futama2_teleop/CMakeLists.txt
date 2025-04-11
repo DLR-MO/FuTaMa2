@@ -129,7 +129,7 @@ install(PROGRAMS
 )
 
 # Install config and launch files
-install(DIRECTORY config launch
+install(DIRECTORY config launch rviz
   DESTINATION share/${PROJECT_NAME}
 )
 

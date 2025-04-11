@@ -151,14 +151,14 @@ def generate_launch_description():
         condition=IfCondition(EqualsSubstitution(insp_mode, "auto_oip")),
     )
 
-    # rviz
-    rviz_node = Node(
+    # rviz mock hardware 1x D435i (suitable for debugging at home)
+    rviz_mock_1x_d435i_node = Node(
         package="rviz2",
         executable="rviz2",
         output="log",
         respawn=False,
         arguments=[
-            "-d", get_package_share_directory("futama2_teleop") + "/config/futama2.rviz"],
+            "-d", get_package_share_directory("futama2_teleop") + "/rviz/futama2_mock_1x_d435i.rviz"],
         parameters=[
             moveit_config.robot_description,
             moveit_config.planning_pipelines,
@@ -166,6 +166,55 @@ def generate_launch_description():
             moveit_config.robot_description_kinematics,
             moveit_config.joint_limits,
         ],
+        condition=IfCondition(
+            PythonExpression(
+                ["'", mode, "' == 'mock' and '", camera_mdl, "' == 'd435i'"]
+            )
+        ),
+    )
+
+    # rviz real robot 1x D405
+    rviz_real_1x_d405_node = Node(
+        package="rviz2",
+        executable="rviz2",
+        output="log",
+        respawn=False,
+        arguments=[
+            "-d", get_package_share_directory("futama2_teleop") + "/rviz/futama2_real_1x_d405.rviz"],
+        parameters=[
+            moveit_config.robot_description,
+            moveit_config.planning_pipelines,
+            moveit_config.robot_description_semantic,
+            moveit_config.robot_description_kinematics,
+            moveit_config.joint_limits,
+        ],
+        condition=IfCondition(
+            PythonExpression(
+                ["'", mode, "' == 'real' and '", camera_mdl, "' == 'd405' and '", multicam, "' == 'false'"]
+            )
+        ),
+    )
+
+    # rviz real robot 3x D405
+    rviz_real_3x_d405_node = Node(
+        package="rviz2",
+        executable="rviz2",
+        output="log",
+        respawn=False,
+        arguments=[
+            "-d", get_package_share_directory("futama2_teleop") + "/rviz/futama2_real_3x_d405.rviz"],
+        parameters=[
+            moveit_config.robot_description,
+            moveit_config.planning_pipelines,
+            moveit_config.robot_description_semantic,
+            moveit_config.robot_description_kinematics,
+            moveit_config.joint_limits,
+        ],
+        condition=IfCondition(
+            PythonExpression(
+                ["'", mode, "' == 'real' and '", camera_mdl, "' == 'd405' and '", multicam, "' == 'true'"]
+            )
+        ),
     )
 
     # odometry (for getting moveit current state)
@@ -204,10 +253,10 @@ def generate_launch_description():
         parameters=[{"spacemouse_mdl": spacemouse_mdl},
                     {"robot_variant": "ur_only"}],
         condition=IfCondition(
-                    PythonExpression(
-                        ["'", spacemouse_mdl, "' != 'false' and '", insp_mode, "' == 'manual'"]
-                    )
-                ),
+            PythonExpression(
+                ["'", spacemouse_mdl, "' != 'false' and '", insp_mode, "' == 'manual'"]
+            )
+        ),
     )
 
     spacemouse_filter = Node(
@@ -215,10 +264,10 @@ def generate_launch_description():
         executable="spacemouse_filter_ros2.py",
         output="screen",
         condition=IfCondition(
-                    PythonExpression(
-                        ["'", spacemouse_mdl, "' != 'false' and '", insp_mode, "' == 'manual'"]
-                    )
-                ),
+            PythonExpression(
+                ["'", spacemouse_mdl, "' != 'false' and '", insp_mode, "' == 'manual'"]
+            )
+        ),
     )
 
     # joy from spacemouse, parameters required to avoid strange / non-continues data
@@ -302,10 +351,10 @@ def generate_launch_description():
                 parameters=[{"use_sim_time": EqualsSubstitution(mode, "sim")}],
                 # extra_arguments=[{"use_intra_process_comms": True}],
                 condition=IfCondition(
-                            PythonExpression(
-                                ["'", spacemouse_mdl, "' != 'false' and '", insp_mode, "' == 'manual'"]
-                            )
-                        ),
+                    PythonExpression(
+                        ["'", spacemouse_mdl, "' != 'false' and '", insp_mode, "' == 'manual'"]
+                    )
+                ),
             ),
             #launch_ros.descriptions.ComposableNode(
             #    package="spacenav",
@@ -315,10 +364,10 @@ def generate_launch_description():
                 # extra_arguments=[{"use_intra_process_comms": True}],
                 # if you are actually using the spacemouse, otherwise, only keyboard run
             #    condition=IfCondition(
-            #                PythonExpression(
-            #                    ["'", spacemouse_mdl, "' != 'false' and '", insp_mode, "' == 'manual'"]
-            #                )
-            #            ),
+            #        PythonExpression(
+            #            ["'", spacemouse_mdl, "' != 'false' and '", insp_mode, "' == 'manual'"]
+            #        )
+            #    ),
             #),
         ],
     )
@@ -339,10 +388,10 @@ def generate_launch_description():
             "rgb_camera.profile": "1280x720x15",
         }.items(),
         condition=IfCondition(
-                    PythonExpression(
-                        ["'", camera_mdl, "' == 'd405' and '", mode, "' == 'real'"]
-                    )
-                ),
+            PythonExpression(
+                ["'", camera_mdl, "' == 'd405' and '", mode, "' == 'real'"]
+            )
+        ),
     )
 
     # just when using the d435i camera at home (Adrian)
@@ -382,6 +431,15 @@ def generate_launch_description():
         condition=IfCondition(EqualsSubstitution(multicam, "true")),
     )
 
+    # Include the diagnostics launch file and pass parameters from the parent launch file
+    diagnostics_launch = IncludeLaunchDescription(
+        PathJoinSubstitution([
+            FindPackageShare('rar_diagnostics'),
+            'launch',
+            'futama2.launch.py'
+        ]),
+    )
+
     tf_static_oip_object = Node( 
         package='tf2_ros', 
         executable='static_transform_publisher', 
@@ -414,8 +472,9 @@ def generate_launch_description():
                 load_composable_nodes,
             ]),
             TimerAction(period=7.0, actions=[
-                LogInfo(msg="🟢 Starting RViz and input devices..."),
-                rviz_node,
+                LogInfo(msg="🟢 Starting RViz, diagnostics, and input devices..."),
+                rviz_mock_1x_d435i_node, rviz_real_1x_d405_node, rviz_real_3x_d405_node,
+                diagnostics_launch,
                 spacemouse,
                 spacemouse_filter,
                 joystick_teleoperating_modes,
