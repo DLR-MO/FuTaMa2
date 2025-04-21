@@ -5,7 +5,7 @@ moveit_setup_assistant_config:
   srdf:
     relative_path: config/robot.srdf
   package_settings:
-    author_name: Adrian Ricardez Ortigosa
+    author_name: Adrián Ricárdez Ortigosa
     author_email: adrian.ricardezortigosa@dlr.de
     generated_timestamp: 1686231559
   control_xacro:

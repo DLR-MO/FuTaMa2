@@ -17,7 +17,7 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='Adrian Ricardez Ortigosa',
+    maintainer='Adrián Ricárdez Ortigosa',
     maintainer_email='adrian.ricardezortigosa@dlr.de',
     description='Python utils for FuTaMa2',
     license='MIT',

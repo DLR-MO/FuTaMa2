@@ -4,7 +4,7 @@
   <name>futama2_description</name>
   <version>0.0.1</version>
   <description>Description package for the FUTAMA2 robot</description>
-  <maintainer email="adrian.ricardezortigosa@dlr.de">Adrian Ricardez Ortigosa</maintainer>
+  <maintainer email="adrian.ricardezortigosa@dlr.de">Adrián Ricárdez Ortigosa</maintainer>
   <license>TODO</license>
 
   <depend>urdf</depend>

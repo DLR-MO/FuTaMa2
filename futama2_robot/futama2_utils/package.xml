@@ -4,7 +4,7 @@
   <name>futama2_utils</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
-  <maintainer email="adrian.ricardezortigosa@dlr.de">Adrian Ricardez Ortigosa</maintainer>
+  <maintainer email="adrian.ricardezortigosa@dlr.de">Adrián Ricárdez Ortigosa</maintainer>
   <license>MIT</license>
 
   <test_depend>ament_copyright</test_depend>

@@ -23,7 +23,7 @@ setup(
     install_requires=["setuptools"],
     py_modules=[],
     zip_safe=True,
-    maintainer="Adrian Ricardez Ortigosa",
+    maintainer="Adrián Ricárdez Ortigosa",
     maintainer_email="adrian.ricardezortigosa@dlr.de",
     description="Description package for the FUTAMA2 robotn",
     license="TODO: License declaration",

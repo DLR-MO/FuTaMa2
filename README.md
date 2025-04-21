@@ -211,7 +211,7 @@ Once the rosbag is stored, it can be used as the input for the already published
 
 # Maintainers
 
-- Adrian Ricardez Ortigosa adrian.ricardezortigosa@dlr.de
+- Adrián Ricárdez Ortigosa adrian.ricardezortigosa@dlr.de
 - Dr. Marc Bestmann marc.bestmann@dlr.de
 
 # Contributing
