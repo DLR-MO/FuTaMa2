@@ -125,7 +125,6 @@ install(PROGRAMS
   scripts/foto_capture_node.py
   scripts/auto_insp_oip_node.py
   scripts/minimal_motion_planner_api.py
-  scripts/minimal_moveitpy_api_example.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
