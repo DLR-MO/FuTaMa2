@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2024 German Aerospace Center <adrian.ricardezortigosa@dlr.de>
+# SPDX-FileCopyrightText: 2025 German Aerospace Center <adrian.ricardezortigosa@dlr.de>
 #
 # SPDX-License-Identifier: MIT
 

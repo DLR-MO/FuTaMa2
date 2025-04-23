@@ -1,8 +1,4 @@
 # Copyright (c) 2021 PickNik, Inc.
-# SPDX-FileCopyrightText: 2024 German Aerospace Center <adrian.ricardezortigosa@dlr.de>
-#
-# SPDX-License-Identifier: MIT
-
 #
 # Author: Denis Stogl
 
