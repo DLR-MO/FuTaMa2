@@ -16,7 +16,7 @@ from moveit.planning import MoveItPy
 from rar_moveit import moveit_funcs
 import time
 
-# Define Target Pose
+# Define Target Pose in front of the wing (just for testing)
 POSE_TO_MOVE_TO = [-0.3134135603904724, -1.5278343439102173, 0.07761852443218231,
                              0.29451873898506165, 0.2945699691772461, -0.6427989602088928, 0.6428815722465515]
 
@@ -52,7 +52,7 @@ class SinglePoseMotionPlanner(Node):
             pose_goal.pose.orientation.x, pose_goal.pose.orientation.y, pose_goal.pose.orientation.z, pose_goal.pose.orientation.w = pose_cmd[3:]
 
             # Set goal state
-            self.move_group.set_goal_state(pose_stamped_msg=pose_goal, pose_link="realsense_front_link")
+            self.move_group.set_goal_state(pose_stamped_msg=pose_goal, pose_link="realsense_center_link")
 
             # Plan and Execute
             if moveit_funcs.plan_and_execute(self.moveit_py, self.move_group, self.get_logger(), sleep_time=0.5):

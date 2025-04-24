@@ -226,7 +226,7 @@ def generate_launch_description():
             {'target_frame': 'base_link'},
             {'child_frame': 'realsense_center_link'},
             {'publish_rate': 100.0},
-            # Calibration (TODO calibrate mock and real hardware)
+            # Calibration (TODO calibrate mock and real hardware on FuTaMa2)
             {'offset_position_x': 0.0},
             {'offset_position_y': 0.0},
             {'offset_position_z': 0.0},
@@ -251,7 +251,8 @@ def generate_launch_description():
         executable="joystick_teleoperating_modes.py",
         output="screen",
         parameters=[{"spacemouse_mdl": spacemouse_mdl},
-                    {"robot_variant": "ur_only"}],
+                    {"robot_variant": "ur_only"},
+                    ] + move_group_with_octomap_params,
         condition=IfCondition(
             PythonExpression(
                 ["'", spacemouse_mdl, "' != 'false' and '", insp_mode, "' == 'manual'"]
@@ -295,6 +296,14 @@ def generate_launch_description():
             {'transform_to_frame': 'realsense_center_link'},
             {'header_frame': 'world'},
         ]
+    )
+
+    initial_minimal_motion_plan_api_node = Node(
+        package="rar_ur_robot",
+        executable="initial_minimal_motion_plan_api.py",
+        output="screen",
+        name='initial_minimal_motion_plan_api_node',
+        parameters=move_group_params,
     )
 
     # Launch as much as possible in components to reduce latency
@@ -356,19 +365,6 @@ def generate_launch_description():
                     )
                 ),
             ),
-            #launch_ros.descriptions.ComposableNode(
-            #    package="spacenav",
-            #    plugin="spacenav::Spacenav",
-            #    name="spacenav_node",
-            #    parameters=[{"use_sim_time": EqualsSubstitution(mode, "sim")}],
-                # extra_arguments=[{"use_intra_process_comms": True}],
-                # if you are actually using the spacemouse, otherwise, only keyboard run
-            #    condition=IfCondition(
-            #        PythonExpression(
-            #            ["'", spacemouse_mdl, "' != 'false' and '", insp_mode, "' == 'manual'"]
-            #        )
-            #    ),
-            #),
         ],
     )
 
