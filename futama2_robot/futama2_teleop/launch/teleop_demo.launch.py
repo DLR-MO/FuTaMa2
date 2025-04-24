@@ -298,14 +298,6 @@ def generate_launch_description():
         ]
     )
 
-    initial_minimal_motion_plan_api_node = Node(
-        package="rar_ur_robot",
-        executable="initial_minimal_motion_plan_api.py",
-        output="screen",
-        name='initial_minimal_motion_plan_api_node',
-        parameters=move_group_params,
-    )
-
     # Launch as much as possible in components to reduce latency
     load_composable_nodes = LoadComposableNodes(
         target_container="robot_container",
