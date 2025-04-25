@@ -10,7 +10,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://futama2_description/meshes/visual/base_link.STL" />
+        <mesh filename="$(find futama2_description)/meshes/visual/base_link.STL" />
       </geometry>
       <material name="">
         <color rgba="0.79216 0.81961 0.93333 1" />
@@ -19,7 +19,7 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://futama2_description/meshes/collision/base_link.STL" />
+        <mesh filename="$(find futama2_description)/meshes/collision/base_link.STL" />
       </geometry>
     </collision>
   </link>
@@ -33,7 +33,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://futama2_description/meshes/visual/realsense_tpu_link.STL" />
+        <mesh filename="$(find futama2_description)/meshes/visual/realsense_tpu_link.STL" />
       </geometry>
       <material name="">
         <color rgba="0 0 0 1" />
@@ -42,7 +42,7 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://futama2_description/meshes/collision/realsense_tpu_link.STL" />
+        <mesh filename="$(find futama2_description)/meshes/collision/realsense_tpu_link.STL" />
       </geometry>
     </collision>
   </link>
