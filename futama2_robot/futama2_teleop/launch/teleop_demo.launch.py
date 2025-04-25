@@ -93,7 +93,6 @@ def generate_launch_description():
                      ).to_moveit_configs()
 
     move_group_configuration = {
-        # with only this on, the octomap is still visible, but stuck!
         "publish_robot_description_semantic": True,
         "allow_trajectory_execution": True,
         "capabilities": "",
