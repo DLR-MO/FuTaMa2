@@ -54,8 +54,8 @@ def generate_launch_description():
     camera_mdl_cmd = DeclareLaunchArgument(
         "camera_mdl",
         description="Which realsense camera model are you using?",
-        choices=["d405", "d435i"],
-        default_value="d405",
+        choices=["none" ,"d405", "d435i"],
+        default_value="none",
     )
     multicam = LaunchConfiguration("multicam")
     multicam_cmd = DeclareLaunchArgument(
@@ -151,13 +151,13 @@ def generate_launch_description():
     )
 
     # rviz mock hardware 1x D435i (suitable for debugging at home)
-    rviz_mock_1x_d435i_node = Node(
+    rviz_1x_cam_node = Node(
         package="rviz2",
         executable="rviz2",
         output="log",
         respawn=False,
         arguments=[
-            "-d", get_package_share_directory("futama2_teleop") + "/rviz/futama2_mock_1x_d435i.rviz"],
+            "-d", get_package_share_directory("futama2_teleop") + "/rviz/futama2_1x_cam.rviz"],
         parameters=[
             moveit_config.robot_description,
             moveit_config.planning_pipelines,
@@ -165,43 +165,17 @@ def generate_launch_description():
             moveit_config.robot_description_kinematics,
             moveit_config.joint_limits,
         ],
-        condition=IfCondition(
-            PythonExpression(
-                ["'", mode, "' == 'mock' and '", camera_mdl, "' == 'd435i'"]
-            )
-        ),
-    )
-
-    # rviz real robot 1x D405
-    rviz_real_1x_d405_node = Node(
-        package="rviz2",
-        executable="rviz2",
-        output="log",
-        respawn=False,
-        arguments=[
-            "-d", get_package_share_directory("futama2_teleop") + "/rviz/futama2_real_1x_d405.rviz"],
-        parameters=[
-            moveit_config.robot_description,
-            moveit_config.planning_pipelines,
-            moveit_config.robot_description_semantic,
-            moveit_config.robot_description_kinematics,
-            moveit_config.joint_limits,
-        ],
-        condition=IfCondition(
-            PythonExpression(
-                ["'", mode, "' == 'real' and '", camera_mdl, "' == 'd405' and '", multicam, "' == 'false'"]
-            )
-        ),
+        condition=IfCondition(EqualsSubstitution(multicam, "false")),
     )
 
     # rviz real robot 3x D405
-    rviz_real_3x_d405_node = Node(
+    rviz_3x_cam_node = Node(
         package="rviz2",
         executable="rviz2",
         output="log",
         respawn=False,
         arguments=[
-            "-d", get_package_share_directory("futama2_teleop") + "/rviz/futama2_real_3x_d405.rviz"],
+            "-d", get_package_share_directory("futama2_teleop") + "/rviz/futama2_3x_cam.rviz"],
         parameters=[
             moveit_config.robot_description,
             moveit_config.planning_pipelines,
@@ -209,11 +183,7 @@ def generate_launch_description():
             moveit_config.robot_description_kinematics,
             moveit_config.joint_limits,
         ],
-        condition=IfCondition(
-            PythonExpression(
-                ["'", mode, "' == 'real' and '", camera_mdl, "' == 'd405' and '", multicam, "' == 'true'"]
-            )
-        ),
+        condition=IfCondition(EqualsSubstitution(multicam, "true")),
     )
 
     # odometry (for getting moveit current state)
@@ -460,7 +430,7 @@ def generate_launch_description():
             ]),
             TimerAction(period=7.0, actions=[
                 LogInfo(msg="🟢 Starting RViz, diagnostics, and input devices..."),
-                rviz_mock_1x_d435i_node, rviz_real_1x_d405_node, rviz_real_3x_d405_node,
+                rviz_1x_cam_node, rviz_3x_cam_node,
                 diagnostics_launch,
                 spacemouse,
                 spacemouse_filter,
