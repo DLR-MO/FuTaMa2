@@ -71,18 +71,6 @@
     <child link="realsense_front_link" />
   </joint>
 
-  <link name="camera_link">
-      <inertial>
-      <mass value="0.01"/>
-      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyx="0.0" iyy="0.01" iyz="0.0" izx="0.0" izy="0.0" izz="0.01"/>
-    </inertial>
-  </link>
-  <joint name="camera_joint" type="fixed">
-    <origin xyz="0.04 0 0" rpy="0 0 0" />
-    <parent link="realsense_center_link"/>
-    <child link="camera_link" />
-  </joint>
-
   <link name="camera1_link">
       <inertial>
       <mass value="0.01"/>
@@ -90,7 +78,7 @@
     </inertial>
   </link>
   <joint name="camera1_joint" type="fixed">
-    <origin xyz="0 0 0.02" rpy="0 -1.5708 1.5708" />
+    <origin xyz="0.04 0 0" rpy="0 0 0" />
     <parent link="realsense_center_link"/>
     <child link="camera1_link" />
   </joint>
@@ -102,9 +90,21 @@
     </inertial>
   </link>
   <joint name="camera2_joint" type="fixed">
-    <origin xyz="0 0 -0.02" rpy="0 1.5708 1.5708" />
+    <origin xyz="0 0 0.02" rpy="0 -1.5708 1.5708" />
     <parent link="realsense_center_link"/>
     <child link="camera2_link" />
+  </joint>
+
+  <link name="camera3_link">
+      <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyx="0.0" iyy="0.01" iyz="0.0" izx="0.0" izy="0.0" izz="0.01"/>
+    </inertial>
+  </link>
+  <joint name="camera3_joint" type="fixed">
+    <origin xyz="0 0 -0.02" rpy="0 1.5708 1.5708" />
+    <parent link="realsense_center_link"/>
+    <child link="camera3_link" />
   </joint>
 
   <link name="fit_link">

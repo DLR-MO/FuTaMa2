@@ -329,63 +329,18 @@ def generate_launch_description():
         ],
     )
 
-    # One camera launch
-    rs_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            [PathJoinSubstitution(
-                [FindPackageShare("futama2_teleop"), "launch", "rs_launch.py"])]
-        ),
+    realsense_cam_eeloscope_launch = IncludeLaunchDescription(
+        PathJoinSubstitution([
+            FindPackageShare('rar_perception'),
+            'launch',
+            'realsense_cam_eeloscope.launch.py'
+        ]),
         launch_arguments={
-            "pointcloud.enable": "true",
-            #"align_depth.enable": "true",
-            #"depth_module.enable_auto_exposure": "true",
-            "device_type": camera_mdl,
-            "serial_no": "_128422271521",
-            "depth_module.profile": "1280x720x15",
-            "rgb_camera.profile": "1280x720x15",
+            'camera_mdl': 'd435i',
+            'multicam': 'false',
+            # use_sim_time not working from the realsense2_camera package unfortunately:
+            #'use_sim_time': 'true', # needs to be passed as string, not bool
         }.items(),
-        condition=IfCondition(
-            PythonExpression(
-                ["'", camera_mdl, "' == 'd405' and '", mode, "' == 'real'"]
-            )
-        ),
-    )
-
-    # just when using the d435i camera at home (Adrian)
-    rs_launch_d435i = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            [PathJoinSubstitution(
-                [FindPackageShare("futama2_teleop"), "launch", "rs_launch.py"])]
-        ),
-        launch_arguments={
-            "pointcloud.enable": "true",
-            "align_depth.enable": "true",
-            #"depth_module.enable_auto_exposure": "true",
-            "device_type": camera_mdl,
-            "depth_module.profile": "1280x720x15",
-            "rgb_camera.profile": "1280x720x15",
-        }.items(),
-        condition=IfCondition(EqualsSubstitution(camera_mdl, "d435i")),
-    )
-    
-    # Three cameras launch
-    rs_multi_camera_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            [PathJoinSubstitution(
-                [FindPackageShare("futama2_teleop"), "launch", "rs_multi_camera_launch.py"])]
-        ),
-        launch_arguments={
-            "pointcloud.enable1": "true",
-            "pointcloud.enable2": "true",
-            #"align_depth": "true",
-            "serial_no1": "_128422272518",
-            "serial_no2": "_128422272647",
-            "depth_module.profile1": "1280x720x15",
-            "rgb_camera.profile1": "1280x720x15",
-            "depth_module.profile2": "1280x720x15",
-            "rgb_camera.profile2": "1280x720x15",
-        }.items(),
-        condition=IfCondition(EqualsSubstitution(multicam, "true")),
     )
 
     # Include the diagnostics launch file and pass parameters from the parent launch file
@@ -438,7 +393,7 @@ def generate_launch_description():
             ]),
 
             # Other camera + utility nodes
-            rs_launch, rs_launch_d435i, rs_multi_camera_launch,
+            realsense_cam_eeloscope_launch,
             foto_capture_node,
             odometry_node,
             octomap_distance_node,
