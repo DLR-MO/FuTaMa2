@@ -336,11 +336,16 @@ def generate_launch_description():
             'realsense_cam_eeloscope.launch.py'
         ]),
         launch_arguments={
-            'camera_mdl': 'd435i',
-            'multicam': 'false',
+            'camera_mdl': camera_mdl,
+            'multicam': multicam,
             # use_sim_time not working from the realsense2_camera package unfortunately:
             #'use_sim_time': 'true', # needs to be passed as string, not bool
         }.items(),
+        condition=IfCondition(
+            PythonExpression(
+                ["'", camera_mdl, "' != 'd405' and '", multicam, "' == 'false'"]
+            )
+        ),
     )
 
     # Include the diagnostics launch file and pass parameters from the parent launch file
