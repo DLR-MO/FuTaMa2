@@ -14,7 +14,7 @@ The aim of this project is to provide the [Robot-Assisted-Inspection-and-Repair]
 Since there exists not much open-source documentation about these topics in robotic inspection, this project was proposed to fill that research gap and to encourage modular and continuous research. The potential contribution to the audience is to enable technology transfer possibilities to other systems.
 
 The use case utilized in this study was the inspection of a aircraft (Boeing 737-700) wing fuel tank.
-A research article with the methodology, analysis, approach and results of the experiments is intended to be published soon on the [MDPI Open Access Journal](https://www.mdpi.com/). 
+A research article with the methodology, analysis, approach and results of the experiments were published on [MDPI Open Access Journal](https://www.mdpi.com/). 
 
 Developed packages of this repo:
 1. [futama2_description](futama2_robot/futama2_description/) -> urdf, IP, and controllers setup, robot state publisher, STL, meshes, ...
