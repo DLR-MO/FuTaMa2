@@ -29,7 +29,7 @@ class AutoInsp(Node):
         self.possible_camera_poses = CAMERA_POSES
 
         # Initialize publishers and subscribers
-        self.odom_sub = self.create_subscription(Odometry, '/odom', self.robot_states_callback, 10)
+        self.odom_sub = self.create_subscription(Odometry, '/odom_base_link_realsense_center_link', self.robot_states_callback, 10)
         self.path_pub = self.create_publisher(Path, 'path', 10)
         self.current_point_pub = self.create_publisher(PoseStamped, 'point', 10)
         self.reached_point_pub = self.create_publisher(PoseStamped, 'reached_point', 10)
