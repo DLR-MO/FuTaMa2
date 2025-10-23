@@ -28,7 +28,7 @@ class SinglePoseMotionPlanner(Node):
         self.moveit_py = MoveItPy(node_name="single_pose_motion_planner")
         self.move_group = self.moveit_py.get_planning_component("front")  # Adjust to your planning group
 
-        self.get_logger().info("✅ MoveItPy Initialized!")
+        self.get_logger().info("MoveItPy Initialized!")
 
         # Ensure trajectory mode is active
         self.switch_to_trajectory_mode()
@@ -43,7 +43,7 @@ class SinglePoseMotionPlanner(Node):
     def move_to_pose(self, pose_cmd, retries=3):
         """Plans and executes a move to a target pose."""
         for attempt in range(retries):
-            self.get_logger().info(f"📌 Attempt {attempt + 1} to move to pose: {pose_cmd}")
+            self.get_logger().info(f"Attempt {attempt + 1} to move to pose: {pose_cmd}")
 
             # Create a PoseStamped message
             pose_goal = PoseStamped()
@@ -56,31 +56,31 @@ class SinglePoseMotionPlanner(Node):
 
             # Plan and Execute
             if moveit_funcs.plan_and_execute(self.moveit_py, self.move_group, self.get_logger(), sleep_time=0.5):
-                self.get_logger().info("✅ Successfully moved to the target pose!")
+                self.get_logger().info("Successfully moved to the target pose!")
                 return True
 
-            self.get_logger().warning(f"⚠️ Planning attempt {attempt + 1} failed")
+            self.get_logger().warning(f"Planning attempt {attempt + 1} failed")
 
-        self.get_logger().error("❌ All planning attempts failed")
+        self.get_logger().error("All planning attempts failed")
         return False
 
     def switch_to_trajectory_mode(self):
         """Switches the robot to trajectory mode for motion planning."""
-        self.get_logger().info("🔄 Switching to trajectory mode...")
+        self.get_logger().info("Switching to trajectory mode...")
         req = SwitchController.Request()
         req.activate_controllers = {"joint_trajectory_controller"}
         req.deactivate_controllers = {"forward_velocity_controller"}
 
         client = self.create_client(SwitchController, '/controller_manager/switch_controller')
         while not client.wait_for_service(timeout_sec=1.0):
-            self.get_logger().info('⏳ Waiting for SwitchController service...')
+            self.get_logger().info('Waiting for SwitchController service...')
 
         future = client.call_async(req)
         rclpy.spin_until_future_complete(self, future)
         if future.result():
-            self.get_logger().info("✅ Controller switched to trajectory mode")
+            self.get_logger().info("Controller switched to trajectory mode")
         else:
-            self.get_logger().error("❌ Failed to switch controllers")
+            self.get_logger().error("Failed to switch controllers")
 
 def main(args=None):
     rclpy.init(args=args)
