@@ -59,18 +59,6 @@
     <child link="realsense_center_link" />
   </joint>
 
-  <link name="realsense_front_link">
-      <inertial>
-      <mass value="0.01"/>
-      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyx="0.0" iyy="0.01" iyz="0.0" izx="0.0" izy="0.0" izz="0.01"/>
-    </inertial>
-  </link>
-  <joint name="realsense_front_joint" type="fixed">
-    <origin xyz="0.043 0 0" rpy="0 0 0" />
-    <parent link="realsense_center_link"/>
-    <child link="realsense_front_link" />
-  </joint>
-
   <link name="camera1_link">
       <inertial>
       <mass value="0.01"/>
